@@ -25,8 +25,6 @@ style="border-radius:18px;box-shadow:0 0 25px #C000FF;">
 
 </h3>
 
-## Littlegods Stats Web
-
 **Littlegods Stats Web** is a tool created to visualize player statistics, player information, and Zombies mode data from **Call of Duty: Black Ops 2 (Plutonium)**.
 
 ### Installation and Usage
