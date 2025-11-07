@@ -1,0 +1,5 @@
+{
+  "name": "Black Ops 2 Player Stats",
+  "description": "A modern dashboard to display player statistics for Call of Duty: Black Ops 2 Plutonium, including kills, downs, revives, and headshots.",
+  "requestFramePermissions": []
+}

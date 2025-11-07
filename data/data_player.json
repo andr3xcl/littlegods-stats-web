@@ -1,0 +1,126 @@
+{
+  "6076229": {
+    "username": "Littlegods",
+    "guid": "6076229",
+    "stats": {
+      "kills": 0,
+      "downs": 2,
+      "revives": 0,
+      "headshots": 0
+    },
+    "maps": {
+      "nuked": {
+        "topRound": 1,
+        "totalKills": 0,
+        "totalHeadshots": 0,
+        "totalRevives": 0,
+        "totalDowns": 2,
+        "totalScore": 190,
+        "gamesPlayed": 2,
+        "lastPlayed": "2025-11-06"
+      }
+    },
+    "economy": {
+      "balance": 297,
+      "transactions": [
+        {
+          "id": "bank_6076229_1762471127486",
+          "description": "Saldo bancario actualizado",
+          "amount": 800,
+          "date": "2025-11-06"
+        },
+        {
+          "id": "txn_6076229_partida_0_deposit_1",
+          "type": "deposit",
+          "amount": 500,
+          "balanceBefore": 0,
+          "balanceAfter": 500,
+          "description": "Deposito desde puntos",
+          "date": "1970-01-01T00:00:57.850Z",
+          "timestamp": 57850,
+          "matchNumber": 0,
+          "transactionNumber": 1
+        },
+        {
+          "id": "bank_6076229_1762471264129",
+          "description": "Saldo bancario actualizado",
+          "amount": 600,
+          "date": "2025-11-06"
+        },
+        {
+          "id": "txn_6076229_withdraw_1",
+          "type": "withdraw",
+          "amount": 200,
+          "balanceBefore": 800,
+          "balanceAfter": 600,
+          "description": "Retiro a puntos",
+          "date": "1970-01-01T00:00:16.200Z",
+          "timestamp": 16200,
+          "number": 1
+        },
+        {
+          "id": "txn_6076229_deposit_2",
+          "type": "deposit",
+          "amount": 300,
+          "balanceBefore": 500,
+          "balanceAfter": 800,
+          "description": "Deposito desde puntos",
+          "date": "1970-01-01T00:00:14.100Z",
+          "timestamp": 14100,
+          "number": 2
+        },
+        {
+          "id": "bank_6076229_1762471335271",
+          "description": "Saldo bancario actualizado",
+          "amount": 400,
+          "date": "2025-11-06"
+        },
+        {
+          "id": "txn_6076229_withdraw_2",
+          "type": "withdraw",
+          "amount": 200,
+          "balanceBefore": 600,
+          "balanceAfter": 400,
+          "description": "Retiro a puntos",
+          "date": "1970-01-01T00:00:22.250Z",
+          "timestamp": 22250,
+          "number": 2
+        },
+        {
+          "id": "bank_6076229_1762471348535",
+          "description": "Saldo bancario actualizado",
+          "amount": 197,
+          "date": "2025-11-06"
+        },
+        {
+          "id": "txn_6076229_withdraw_3",
+          "type": "withdraw",
+          "amount": 203,
+          "balanceBefore": 400,
+          "balanceAfter": 197,
+          "description": "Retiro a puntos",
+          "date": "1970-01-01T00:00:35.450Z",
+          "timestamp": 35450,
+          "number": 3
+        },
+        {
+          "id": "bank_6076229_1762471507697",
+          "description": "Saldo bancario actualizado",
+          "amount": 297,
+          "date": "2025-11-06"
+        },
+        {
+          "id": "txn_6076229_deposit_1",
+          "type": "deposit",
+          "amount": 100,
+          "balanceBefore": 197,
+          "balanceAfter": 297,
+          "description": "Deposito desde puntos",
+          "date": "1970-01-01T00:00:55.350Z",
+          "timestamp": 55350,
+          "number": 1
+        }
+      ]
+    }
+  }
+}
