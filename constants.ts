@@ -175,12 +175,15 @@ export const loadEconomyData = (): Promise<EconomyData> => loadDataFromFile<Econ
 
 // Mapas de Black Ops 2 Zombies con sus imágenes locales
 export const MAP_BANNERS: Record<string, string> = {
-  "zm_buried": "./data/images/Buried_menu_BOII.jpg",
-  "zm_highrise": "./data/images/Die_Rise_menu_selection_BO2.jpg",
-  "zm_nuked": "./data/images/Nuketown_menu_selection_BO2.jpg",
-  "zm_prison": "./data/images/Mob_of_the_Dead_menu_selection_BO2.jpg",
-  "zm_tomb": "./data/images/Origins_Lobby_Icon_BO2.jpg",
-  "zm_transit": "./data/images/TranZit_lobby_BOII.jpg"
+  "zm_buried": "./data/images/load_maps/zm_buried.jpg",
+  "zm_highrise": "./data/images/load_maps/zm_highrise.jpg",
+  "zm_nuked": "./data/images/load_maps/zm_nuked.jpg",
+  "zm_prison": "./data/images/load_maps/zm_prison.jpg",
+  "zm_tomb": "./data/images/load_maps/zm_tomb.jpg",
+  "zm_transit": "./data/images/load_maps/zm_transit.jpg",
+  "zm_town": "./data/images/load_maps/zm_town.jpg",
+  "zm_farm": "./data/images/load_maps/zm_farm.jpg",
+  "zm_busdepot":"./data/images/load_maps/zm_busdepot.jpg"
 };
 
 // Mapeo de nombres de mapas del juego a códigos de mapas
@@ -191,8 +194,9 @@ export const MAP_NAME_TO_CODE = {
   "tomb": "zm_tomb",
   "transit": "zm_transit",
   "diner": "zm_transit",
-  "farm": "zm_transit", 
-  "town": "zm_transit",
+  "farm": "zm_farm", 
+  "town": "zm_town",
   "processing": "zm_buried", 
-  "rooftop": "zm_highrise" 
+  "rooftop": "zm_highrise",
+  "busdepot": "zm_busdepot"
 };

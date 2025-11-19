@@ -1,12 +1,24 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import type { PlayerProfile } from '../types';
+import { useGSAP } from '../utils/gsap';
 
 interface PlayerBannerProps {
   player: PlayerProfile;
 }
 
 const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
+  // GSAP hooks y referencias
+  const gsap = useGSAP();
+  const pulseRef = useRef<HTMLDivElement>(null);
+
+  // Animación del pulso del indicador de estado
+  useEffect(() => {
+    if (pulseRef.current) {
+      gsap.animatePulse(pulseRef.current, 2);
+    }
+  }, [gsap]);
+
   return (
     <div className="relative w-full h-80 overflow-hidden">
       {/* Banner con gradiente dinámico */}
@@ -32,7 +44,7 @@ const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
               className="relative w-32 h-32 rounded-full border-4 border-white/20 object-cover shadow-2xl"
             />
             <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-400 rounded-full border-4 border-slate-900 flex items-center justify-center">
-              <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+              <div ref={pulseRef} className="w-3 h-3 bg-white rounded-full"></div>
             </div>
           </div>
 

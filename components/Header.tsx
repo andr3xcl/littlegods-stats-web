@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useGSAP } from '../utils/gsap';
 
-type NavView = 'Home' | 'Jugadores' | 'Settings';
+type NavView = 'Home' | 'Estadisticas' | 'Settings';
 type PlayerSubView = 'Estadísticas';
 
 interface HeaderProps {
@@ -16,9 +17,13 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
    const { t } = useLanguage();
 
+   // GSAP hooks y referencias
+   const gsap = useGSAP();
+   const headerRef = useRef<HTMLElement>(null);
+
   const navItems = useMemo(() => [
     { name: 'Home', label: t('nav.home') },
-    { name: 'Jugadores', label: t('nav.players') },
+    { name: 'Estadisticas', label: t('nav.players') },
     { name: 'Settings', label: t('nav.settings') },
   ], [t]);
 
@@ -39,8 +44,17 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
     setIsMobileMenuOpen(prev => !prev);
   }, []);
 
+  // Manejadores de hover para botones
+  const handleButtonHover = useCallback((element: HTMLElement, isHover: boolean) => {
+    gsap.animateButtonHover(element, isHover);
+  }, [gsap]);
+
+  const handleMenuButtonHover = useCallback((element: HTMLElement, isHover: boolean) => {
+    gsap.animateButtonHover(element, isHover);
+  }, [gsap]);
+
   return (
-    <header className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-xl border-b border-slate-300 dark:border-slate-700 sticky top-0 z-40 shadow-lg transition-colors duration-300">
+    <header ref={headerRef} className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-xl border-b border-slate-300 dark:border-slate-700 sticky top-0 z-40 shadow-lg">
       <nav className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
@@ -59,9 +73,10 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
                 <button
                   key={item.name}
                   onClick={() => handleNavigate(item.name)}
+                  onMouseEnter={(e) => handleButtonHover(e.currentTarget, true)}
+                  onMouseLeave={(e) => handleButtonHover(e.currentTarget, false)}
                   className={`
                     px-3 py-2 rounded-lg text-sm font-bold uppercase tracking-wider
-                    transition-all duration-300
                     ${isActive
                       ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 dark:text-indigo-400 border border-indigo-500/30'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100'
@@ -78,7 +93,9 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
           {/* Mobile menu button */}
           <button
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all"
+            onMouseEnter={(e) => handleMenuButtonHover(e.currentTarget, true)}
+            onMouseLeave={(e) => handleMenuButtonHover(e.currentTarget, false)}
+            className="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6" />
@@ -97,9 +114,10 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
                 <button
                   key={item.name}
                   onClick={() => handleMobileNavigate(item.name)}
+                  onMouseEnter={(e) => handleButtonHover(e.currentTarget, true)}
+                  onMouseLeave={(e) => handleButtonHover(e.currentTarget, false)}
                   className={`
                     w-full px-4 py-2.5 rounded-lg text-sm font-bold uppercase tracking-wider text-left
-                    transition-all duration-300
                     ${isActive
                       ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 dark:text-indigo-400 border border-indigo-500/30'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-slate-100'

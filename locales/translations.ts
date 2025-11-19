@@ -2,9 +2,12 @@ export const translations = {
   es: {
     // Header / Navegación
     'nav.home': 'Inicio',
-    'nav.players': 'Jugadores',
+    'nav.players': 'Estadisticas',
     'nav.settings': 'Configuración',
     'nav.statistics': 'Estadísticas',
+
+    // Sidebar
+    'sidebar.players': 'Jugadores',
     
     // Home
     'home.title': 'Player',
@@ -25,13 +28,12 @@ export const translations = {
     
     // Statistics
     'stats.mapPerformance': 'Rendimiento por Mapa',
-    'stats.live': 'En Vivo',
     'stats.overallStats': 'Estadísticas Generales',
+    'stats.general': 'General',
     'stats.bankAccount': 'Cuenta Bancaria',
     'stats.currentBalance': 'Balance Actual',
     'stats.recentActivity': 'Actividad Reciente',
     'stats.noTransactions': 'No hay transacciones recientes',
-    'stats.online': 'En Línea',
     'stats.kills': 'Asesinatos',
     'stats.headshots': 'Disparos a la Cabeza',
     'stats.revives': 'Revividas',
@@ -41,9 +43,40 @@ export const translations = {
     'stats.round': 'Ronda',
     'stats.zombies': 'Zombies',
     'stats.matches': 'partidas',
+    'stats.clickForDetails': 'Haz clic para detalles',
+    'stats.detailedStats': 'Estadísticas detalladas disponibles',
+    'stats.performanceStats': 'Estadísticas de rendimiento',
+    'stats.expand': 'Expandir',
+    'stats.collapse': 'Colapsar',
+    'stats.totalScore': 'Puntuación total',
+    'stats.bestWeapon': 'Mejor Arma',
+    'stats.viewAll': 'Ver todas',
+    'stats.viewAllPerks': 'Ver todos los perks',
+    'stats.weapons': 'Armas',
+    'stats.perks': 'Perks',
+    'stats.use': 'uso',
+    'stats.uses': 'usos',
+
+    // Página de feedback cuando no hay estadísticas
+    'stats.noStatsTitle': 'Sin Estadísticas Disponibles',
+    'stats.noStatsSubtitle': 'Aún no tienes estadísticas de juego registradas. ¡Comienza a jugar para ver tu progreso!',
+    'stats.playGamesTitle': 'Juega Partidas',
+    'stats.playGamesDesc': 'Inicia sesión en Plutonium y juega algunas rondas de Zombies para comenzar a recopilar datos.',
+    'stats.checkLiveTitle': 'Verifica en Vivo',
+    'stats.checkLiveDesc': 'El sistema detectará automáticamente tus partidas y actualizará las estadísticas en tiempo real.',
+    'stats.trackProgressTitle': 'Sigue tu Progreso',
+    'stats.trackProgressDesc': 'Monitorea tus mejoras, récords y tendencias a lo largo del tiempo.',
+    'stats.refreshData': 'Actualizar Datos',
+    'stats.launchGame': 'Lanzar Juego',
+
+    // Página cuando no hay jugador seleccionado
+    'stats.selectPlayerTitle': 'Selecciona un Jugador',
+    'stats.selectPlayerSubtitle': 'Para ver las estadísticas, primero debes seleccionar un jugador del panel lateral.',
+    'stats.selectPlayerInstructions': 'Haz clic en cualquier jugador de la lista para ver sus estadísticas detalladas.',
 
     // Map Modal
     'modal.selectMetric': 'Selecciona una Métrica para Analizar',
+    'modal.generalDescription': 'Vista general de todas las estadísticas',
     'modal.analysisOf': 'Análisis de',
     'modal.bestMatch': 'Mejor Partida',
     'modal.average': 'Promedio',
@@ -67,6 +100,16 @@ export const translations = {
     'modal.areaBalance': '⭐ Área = Balance',
     'modal.dotsShowTransactionType': 'Los puntos del gráfico muestran el tipo de cada transacción',
     'modal.bankActivity': 'Actividad bancaria',
+
+    // Profile Modal
+    'profile.playerDescription': 'Jugador de Black Ops 2 Plutonium',
+    'profile.viewForumProfile': 'Ver perfil en Plutonium Forum',
+    'profile.opensInNewTab': 'Se abrirá en una nueva pestaña',
+    'profile.guid': 'GUID',
+    'profile.status': 'Estado',
+    'profile.online': 'Online',
+    'profile.active': 'Activo',
+    'profile.plutonium': 'Plutonium',
     'modal.lastPlayed': 'Última',
     'modal.noDescription': 'Sin descripción',
     'modal.improving': 'Mejorando',
@@ -76,6 +119,15 @@ export const translations = {
     'modal.recordMark': 'Marca récord destacada',
     'modal.worstPerformance': 'Peor rendimiento marcado',
     'modal.selectedMetric': 'Métrica seleccionada',
+
+    // Traducciones específicas del modal de mapas
+    'modal.matchNumber': 'Partida',
+    'modal.balanceEvolution': 'Evolución del Balance Bancario',
+    'modal.transaction': 'Transacción',
+    'modal.deposit': 'Depósito',
+    'modal.withdraw': 'Retiro',
+    'modal.received': 'Recibido',
+    'modal.sent': 'Enviado',
 
     // Metric descriptions
     'metric.kills.desc': 'Asesinatos por partida',
@@ -92,6 +144,7 @@ export const translations = {
     'matches.noMatches': 'No hay partidas recientes',
     'matches.downs.count': 'caídas',
     'matches.disconnect': 'disconnect',
+    'matches.round': 'Ronda',
     
     // Player Modal
     'player.select': 'Seleccionar Jugador',
@@ -131,7 +184,7 @@ export const translations = {
     'map.origins': 'Origins',
     
     // Footer
-    'footer.text': 'Modern Stats Interface for BO2 Plutonium',
+    'footer.text': 'Littlegods Project',
     
     // General
     'general.loading': 'Cargando datos...',
@@ -140,9 +193,12 @@ export const translations = {
   en: {
     // Header / Navigation
     'nav.home': 'Home',
-    'nav.players': 'Players',
+    'nav.players': 'Statistics',
     'nav.settings': 'Settings',
     'nav.statistics': 'Statistics',
+
+    // Sidebar
+    'sidebar.players': 'Players',
     
     // Home
     'home.title': 'Player',
@@ -163,13 +219,12 @@ export const translations = {
     
     // Statistics
     'stats.mapPerformance': 'Map Performance',
-    'stats.live': 'Live',
     'stats.overallStats': 'Overall Stats',
+    'stats.general': 'General',
     'stats.bankAccount': 'Bank Account',
     'stats.currentBalance': 'Current Balance',
     'stats.recentActivity': 'Recent Activity',
     'stats.noTransactions': 'No recent transactions',
-    'stats.online': 'Online',
     'stats.kills': 'Kills',
     'stats.headshots': 'Headshots',
     'stats.revives': 'Revives',
@@ -179,9 +234,40 @@ export const translations = {
     'stats.round': 'Round',
     'stats.zombies': 'Zombies',
     'stats.matches': 'matches',
+    'stats.clickForDetails': 'Click for details',
+    'stats.detailedStats': 'Detailed stats available',
+    'stats.performanceStats': 'Performance stats',
+    'stats.expand': 'Expand',
+    'stats.collapse': 'Collapse',
+    'stats.totalScore': 'Total score',
+    'stats.bestWeapon': 'Best Weapon',
+    'stats.viewAll': 'View all',
+    'stats.viewAllPerks': 'View all perks',
+    'stats.weapons': 'Weapons',
+    'stats.perks': 'Perks',
+    'stats.use': 'use',
+    'stats.uses': 'uses',
+
+    // Feedback page when no statistics available
+    'stats.noStatsTitle': 'No Statistics Available',
+    'stats.noStatsSubtitle': 'You don\'t have any game statistics recorded yet. Start playing to see your progress!',
+    'stats.playGamesTitle': 'Play Games',
+    'stats.playGamesDesc': 'Log into Plutonium and play some Zombies rounds to start collecting data.',
+    'stats.checkLiveTitle': 'Check Live',
+    'stats.checkLiveDesc': 'The system will automatically detect your matches and update statistics in real-time.',
+    'stats.trackProgressTitle': 'Track Progress',
+    'stats.trackProgressDesc': 'Monitor your improvements, records, and trends over time.',
+    'stats.refreshData': 'Refresh Data',
+    'stats.launchGame': 'Launch Game',
+
+    // Page when no player is selected
+    'stats.selectPlayerTitle': 'Select a Player',
+    'stats.selectPlayerSubtitle': 'To view statistics, you must first select a player from the sidebar.',
+    'stats.selectPlayerInstructions': 'Click on any player in the list to view their detailed statistics.',
 
     // Map Modal
     'modal.selectMetric': 'Select a Metric to Analyze',
+    'modal.generalDescription': 'General view of all statistics',
     'modal.analysisOf': 'Analysis of',
     'modal.bestMatch': 'Best Match',
     'modal.average': 'Average',
@@ -205,6 +291,16 @@ export const translations = {
     'modal.areaBalance': '⭐ Area = Balance',
     'modal.dotsShowTransactionType': 'Chart dots show the type of each transaction',
     'modal.bankActivity': 'Bank activity',
+
+    // Profile Modal
+    'profile.playerDescription': 'Black Ops 2 Plutonium Player',
+    'profile.viewForumProfile': 'View profile on Plutonium Forum',
+    'profile.opensInNewTab': 'Will open in a new tab',
+    'profile.guid': 'GUID',
+    'profile.status': 'Status',
+    'profile.online': 'Online',
+    'profile.active': 'Active',
+    'profile.plutonium': 'Plutonium',
     'modal.lastPlayed': 'Last played',
     'modal.noDescription': 'No description',
     'modal.improving': 'Improving',
@@ -214,6 +310,15 @@ export const translations = {
     'modal.recordMark': 'Record mark highlighted',
     'modal.worstPerformance': 'Worst performance marked',
     'modal.selectedMetric': 'Selected metric',
+
+    // Map modal specific translations
+    'modal.matchNumber': 'Match',
+    'modal.balanceEvolution': 'Bank Balance Evolution',
+    'modal.transaction': 'Transaction',
+    'modal.deposit': 'Deposit',
+    'modal.withdraw': 'Withdraw',
+    'modal.received': 'Received',
+    'modal.sent': 'Sent',
 
     // Metric descriptions
     'metric.kills.desc': 'Kills per match',
@@ -230,6 +335,7 @@ export const translations = {
     'matches.noMatches': 'No recent matches',
     'matches.downs.count': 'downs',
     'matches.disconnect': 'disconnect',
+    'matches.round': 'Round',
     
     // Player Modal
     'player.select': 'Select Player',
@@ -269,7 +375,7 @@ export const translations = {
     'map.origins': 'Origins',
     
     // Footer
-    'footer.text': 'Modern Stats Interface for BO2 Plutonium',
+    'footer.text': 'Littlegods Project',
     
     // General
     'general.loading': 'Loading data...',
@@ -278,9 +384,12 @@ export const translations = {
   pt: {
     // Header / Navegação
     'nav.home': 'Início',
-    'nav.players': 'Jogadores',
+    'nav.players': 'Estatísticas',
     'nav.settings': 'Configurações',
     'nav.statistics': 'Estatísticas',
+
+    // Sidebar
+    'sidebar.players': 'Jogadores',
     
     // Home
     'home.title': 'Player',
@@ -301,13 +410,12 @@ export const translations = {
     
     // Statistics
     'stats.mapPerformance': 'Desempenho por Mapa',
-    'stats.live': 'Ao Vivo',
     'stats.overallStats': 'Estatísticas Gerais',
+    'stats.general': 'Geral',
     'stats.bankAccount': 'Conta Bancária',
     'stats.currentBalance': 'Saldo Atual',
     'stats.recentActivity': 'Atividade Recente',
     'stats.noTransactions': 'Sem transações recentes',
-    'stats.online': 'Online',
     'stats.kills': 'Mortes',
     'stats.headshots': 'Headshots',
     'stats.revives': 'Revividas',
@@ -317,9 +425,40 @@ export const translations = {
     'stats.round': 'Rodada',
     'stats.zombies': 'Zumbis',
     'stats.matches': 'partidas',
+    'stats.clickForDetails': 'Clique para detalhes',
+    'stats.detailedStats': 'Estatísticas detalhadas disponíveis',
+    'stats.performanceStats': 'Estatísticas de desempenho',
+    'stats.expand': 'Expandir',
+    'stats.collapse': 'Recolher',
+    'stats.totalScore': 'Pontuação total',
+    'stats.bestWeapon': 'Melhor Arma',
+    'stats.viewAll': 'Ver todas',
+    'stats.viewAllPerks': 'Ver todos os perks',
+    'stats.weapons': 'Armas',
+    'stats.perks': 'Perks',
+    'stats.use': 'uso',
+    'stats.uses': 'usos',
+
+    // Página de feedback quando não há estatísticas
+    'stats.noStatsTitle': 'Nenhuma Estatística Disponível',
+    'stats.noStatsSubtitle': 'Você ainda não tem estatísticas de jogo registradas. Comece a jogar para ver seu progresso!',
+    'stats.playGamesTitle': 'Jogue Partidas',
+    'stats.playGamesDesc': 'Faça login no Plutonium e jogue algumas rodadas de Zombies para começar a coletar dados.',
+    'stats.checkLiveTitle': 'Verifique ao Vivo',
+    'stats.checkLiveDesc': 'O sistema detectará automaticamente suas partidas e atualizará as estatísticas em tempo real.',
+    'stats.trackProgressTitle': 'Acompanhe seu Progresso',
+    'stats.trackProgressDesc': 'Monitore suas melhorias, recordes e tendências ao longo do tempo.',
+    'stats.refreshData': 'Atualizar Dados',
+    'stats.launchGame': 'Iniciar Jogo',
+
+    // Página quando nenhum jogador está selecionado
+    'stats.selectPlayerTitle': 'Selecione um Jogador',
+    'stats.selectPlayerSubtitle': 'Para ver as estatísticas, você deve primeiro selecionar um jogador na barra lateral.',
+    'stats.selectPlayerInstructions': 'Clique em qualquer jogador da lista para ver suas estatísticas detalhadas.',
 
     // Map Modal
     'modal.selectMetric': 'Selecione uma Métrica para Analisar',
+    'modal.generalDescription': 'Visão geral de todas as estatísticas',
     'modal.analysisOf': 'Análise de',
     'modal.bestMatch': 'Melhor Partida',
     'modal.average': 'Média',
@@ -343,6 +482,16 @@ export const translations = {
     'modal.areaBalance': '⭐ Área = Saldo',
     'modal.dotsShowTransactionType': 'Os pontos do gráfico mostram o tipo de cada transação',
     'modal.bankActivity': 'Atividade bancária',
+
+    // Profile Modal
+    'profile.playerDescription': 'Jogador do Black Ops 2 Plutonium',
+    'profile.viewForumProfile': 'Ver perfil no Fórum Plutonium',
+    'profile.opensInNewTab': 'Será aberto em uma nova aba',
+    'profile.guid': 'GUID',
+    'profile.status': 'Status',
+    'profile.online': 'Online',
+    'profile.active': 'Ativo',
+    'profile.plutonium': 'Plutonium',
     'modal.lastPlayed': 'Última jogada',
     'modal.noDescription': 'Sem descrição',
     'modal.improving': 'Melhorando',
@@ -352,6 +501,15 @@ export const translations = {
     'modal.recordMark': 'Marca recorde destacada',
     'modal.worstPerformance': 'Pior desempenho marcado',
     'modal.selectedMetric': 'Métrica selecionada',
+
+    // Traduções específicas do modal de mapas
+    'modal.matchNumber': 'Partida',
+    'modal.balanceEvolution': 'Evolução do Saldo Bancário',
+    'modal.transaction': 'Transação',
+    'modal.deposit': 'Depósito',
+    'modal.withdraw': 'Saque',
+    'modal.received': 'Recebido',
+    'modal.sent': 'Enviado',
 
     // Metric descriptions
     'metric.kills.desc': 'Mortes por partida',
@@ -368,6 +526,7 @@ export const translations = {
     'matches.noMatches': 'Sem partidas recentes',
     'matches.downs.count': 'quedas',
     'matches.disconnect': 'disconnect',
+    'matches.round': 'Rodada',
     
     // Player Modal
     'player.select': 'Selecionar Jogador',
@@ -407,7 +566,7 @@ export const translations = {
     'map.origins': 'Origins',
     
     // Footer
-    'footer.text': 'Interface Moderna de Estatísticas para BO2 Plutonium',
+    'footer.text': 'Projeto Littlegods',
     
     // General
     'general.loading': 'Carregando dados...',

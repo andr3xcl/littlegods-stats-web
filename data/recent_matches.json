@@ -1,0 +1,215 @@
+[
+  {
+    "playerName": "Littlegods",
+    "round": 1,
+    "kills": 88,
+    "headshots": 7,
+    "revives": 0,
+    "downs": 0,
+    "score": 7890,
+    "weapons": {
+      "pdw57_zm": {
+        "kills": 11,
+        "displayName": "PDW-57"
+      },
+      "ak74u_extclip_zm": {
+        "kills": 6,
+        "displayName": "AK-74u Extended Clip"
+      },
+      "ak74u_extclip_upgraded_zm+reflex": {
+        "kills": 6,
+        "displayName": "Ak74u Extclip+reflex Upgraded"
+      },
+      "galil_zm": {
+        "kills": 6,
+        "displayName": "Galil"
+      },
+      "scar_zm": {
+        "kills": 5,
+        "displayName": "SCAR-H"
+      },
+      "870mcs_upgraded_zm": {
+        "kills": 4,
+        "displayName": "870mcs Upgraded"
+      },
+      "ray_gun_upgraded_zm": {
+        "kills": 4,
+        "displayName": "Ray Gun Upgraded"
+      },
+      "type95_zm": {
+        "kills": 4,
+        "displayName": "Type 25"
+      },
+      "evoskorpion_upgraded_zm+rangefinder": {
+        "kills": 4,
+        "displayName": "Evoskorpion+rangefinder Upgraded"
+      },
+      "ak74u_upgraded_zm+reflex": {
+        "kills": 3,
+        "displayName": "Ak74u+reflex Upgraded"
+      }
+    },
+    "perks": {
+      "Juggernog": {
+        "uses": 1,
+        "displayName": "Juggernog"
+      },
+      "Quick Revive": {
+        "uses": 1,
+        "displayName": "Quick Revive"
+      },
+      "Speed Cola": {
+        "uses": 1,
+        "displayName": "Speed Cola"
+      },
+      "Double Tap": {
+        "uses": 1,
+        "displayName": "Double Tap"
+      },
+      "Stamin-Up": {
+        "uses": 1,
+        "displayName": "Stamin-Up"
+      },
+      "PhD Flopper": {
+        "uses": 1,
+        "displayName": "PhD Flopper"
+      },
+      "Deadshot Daiquiri": {
+        "uses": 1,
+        "displayName": "Deadshot Daiquiri"
+      },
+      "Mule Kick": {
+        "uses": 1,
+        "displayName": "Mule Kick"
+      },
+      "Electric Cherry": {
+        "uses": 1,
+        "displayName": "Electric Cherry"
+      }
+    },
+    "bestWeapon": {
+      "name": "pdw57_zm",
+      "displayName": "PDW-57",
+      "kills": 11
+    },
+    "guid": "6076229",
+    "map": "tomb",
+    "timestamp": 1763535156093,
+    "fileName": "tomb_recent_2.txt"
+  },
+  {
+    "playerName": "Littlegods",
+    "round": 1,
+    "kills": 97,
+    "headshots": 11,
+    "revives": 0,
+    "downs": 1,
+    "score": 42860,
+    "weapons": {
+      "c96_upgraded_zm": {
+        "kills": 38,
+        "displayName": "C96 Upgraded"
+      },
+      "galil_upgraded_zm+reflex": {
+        "kills": 32,
+        "displayName": "Galil+reflex Upgraded"
+      },
+      "c96_zm": {
+        "kills": 14,
+        "displayName": "C96"
+      },
+      "mg08_upgraded_zm": {
+        "kills": 13,
+        "displayName": "Mg08 Upgraded"
+      }
+    },
+    "perks": {
+      "Juggernog": {
+        "uses": 1,
+        "displayName": "Juggernog"
+      },
+      "Speed Cola": {
+        "uses": 1,
+        "displayName": "Speed Cola"
+      },
+      "PhD Flopper": {
+        "uses": 1,
+        "displayName": "PhD Flopper"
+      }
+    },
+    "bestWeapon": {
+      "name": "c96_upgraded_zm",
+      "displayName": "C96 Upgraded",
+      "kills": 38
+    },
+    "guid": "6076229",
+    "map": "tomb",
+    "timestamp": 1763532192966,
+    "fileName": "tomb_recent_1.txt"
+  },
+  {
+    "playerName": "Littlegods",
+    "round": 1,
+    "kills": 5,
+    "headshots": 0,
+    "revives": 0,
+    "downs": 0,
+    "score": 800,
+    "weapons": {
+      "qcw05_zm": {
+        "kills": 2,
+        "displayName": "Chicom CQB"
+      },
+      "python_zm": {
+        "kills": 2,
+        "displayName": "Python"
+      },
+      "870mcs_zm": {
+        "kills": 1,
+        "displayName": "Remington 870 MCS"
+      }
+    },
+    "perks": {},
+    "bestWeapon": {
+      "name": "qcw05_zm",
+      "displayName": "Chicom CQB",
+      "kills": 2
+    },
+    "guid": "6076229",
+    "map": "town",
+    "timestamp": 1763528144734,
+    "fileName": "town_recent_2.txt"
+  },
+  {
+    "playerName": "Littlegods",
+    "round": 1,
+    "kills": 8,
+    "headshots": 0,
+    "revives": 0,
+    "downs": 1,
+    "score": 1160,
+    "weapons": {},
+    "perks": {},
+    "bestWeapon": null,
+    "guid": "6076229",
+    "map": "town",
+    "timestamp": 1763527973253,
+    "fileName": "town_recent_1.txt"
+  },
+  {
+    "playerName": "Littlegods",
+    "round": 1,
+    "kills": 0,
+    "headshots": 0,
+    "revives": 0,
+    "downs": 0,
+    "score": 500,
+    "weapons": {},
+    "perks": {},
+    "bestWeapon": null,
+    "guid": "6076229",
+    "map": "processing",
+    "timestamp": 1763524157670,
+    "fileName": "processing_recent_1.txt"
+  }
+]

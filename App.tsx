@@ -13,7 +13,7 @@ const RecentMatches = React.lazy(() => import('./pages/RecentMatches'));
 const Economy = React.lazy(() => import('./pages/Economy'));
 const Settings = React.lazy(() => import('./pages/Settings'));
 
-type NavView = 'Home' | 'Jugadores' | 'Settings';
+type NavView = 'Home' | 'Estadisticas' | 'Settings';
 type PlayerSubView = 'Estadísticas';
 
 const AppContent: React.FC = () => {
@@ -76,29 +76,12 @@ const AppContent: React.FC = () => {
             <Home />
           </Suspense>
         );
-      case 'Jugadores':
-        switch(activeSubView) {
-          case 'Estadísticas':
-            return selectedPlayer ? (
-              <Suspense fallback={<LoadingFallback />}>
-                <Statistics player={selectedPlayer} />
-              </Suspense>
-            ) : (
-              <Suspense fallback={<LoadingFallback />}>
-                <Home />
-              </Suspense>
-            );
-          default:
-            return selectedPlayer ? (
-              <Suspense fallback={<LoadingFallback />}>
-                <Statistics player={selectedPlayer} />
-              </Suspense>
-            ) : (
-              <Suspense fallback={<LoadingFallback />}>
-                <Home />
-              </Suspense>
-            );
-        }
+      case 'Estadisticas':
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <Statistics player={selectedPlayer} />
+          </Suspense>
+        );
       case 'Settings':
         return (
           <Suspense fallback={<LoadingFallback />}>
@@ -123,7 +106,7 @@ const AppContent: React.FC = () => {
         onNavigateSubView={setActiveSubView}
       />
 
-      {activeView === 'Jugadores' ? (
+      {activeView === 'Estadisticas' ? (
         <div className="flex">
           <PlayerSidebar
             players={playersData}

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useGSAP } from '../utils/gsap';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -19,6 +20,11 @@ const LazyImage: React.FC<LazyImageProps> = ({
   const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const placeholderRef = useRef<HTMLDivElement>(null);
+  const spinnerRef = useRef<HTMLDivElement>(null);
+
+  // GSAP hooks
+  const gsap = useGSAP();
 
   useEffect(() => {
     const img = imgRef.current;
@@ -45,8 +51,30 @@ const LazyImage: React.FC<LazyImageProps> = ({
     };
   }, []);
 
+  // Animación del placeholder (pulse)
+  useEffect(() => {
+    if (placeholderRef.current && !isLoaded) {
+      gsap.animatePulse(placeholderRef.current, 1.5);
+    }
+  }, [isLoaded, gsap]);
+
+  // Animación del spinner
+  useEffect(() => {
+    if (spinnerRef.current && !isLoaded) {
+      gsap.animateSpinner(spinnerRef.current);
+    }
+  }, [isLoaded, gsap]);
+
   const handleLoad = () => {
     setIsLoaded(true);
+    // Animar la transición de opacidad con GSAP
+    if (imgRef.current) {
+      gsap.to(imgRef.current, {
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.out"
+      });
+    }
   };
 
   const handleError = () => {
@@ -58,8 +86,8 @@ const LazyImage: React.FC<LazyImageProps> = ({
     <div className={`relative overflow-hidden ${className}`}>
       {/* Placeholder/Loading state */}
       {!isLoaded && !hasError && (
-        <div className="absolute inset-0 bg-slate-700 animate-pulse flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-slate-400 border-t-slate-200 rounded-full animate-spin"></div>
+        <div ref={placeholderRef} className="absolute inset-0 bg-slate-700 flex items-center justify-center">
+          <div ref={spinnerRef} className="w-8 h-8 border-2 border-slate-400 border-t-slate-200 rounded-full"></div>
         </div>
       )}
 
@@ -70,9 +98,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
         alt={alt}
         onLoad={handleLoad}
         onError={handleError}
-        className={`transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        } ${className}`}
+        className={`${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
         {...props}
       />
 

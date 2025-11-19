@@ -1,0 +1,48 @@
+{
+  "6076229": {
+    "username": "Littlegods",
+    "guid": "6076229",
+    "stats": {
+      "kills": 198,
+      "downs": 2,
+      "revives": 0,
+      "headshots": 18
+    },
+    "maps": {
+      "processing": {
+        "topRound": 1,
+        "totalKills": 0,
+        "totalHeadshots": 0,
+        "totalRevives": 0,
+        "totalDowns": 0,
+        "totalScore": 500,
+        "gamesPlayed": 1,
+        "lastPlayed": "2025-11-19"
+      },
+      "town": {
+        "topRound": 1,
+        "totalKills": 13,
+        "totalHeadshots": 0,
+        "totalRevives": 0,
+        "totalDowns": 1,
+        "totalScore": 1960,
+        "gamesPlayed": 2,
+        "lastPlayed": "2025-11-19"
+      },
+      "tomb": {
+        "topRound": 1,
+        "totalKills": 185,
+        "totalHeadshots": 18,
+        "totalRevives": 0,
+        "totalDowns": 1,
+        "totalScore": 50750,
+        "gamesPlayed": 2,
+        "lastPlayed": "2025-11-19"
+      }
+    },
+    "economy": {
+      "balance": 15373,
+      "transactions": []
+    }
+  }
+}

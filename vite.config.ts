@@ -14,12 +14,12 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [
         react({
-          // Optimizaciones de React para producción
+          
           jsxRuntime: 'automatic',
-          // Habilita Fast Refresh optimizado
+          
           fastRefresh: !isProduction,
         }),
-        // Plugin para visualizar el tamaño del bundle (solo en producción)
+        
         isProduction && visualizer({
           filename: 'dist/stats.html',
           open: false,
@@ -37,44 +37,44 @@ export default defineConfig(({ mode }) => {
         }
       },
       build: {
-        // Optimizaciones de build
+        
         target: 'esnext',
         minify: isProduction ? 'esbuild' : false,
         sourcemap: !isProduction,
         rollupOptions: {
           output: {
-            // Optimización de chunks
+            
             manualChunks: {
-              // Separar vendor chunks
+              
               vendor: ['react', 'react-dom'],
               ui: ['lucide-react'],
-              // Chunk para utilidades
+              
               utils: ['./utils/cache.js', './utils/watchdog.js'],
             },
-            // Nombres de archivos optimizados
+            
             chunkFileNames: isProduction ? 'assets/[name]-[hash].js' : 'assets/[name].js',
             entryFileNames: isProduction ? 'assets/[name]-[hash].js' : 'assets/[name].js',
             assetFileNames: isProduction ? 'assets/[name]-[hash].[ext]' : 'assets/[name].[ext]',
           },
         },
-        // Optimizaciones adicionales
+        
         cssCodeSplit: true,
-        reportCompressedSize: false, // Deshabilitar para builds más rápidas
+        reportCompressedSize: false, 
         chunkSizeWarningLimit: 1000,
       },
-      // Optimizaciones de desarrollo
+      
       optimizeDeps: {
         include: ['react', 'react-dom', 'lucide-react'],
         exclude: ['@vite/client', '@vite/env'],
       },
-      // Configuración de CSS
+      
       css: {
         devSourcemap: !isProduction,
         modules: {
           localsConvention: 'camelCase',
         },
       },
-      // Configuración de ESBuild (usado para minificación)
+      
       esbuild: {
         drop: isProduction ? ['console', 'debugger'] : [],
         legalComments: 'none',

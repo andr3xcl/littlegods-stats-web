@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { useGSAP } from '../utils/gsap';
 
 interface StatCardProps {
   label: string;
@@ -12,13 +13,29 @@ const StatCard: React.FC<StatCardProps> = React.memo(({ label, value, icon }) =>
     [value]
   );
 
+  // GSAP hooks y referencias
+  const gsap = useGSAP();
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (cardRef.current) {
+      gsap.animateHoverIn(cardRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (cardRef.current) {
+      gsap.animateHoverOut(cardRef.current);
+    }
+  };
+
   return (
-    <div className={`
-      bg-slate-800 border border-slate-700 border-t-4 border-t-indigo-500
-      rounded-lg p-6 flex flex-col items-center justify-center 
-      gap-3 transform transition-all duration-300 hover:scale-105 
-      hover:bg-slate-700/50
-    `}>
+    <div
+      ref={cardRef}
+      className="bg-slate-800 border border-slate-700 border-t-4 border-t-indigo-500 rounded-lg p-6 flex flex-col items-center justify-center gap-3 hover:bg-slate-700/50"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="text-indigo-400">
         {React.cloneElement(icon, { className: 'w-8 h-8' })}
       </div>
