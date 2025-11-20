@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Target, Skull, Heart, Award, Map as MapIcon, Clock, ChevronLeft, ChevronRight, ChevronDown, X, Zap } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useGSAP } from '../utils/gsap';
 
 interface WeaponData {
@@ -65,7 +67,7 @@ const MAP_IMAGES: Record<string, string> = {
 };
 
 const WEAPON_IMAGES: Record<string, string> = {
-  // Pistolas
+  
   'M1911': './data/images/weapons/M1911_menu_icon_BOII.jpg',
   'Python': './data/images/weapons/Python_Menu_Icon_BOII.jpg',
   'Executioner': './data/images/weapons/Executioner_Menu_Icon_BOII.jpg',
@@ -75,7 +77,7 @@ const WEAPON_IMAGES: Record<string, string> = {
   'B93R': './data/images/weapons/B23R_Menu_Icon_BOII.jpg',
   'Mauser C96': './data/images/weapons/Mauser_C96_menu_icon_BOII.jpg',
 
-  // SMGs
+  
   'MP5': './data/images/weapons/MP5_menu_icon_BOII.jpg',
   'PDW-57': './data/images/weapons/PDW-57_Menu_Icon_BOII.jpg',
   'AK-74u': './data/images/weapons/AK-74u_Menu_Icon_BOII.jpg',
@@ -86,7 +88,7 @@ const WEAPON_IMAGES: Record<string, string> = {
   'Chicago Typewriter': './data/images/weapons/M1927_Menu_Icon_BOII.jpg',
   'UZI': './data/images/weapons/Uzi_menu_icon_BOII.jpg',
 
-  // Rifles de Asalto
+  
   'M14': './data/images/weapons/M14_menu_icon_BOII.jpg',
   'FAL': './data/images/weapons/FAL_menu_icon_BOII.jpg',
   'Galil': './data/images/weapons/Galil_menu_icon_BOII.jpg',
@@ -99,48 +101,49 @@ const WEAPON_IMAGES: Record<string, string> = {
   'AK-47': './data/images/weapons/AK47_menu_icon_BOII.jpg',
   'M27': './data/images/weapons/M27_Menu_Icon_BOII.jpg',
 
-  // LMGs
+  
   'RPD': './data/images/weapons/RPD_Menu_Icon_BOII.jpg',
   'LSAT': './data/images/weapons/LSAT_Menu_Icon_BOII.jpg',
   'MG08': './data/images/weapons/MG08_menu_icon_Origins_BOII.jpg',
   'HAMR': './data/images/weapons/HAMR_Menu_Icon_BOII.jpg',
 
-  // Escopetas
+  
   'Remington 870 MCS': './data/images/weapons/R-870_MCS_Menu_Icon_BOII.jpg',
   'Olympia': './data/images/weapons/Olympia_menu_icon_BOII.jpg',
   'S12': './data/images/weapons/S12_Menu_Icon_BOII.jpg',
   'SMR': './data/images/weapons/SMR_Menu_Icon_BOII.jpg',
   'KSG': './data/images/weapons/KSG_Menu_Icon_BOII.jpg',
 
-  // Snipers
+  
   'DSR 50': './data/images/weapons/DSR_50_menu_icon_BOII.jpg',
   'Ballista': './data/images/weapons/Ballista_Menu_Icon_BOII.jpg',
   'Barrett M82A1': './data/images/weapons/Barrett_M82A1_menu_icon_BOII.jpg',
   'SVU-AS': './data/images/weapons/SVU-AS_Menu_Icon_BOII.jpg',
 
-  // Lanzadores
+  
   'RPG': './data/images/weapons/RPG_Menu_Icon_BOII.jpg',
   'War Machine': './data/images/weapons/War_Machine_Side_View_BOII.jpg',
   'Death Machine': './data/images/weapons/Death_Machine_menu_icon_BOII.jpg',
 
-  // Wonder Weapons
+  
   'Ray Gun': './data/images/weapons/Ray_Gun_Menu_Icon_BOII.jpg',
   'Ray Gun Mark II': './data/images/weapons/Ray_Gun_Mark_II_menu_icon_BOII.jpg',
   'Blundergat': './data/images/weapons/Blundergat_Menu_Icon_BOII.jpg',
   'Paralyzer': './data/images/weapons/Paralyzer_menu_icon_BOII.jpg',
   'Sliquifier': './data/images/weapons/Sliquifier_Menu_Icon_BOII.jpg',
 
-  // Cuchillos
-  'Ballistic Knife': './data/images/weapons/Spring_Knife_Create-a-Class_BOII.jpg',
 
-  // Armas faltantes de la carpeta
+  'Ballistic Knife': './data/images/weapons/Spring_Knife_Create-a-Class_BOII.jpg',
+  'Bowie Knife': './data/images/weapons/Bowie_Knife_3rd_Person_BOII.jpg',
+
   'Remington New Model Army': './data/images/weapons/Remington_New_Model_Army_menu_icon_BOII.jpg',
   'Katana': './data/images/weapons/Katana_menu_icon_WaW.jpg',
   'STG-44': './data/images/weapons/STG-44_menu_icon_BOII.jpg',
-  'Staff of Fire': './data/images/weapons/Staff_of_Fire_Origins_menu_icon_BOII.jpg',
-  'Staff of Ice': './data/images/weapons/Staff_of_Ice_Origins_menu_icon_BOII.jpg',
-  'Staff of Lightning': './data/images/weapons/Staff_of_Lightning_Origins_menu_icon_BOII.jpg',
-  'Staff of Wind': './data/images/weapons/Staff_of_Wind_Origins_menu_icon_BOII.jpg'
+  'Staff Fire': './data/images/weapons/Staff_of_Fire_Origins_menu_icon_BOII.jpg',
+  'Staff Water': './data/images/weapons/Staff_of_Ice_Origins_menu_icon_BOII.jpg',
+  'Staff Lightning': './data/images/weapons/Staff_of_Lightning_Origins_menu_icon_BOII.jpg',
+  'Staff Air': './data/images/weapons/Staff_of_Wind_Origins_menu_icon_BOII.jpg',
+  'Staff Revive': './data/images/weapons/Staff_of_Fire_Origins_menu_icon_BOII.jpg'
 };
 
 const PERK_IMAGES: Record<string, string> = {
@@ -159,62 +162,70 @@ const PERK_IMAGES: Record<string, string> = {
   'Widow\'s Wine': './data/images/perks_machine/Widow%27s_Wine_model_BO3.jpg'
 };
 
-// Función para obtener el nombre base de un arma (sin sufijos de upgrade)
+
 function getWeaponBaseName(weaponName: string): string {
-  // Si ya es un nombre base conocido, devolverlo
+  
   if (WEAPON_IMAGES[weaponName]) {
     return weaponName;
   }
 
-  // Convertir a minúsculas para procesamiento
+  
   let cleanName = weaponName.toLowerCase().trim();
 
-  // Primero remover palabras de upgrade del nombre display (como "Upgraded", "Extended", etc.)
+  
   const displayUpgradeWords = [
-    /\s+upgraded\d*/gi,     // " Upgraded", " Upgraded2", "Upgraded4", etc.
-    /\s+extended\s+clip/gi, // " Extended Clip"
-    /\s+extended\d*/gi,     // " Extended", etc.
-    /\s+dual\s+wield/gi,    // " Dual Wield"
-    /\s+wield/gi,           // " Wield"
-    /\+rangefinder/gi,      // "+rangefinder"
-    /\+steadyaim/gi,        // "+steadyaim"
-    /\+stalker/gi,          // "+stalker"
-    /\+extclip/gi,          // "+extclip"
-    /\+reflex\d*/gi,        // "+reflex" o "+reflex2"
-    /\s+extclip/gi,         // " extclip" (for cases like "Extclip+reflex")
-    /\s+reflex/gi           // " reflex" (for cases like "+reflex")
+    /\s+upgraded\d*/gi,
+    /upgraded\d*/gi,
+    /\s+extended\s+clip/gi,
+    /\s+extended\d*/gi,
+    /\s+dual\s+wield/gi,
+    /\s+wield/gi,
+    /\s+grenade\s+launcher/gi,
+    /\s+gl/gi,
+    /\+rangefinder/gi,
+    /\+steadyaim/gi,
+    /\+stalker/gi,
+    /\+extclip/gi,
+    /\+reflex\d*/gi,
+    /\+vzoom/gi,
+    /\+acog/gi,
+    /\+is/gi,
+    /\+dualclip/gi,
+    /\s+extclip/gi,
+    /\s+reflex/gi,
+    /\s+stalker/gi
   ];
 
   for (const pattern of displayUpgradeWords) {
     cleanName = cleanName.replace(pattern, '');
   }
 
-  // Luego remover sufijos técnicos de upgrade y attachments
+  
   const upgradePatterns = [
-    /_upgraded_zm/gi,      // "_upgraded_zm"
-    /_reflex_zm/gi,        // "_reflex_zm"
-    /_extclip_zm/gi,       // "_extclip_zm"
-    /_stalker_zm/gi,       // "_stalker_zm"
-    /_akimbo_zm/gi,        // "_akimbo_zm"
-    /_steadyaim_zm/gi,     // "_steadyaim_zm"
-    /_dualclip_zm/gi,      // "_dualclip_zm"
-    /_zm/gi,               // "_zm" general
-    /\+reflex\d*/gi,       // "+reflex" o "+reflex2"
-    /\+rangefinder/gi,     // "+rangefinder"
-    /\+steadyaim/gi,       // "+steadyaim"
-    /\+stalker/gi,         // "+stalker"
-    /\+extclip/gi          // "+extclip"
+    /_upgraded_zm/gi,      
+    /_reflex_zm/gi,        
+    /_extclip_zm/gi,       
+    /_stalker_zm/gi,       
+    /_akimbo_zm/gi,        
+    /_steadyaim_zm/gi,     
+    /_dualclip_zm/gi,      
+    /_zm/gi,               
+    /\+reflex\d*/gi,       
+    /\+rangefinder/gi,     
+    /\+steadyaim/gi,       
+    /\+stalker/gi,         
+    /\+extclip/gi          
   ];
 
-  // Aplicar todos los patrones de limpieza
+  
   for (const pattern of upgradePatterns) {
     cleanName = cleanName.replace(pattern, '');
   }
 
-  // Limpiar espacios extra y capitalizar
+  
   cleanName = cleanName.replace(/\s+/g, ' ').trim();
 
-  // Mapeos específicos para nombres base del juego
+  
   const baseMappings: Record<string, string> = {
     'galil': 'Galil',
     'c96': 'Mauser C96',
@@ -285,8 +296,16 @@ function getWeaponBaseName(weaponName: string): string {
     'slowgun': 'Paralyzer',
     'slipgun': 'Sliquifier',
     'knife_ballistic': 'Ballistic Knife',
-    'knife_ballistic_bowie': 'Ballistic Knife',
+    'knife_ballistic_bowie': 'Bowie Knife',
     'knife_ballistic_no_melee': 'Ballistic Knife',
+    'bowie_knife': 'Bowie Knife',
+    'bowieknife': 'Bowie Knife',
+    'ballistic_bowie_knife': 'Bowie Knife',
+    'knife ballistic bowie': 'Bowie Knife',
+    'ballistic bowie knife': 'Bowie Knife',
+    'tar21': 'TAR-21',
+    'tar-21': 'TAR-21',
+    'm16 gl': 'M16',
     'rnma_zm': 'Remington New Model Army',
     'rnma': 'Remington New Model Army',
     'katana': 'Katana',
@@ -299,20 +318,27 @@ function getWeaponBaseName(weaponName: string): string {
     'staff_water': 'Staff of Ice',
     'staff_lightning': 'Staff of Lightning',
     'staff_air': 'Staff of Wind',
+    'staff_revive_zm': 'Staff of Revive',
+    'staff_fire_upgraded_zm': 'Staff of Fire',
+    'staff_water_upgraded_zm': 'Staff of Ice',
+    'staff_lightning_upgraded_zm': 'Staff of Lightning',
+    'staff_air_upgraded_zm': 'Staff of Wind',
+    'mp44': 'STG-44',
+    'mp44_zm': 'STG-44',
     'stg44_zm': 'STG-44',
     'katana_zm': 'Katana'
   };
 
-  // Buscar el nombre base
+  
   if (baseMappings[cleanName]) {
     return baseMappings[cleanName];
   }
 
-  // Capitalizar como fallback (para armas que no están mapeadas)
+  
   const capitalized = cleanName
     .split(' ')
     .map(word => {
-      // Manejar casos especiales como "ak-74u" -> "AK-74u"
+      
       if (word.includes('-')) {
         return word.split('-').map(part =>
           part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
@@ -322,12 +348,12 @@ function getWeaponBaseName(weaponName: string): string {
     })
     .join(' ');
 
-  // Si existe en las imágenes, devolverlo
+  
   if (WEAPON_IMAGES[capitalized]) {
     return capitalized;
   }
 
-  // Último fallback - devolver el nombre original capitalizado
+  
   return capitalized;
 }
 
@@ -338,9 +364,15 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
   const [expandedMatches, setExpandedMatches] = useState<Set<number>>(new Set());
   const [selectedMatch, setSelectedMatch] = useState<MatchData | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [weaponsExpanded, setWeaponsExpanded] = useState(false);
   const { t } = useLanguage();
+  const { theme } = useTheme();
 
-  // GSAP hooks
+  // Función helper para clases de tema
+  const getThemeClasses = (classes: { light: string; dark: string }) => {
+    return theme === 'dark' ? classes.dark : classes.light;
+  };
+
   const gsap = useGSAP();
 
   useEffect(() => {
@@ -349,11 +381,9 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
         const response = await fetch('./data/recent_matches.json');
         if (response.ok) {
           const allMatches: MatchData[] = await response.json();
-          // Filtrar solo las partidas del jugador seleccionado
+
           const playerMatches = allMatches.filter(match => match.guid === playerGuid);
           setMatches(playerMatches);
-          // Resetear el índice si cambia el jugador
-          setCurrentIndex(0);
         }
         setLoading(false);
       } catch (error) {
@@ -364,10 +394,14 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
 
     loadMatches();
 
-    // Actualizar cada 3 segundos para ver cambios en tiempo real
+
     const interval = setInterval(loadMatches, 3000);
 
     return () => clearInterval(interval);
+  }, [playerGuid]);
+
+  useEffect(() => {
+    setCurrentIndex(0);
   }, [playerGuid]);
 
   const ITEMS_PER_PAGE = 3;
@@ -396,28 +430,162 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
   const openWeaponsModal = (match: MatchData) => {
     setSelectedMatch(match);
     setShowModal(true);
+    setWeaponsExpanded(false);
+    setExpandedMatches(new Set()); // Colapsar todos los banners expandidos
   };
 
   const closeModal = () => {
     setShowModal(false);
     setSelectedMatch(null);
+    setWeaponsExpanded(false);
+    setExpandedMatches(new Set()); // Colapsar todos los banners expandidos
   };
 
   if (loading) {
     return (
-      <div className="mb-8">
-        <div className="text-slate-600 dark:text-slate-400 text-sm text-center py-8">{t('matches.loading')}</div>
+      <div className="mb-8 relative">
+        {/* Contenedor principal con backdrop-blur y gradientes dinámicos */}
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200/50 dark:border-slate-700/50 bg-gradient-to-br from-slate-50/80 via-white/60 to-slate-100/80 dark:from-slate-900/80 dark:via-slate-800/60 dark:to-slate-900/80 backdrop-blur-xl shadow-2xl">
+
+          {/* Sistema de partículas flotantes animadas */}
+          <div className="absolute inset-0 overflow-hidden">
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full opacity-60 animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 3}s`,
+                  animationDuration: `${2 + Math.random() * 4}s`,
+                  transform: `scale(${0.5 + Math.random() * 1.5})`
+                }}
+              />
+            ))}
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={`large-${i}`}
+                className="absolute w-2 h-2 bg-gradient-to-r from-pink-400 to-rose-500 rounded-full opacity-40 animate-bounce"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                  animationDuration: `${3 + Math.random() * 2}s`,
+                  transform: `scale(${0.8 + Math.random() * 0.7})`
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Efectos de luz radial */}
+          <div className="absolute inset-0">
+            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-radial from-indigo-400/20 to-transparent rounded-full blur-xl animate-pulse" style={{ animationDuration: '4s' }} />
+            <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-radial from-purple-400/15 to-transparent rounded-full blur-xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-radial from-pink-400/25 to-transparent rounded-full blur-lg animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+          </div>
+
+          {/* Contenido principal centrado */}
+          <div className="relative z-10 flex flex-col items-center justify-center py-16 px-8 min-h-[300px]">
+
+            {/* Spinner principal con múltiples anillos */}
+            <div className="relative mb-8">
+              {/* Anillo exterior - rotación lenta */}
+              <div className="w-24 h-24 border-4 border-indigo-200/30 dark:border-indigo-800/30 rounded-full animate-spin" style={{ animationDuration: '3s' }}>
+                <div className="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full transform -translate-x-2 -translate-y-2 shadow-lg shadow-indigo-400/50" />
+              </div>
+
+              {/* Anillo medio - rotación en sentido contrario */}
+              <div className="absolute inset-2 border-3 border-purple-300/40 dark:border-purple-700/40 rounded-full animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }}>
+                <div className="absolute top-0 right-0 w-4 h-4 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full transform translate-x-1 -translate-y-1 shadow-lg shadow-purple-400/50" />
+              </div>
+
+              {/* Anillo interior - rotación rápida */}
+              <div className="absolute inset-4 border-2 border-pink-300/50 dark:border-pink-700/50 rounded-full animate-spin" style={{ animationDuration: '1.5s' }}>
+                <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg shadow-pink-400/50" />
+              </div>
+
+              {/* Centro pulsante */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-6 h-6 bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-500 rounded-full animate-pulse shadow-xl shadow-indigo-400/60" style={{ animationDuration: '1s' }}>
+                  <div className="absolute inset-1 bg-white/20 dark:bg-black/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Texto animado con efecto máquina de escribir */}
+            <div className="text-center space-y-3">
+              <div className="relative">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
+                  {t('matches.loading')}
+                </h3>
+                {/* Cursor parpadeante */}
+                <div className="absolute right-0 top-0 h-full w-0.5 bg-gradient-to-b from-indigo-400 to-pink-400 animate-pulse" />
+              </div>
+
+              {/* Subtexto con fade in/out */}
+              <p className="text-sm text-slate-600 dark:text-slate-400 animate-pulse" style={{ animationDuration: '3s' }}>
+                Analizando estadísticas recientes...
+              </p>
+
+              {/* Barra de progreso animada */}
+              <div className="w-48 h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mx-auto mt-6">
+                <div className="h-full bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 rounded-full animate-pulse"
+                     style={{
+                       animation: 'loading-bar 2s ease-in-out infinite',
+                       backgroundSize: '200% 100%'
+                     }} />
+              </div>
+            </div>
+
+            {/* Efecto de ondas expansivas */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-32 h-32 border border-indigo-300/20 dark:border-indigo-700/20 rounded-full animate-ping" style={{ animationDuration: '3s' }} />
+                <div className="absolute inset-0 w-40 h-40 border border-purple-300/15 dark:border-purple-700/15 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }} />
+                <div className="absolute inset-0 w-48 h-48 border border-pink-300/10 dark:border-pink-700/10 rounded-full animate-ping" style={{ animationDuration: '3s', animationDelay: '2s' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* CSS personalizado para efectos especiales */}
+        <style jsx>{`
+          @keyframes loading-bar {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+
+          .gradient-radial {
+            background: radial-gradient(circle, var(--tw-gradient-stops));
+          }
+
+          /* Efectos de hover para las partículas */
+          .particle:hover {
+            transform: scale(1.5);
+            transition: transform 0.3s ease;
+          }
+
+          /* Animación personalizada para el texto */
+          @keyframes text-glow {
+            0%, 100% { text-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 30px rgba(236, 72, 153, 0.6); }
+          }
+
+          .text-glow {
+            animation: text-glow 2s ease-in-out infinite;
+          }
+        `}</style>
       </div>
     );
   }
 
   if (matches.length === 0) {
-    return null; // No mostrar nada si no hay partidas
+    return null; 
   }
 
   return (
     <div className="relative">
-      {/* Header elegante responsive */}
+      {}
       <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative">
@@ -430,7 +598,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
           </div>
         </div>
         
-        {/* Botones de navegación premium */}
+        {}
         <div className="flex gap-2 sm:gap-3">
           <button
             onClick={handlePrevious}
@@ -449,7 +617,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
         </div>
       </div>
 
-      {/* Carrusel horizontal - Responsive: 1 en móvil, 3 en tablet, 5 en desktop */}
+      {}
       <div className="relative overflow-hidden">
         <div
           className="flex gap-3 sm:gap-4"
@@ -466,11 +634,11 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                   return (
                   <div
                     key={`${match.fileName}-${index}`}
-                    className="flex-shrink-0 w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-10.67px)] group"
+                    className="flex-shrink-0 w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-10.67px)] group cursor-pointer"
                   >
                     <div className="relative bg-gradient-to-br from-white/90 to-slate-50/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl hover:shadow-orange-500/20 hover:border-orange-500/50 hover:-translate-y-1 sm:hover:-translate-y-2">
                       
-                      {/* Banner del mapa compacto */}
+                      {}
                       <div className="relative h-32 sm:h-36 md:h-40 overflow-hidden">
                         <img
                           src={MAP_IMAGES[match.map] || './data/images/Nuketown_menu_selection_BO2.jpg'}
@@ -480,7 +648,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
                         <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100" />
                         
-                        {/* Tag de zombies */}
+                        {}
                         <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
                           <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-0.5 sm:py-1 rounded-full border border-orange-500/30">
                             <MapIcon className="w-3 h-3 text-orange-400" />
@@ -488,14 +656,14 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                           </div>
                         </div>
                         
-                        {/* Badge de ronda */}
+                        {}
                         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
                           <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1 rounded-lg font-black text-xs shadow-lg">
                             R{match.round}
                           </div>
                         </div>
                         
-                        {/* Nombre del mapa */}
+                        {}
                         <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3">
                           <h4 className="text-base sm:text-lg font-black text-white drop-shadow-lg truncate">
                             {MAP_NAMES[match.map]}
@@ -503,10 +671,10 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                         </div>
                       </div>
 
-                      {/* Estadísticas compactas responsive */}
+                      {}
                       <div className="p-3 sm:p-4 space-y-2">
-                        {/* Fecha */}
-                        <div className="text-xs text-slate-600 dark:text-slate-400 text-center mb-2 sm:mb-3">
+                        {}
+                        <div className="text-xs text-slate-600 dark:text-slate-400 text-center mb-3">
                           {new Date(match.timestamp).toLocaleDateString('es-ES', {
                             day: '2-digit',
                             month: 'short',
@@ -515,53 +683,53 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                           })}
                         </div>
 
-                        {/* Botón de expandir/colapsar */}
                         <div className="flex items-center justify-center">
                           <button
-                            onClick={() => toggleMatchExpansion(globalIndex)}
-                            className="flex items-center gap-1 text-xs text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleMatchExpansion(globalIndex);
+                            }}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 hover:border-orange-500/50 rounded-lg text-xs text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-medium transition-all duration-200 group/btn"
                           >
-                            {isExpanded ? t('stats.collapse') : t('stats.expand')}
+                            <span>{isExpanded ? t('stats.collapse') : t('stats.expand')}</span>
                             <ChevronDown
-                              className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              className={`w-3 h-3 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''} group-hover/btn:scale-110`}
                             />
                           </button>
                         </div>
 
-                        {/* Todas las estadísticas - solo cuando está expandido */}
                         {isExpanded && (
-                          <div className="space-y-2 mt-3">
-                            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-                              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-2 text-center">
-                                <Target className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 mx-auto mb-1" />
+                          <div className="mt-4 space-y-4 animate-in slide-in-from-top-2 duration-300">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 text-center hover:bg-red-500/15 transition-colors">
+                                <Target className="w-4 h-4 text-red-400 mx-auto mb-1" />
                                 <p className="text-xs text-slate-600 dark:text-slate-400">{t('stats.kills')}</p>
-                                <p className="text-base sm:text-lg font-black text-red-500 dark:text-red-400">{match.kills}</p>
+                                <p className="text-lg font-black text-red-500 dark:text-red-400">{match.kills}</p>
                               </div>
 
-                              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2 text-center">
-                                <Skull className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 mx-auto mb-1" />
+                              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-center hover:bg-yellow-500/15 transition-colors">
+                                <Skull className="w-4 h-4 text-yellow-400 mx-auto mb-1" />
                                 <p className="text-xs text-slate-600 dark:text-slate-400">{t('stats.headshots')}</p>
-                                <p className="text-base sm:text-lg font-black text-yellow-600 dark:text-yellow-400">{match.headshots}</p>
+                                <p className="text-lg font-black text-yellow-600 dark:text-yellow-400">{match.headshots}</p>
                               </div>
 
-                              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 text-center">
-                                <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 mx-auto mb-1" />
+                              <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 text-center hover:bg-green-500/15 transition-colors">
+                                <Heart className="w-4 h-4 text-green-400 mx-auto mb-1" />
                                 <p className="text-xs text-slate-600 dark:text-slate-400">{t('stats.revives')}</p>
-                                <p className="text-base sm:text-lg font-black text-green-600 dark:text-green-400">{match.revives}</p>
+                                <p className="text-lg font-black text-green-600 dark:text-green-400">{match.revives}</p>
                               </div>
 
-                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-2 text-center">
-                                <Award className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 mx-auto mb-1" />
+                              <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center hover:bg-blue-500/15 transition-colors">
+                                <Award className="w-4 h-4 text-blue-400 mx-auto mb-1" />
                                 <p className="text-xs text-slate-600 dark:text-slate-400">{t('stats.score')}</p>
                                 <p className="text-sm font-black text-blue-600 dark:text-blue-400">{match.score.toLocaleString()}</p>
                               </div>
                             </div>
 
-                            {/* Mejor arma */}
                             {match.bestWeapon && (
-                              <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-2">
-                                <div className="flex items-center gap-2">
-                                  <div className="relative w-8 h-8 flex-shrink-0">
+                              <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3 hover:bg-orange-500/15 transition-colors">
+                                <div className="flex items-center gap-3">
+                                  <div className="relative w-10 h-10 flex-shrink-0">
                                     <img
                                       src={WEAPON_IMAGES[getWeaponBaseName(match.bestWeapon.displayName)] || './data/images/Nuketown_menu_selection_BO2.jpg'}
                                       alt={match.bestWeapon.displayName}
@@ -579,8 +747,11 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                                   </div>
                                   {Object.keys(match.weapons).length > 1 && (
                                     <button
-                                      onClick={() => openWeaponsModal(match)}
-                                      className="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 text-xs font-medium underline"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openWeaponsModal(match);
+                                      }}
+                                      className="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 text-xs font-medium underline hover:no-underline transition-all"
                                     >
                                       {t('stats.viewAll')}
                                     </button>
@@ -589,24 +760,31 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                               </div>
                             )}
 
-                            {/* Perks */}
                             {Object.keys(match.perks).length > 0 && (
-                              <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-2">
-                                <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">{t('stats.perks')}</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {(Object.values(match.perks) as PerkData[]).slice(0, 4).map((perk, index) => (
-                                    <div key={index} className="relative w-6 h-6 flex-shrink-0" title={`${perk.displayName} (${perk.uses} uso${perk.uses !== 1 ? 's' : ''})`}>
+                              <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3 hover:bg-purple-500/15 transition-colors">
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">{t('stats.perks')}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {(Object.values(match.perks) as PerkData[]).slice(0, 6).map((perk, perkIndex) => (
+                                    <div key={perkIndex} className="relative w-8 h-8 flex-shrink-0 group/perk" title={`${perk.displayName} (${perk.uses} uso${perk.uses !== 1 ? 's' : ''})`}>
                                       <img
                                         src={PERK_IMAGES[perk.displayName] || './data/images/Nuketown_menu_selection_BO2.jpg'}
                                         alt={perk.displayName}
-                                        className="w-full h-full object-contain"
+                                        className="w-full h-full object-contain group-hover/perk:scale-110 transition-transform"
                                       />
+                                      {perk.uses > 1 && (
+                                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-purple-500 rounded-full flex items-center justify-center">
+                                          <span className="text-[8px] font-bold text-white">{perk.uses}</span>
+                                        </div>
+                                      )}
                                     </div>
                                   ))}
-                                  {Object.keys(match.perks).length > 4 && (
+                                  {Object.keys(match.perks).length > 6 && (
                                     <button
-                                      onClick={() => openWeaponsModal(match)}
-                                      className="w-6 h-6 bg-purple-500/20 rounded flex items-center justify-center text-xs text-purple-600 dark:text-purple-400 hover:bg-purple-500/30"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openWeaponsModal(match);
+                                      }}
+                                      className="w-8 h-8 bg-purple-500/20 hover:bg-purple-500/30 rounded flex items-center justify-center text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
                                       title={t('stats.viewAllPerks')}
                                     >
                                       +
@@ -616,13 +794,12 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                               </div>
                             )}
 
-                            {/* Downs o estado de desconexión */}
-                            <div className={`border rounded-lg p-2 text-center ${
+                            <div className={`border rounded-lg p-3 text-center transition-colors ${
                               match.downs > 0
-                                ? 'bg-red-500/10 border-red-500/20'
-                                : 'bg-blue-500/10 border-blue-500/20'
+                                ? 'bg-red-500/10 border-red-500/20 hover:bg-red-500/15'
+                                : 'bg-blue-500/10 border-blue-500/20 hover:bg-blue-500/15'
                             }`}>
-                              <span className={`text-xs font-bold ${
+                              <span className={`text-sm font-bold ${
                                 match.downs > 0
                                   ? 'text-red-500 dark:text-red-400'
                                   : 'text-blue-500 dark:text-blue-400'
@@ -632,6 +809,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                             </div>
                           </div>
                         )}
+
                       </div>
                     </div>
                   </div>
@@ -642,7 +820,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
         </div>
       </div>
 
-      {/* Indicadores de página */}
+      {}
       <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6">
         {Array.from({ length: totalPages }).map((_, index) => (
           <button
@@ -657,15 +835,21 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
         ))}
       </div>
 
-      {/* Modal para armas y perks */}
-      {showModal && selectedMatch && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-300">
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-6">
+      {}
+      {showModal && selectedMatch && createPortal(
+        <div
+          className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200 ${getThemeClasses({
+            light: 'bg-black/90 backdrop-blur-xl',
+            dark: 'bg-black/95 backdrop-blur-xl'
+          })}`}
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+        >
+          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-300">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
                   <div className="relative">
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 shadow-xl ring-4 ring-white/20 dark:ring-slate-600/30">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 shadow-xl ring-4 ring-white/20 dark:ring-slate-600/30">
                       <img
                         src={MAP_IMAGES[selectedMatch.map] || './data/images/Nuketown_menu_selection_BO2.jpg'}
                         alt={MAP_NAMES[selectedMatch.map]}
@@ -677,7 +861,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+                    <h3 className="text-xl font-black text-slate-900 dark:text-white mb-1">
                       {MAP_NAMES[selectedMatch.map]}
                     </h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
@@ -710,9 +894,9 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                 </button>
               </div>
 
-              {/* Armas */}
+              {}
               {Object.keys(selectedMatch.weapons).length > 0 && (
-                <div className="mb-8">
+                <div className="mb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1"></div>
                     <h4 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -721,12 +905,13 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                     </h4>
                     <div className="h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent flex-1"></div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                     {(Object.values(selectedMatch.weapons) as WeaponData[])
                       .sort((a, b) => b.kills - a.kills)
+                      .slice(0, weaponsExpanded ? undefined : 10)
                       .map((weapon, index) => (
                         <div key={index} className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/20 border border-orange-200 dark:border-orange-700 rounded-xl p-4 text-center hover:shadow-lg hover:scale-105 transition-all duration-200 group">
-                          <div className="relative w-14 h-14 mx-auto mb-3">
+                          <div className="relative w-10 h-10 mx-auto mb-3">
                             <img
                               src={WEAPON_IMAGES[getWeaponBaseName(weapon.displayName)] || './data/images/Nuketown_menu_selection_BO2.jpg'}
                               alt={weapon.displayName}
@@ -750,10 +935,24 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                         </div>
                       ))}
                   </div>
+
+                  {Object.keys(selectedMatch.weapons).length > 10 && (
+                    <div className="flex justify-center mt-4">
+                      <button
+                        onClick={() => setWeaponsExpanded(!weaponsExpanded)}
+                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg transition-colors"
+                      >
+                        {weaponsExpanded ? t('stats.collapse') : t('stats.expand')}
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform ${weaponsExpanded ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* Perks */}
+              {}
               {Object.keys(selectedMatch.perks).length > 0 && (
                 <div>
                   <div className="flex items-center gap-3 mb-4">
@@ -764,10 +963,10 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                     </h4>
                     <div className="h-px bg-gradient-to-r from-transparent via-purple-500 to-transparent flex-1"></div>
                   </div>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                     {(Object.values(selectedMatch.perks) as PerkData[]).map((perk, index) => (
                       <div key={index} className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700 rounded-xl p-4 text-center hover:shadow-lg hover:scale-105 transition-all duration-200 group">
-                        <div className="relative w-12 h-12 mx-auto mb-3">
+                        <div className="relative w-10 h-10 mx-auto mb-3">
                           <img
                             src={PERK_IMAGES[perk.displayName] || './data/images/Nuketown_menu_selection_BO2.jpg'}
                             alt={perk.displayName}
@@ -788,7 +987,8 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
             </div>
           </div>
         </div>
-      )}
+      , document.body)}
+
     </div>
   );
 }

@@ -273,7 +273,7 @@ function _parseStatsFromFileContent(content) {
     if (trimmed.includes('Nombre:') || trimmed.includes('Jugador:')) {
       stats.playerName = trimmed.split(':')[1]?.trim() || stats.playerName;
     }
-    if (trimmed.includes('Ronda:') || trimmed.includes('Round:')) {
+    if (trimmed.includes('Ronda:') || trimmed.includes('Round:') || trimmed.includes('Ronda Alcanzada:')) {
       stats.round = parseInt(trimmed.split(':')[1]?.trim()) || stats.round;
     }
     if (trimmed.includes('Kills:') || trimmed.includes('Asesinatos:')) {

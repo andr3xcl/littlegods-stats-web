@@ -3,10 +3,10 @@
     "username": "Littlegods",
     "guid": "6076229",
     "stats": {
-      "kills": 198,
-      "downs": 2,
+      "kills": 446,
+      "downs": 3,
       "revives": 0,
-      "headshots": 18
+      "headshots": 36
     },
     "maps": {
       "processing": {
@@ -17,31 +17,41 @@
         "totalDowns": 0,
         "totalScore": 500,
         "gamesPlayed": 1,
-        "lastPlayed": "2025-11-19"
+        "lastPlayed": "2025-11-20"
       },
       "town": {
-        "topRound": 1,
+        "topRound": 2,
         "totalKills": 13,
         "totalHeadshots": 0,
         "totalRevives": 0,
         "totalDowns": 1,
         "totalScore": 1960,
         "gamesPlayed": 2,
-        "lastPlayed": "2025-11-19"
+        "lastPlayed": "2025-11-20"
       },
       "tomb": {
-        "topRound": 1,
-        "totalKills": 185,
-        "totalHeadshots": 18,
+        "topRound": 11,
+        "totalKills": 388,
+        "totalHeadshots": 33,
         "totalRevives": 0,
         "totalDowns": 1,
-        "totalScore": 50750,
+        "totalScore": 72600,
+        "gamesPlayed": 4,
+        "lastPlayed": "2025-11-20"
+      },
+      "nuked": {
+        "topRound": 5,
+        "totalKills": 45,
+        "totalHeadshots": 3,
+        "totalRevives": 0,
+        "totalDowns": 1,
+        "totalScore": 3960,
         "gamesPlayed": 2,
-        "lastPlayed": "2025-11-19"
+        "lastPlayed": "2025-11-20"
       }
     },
     "economy": {
-      "balance": 15373,
+      "balance": 5373,
       "transactions": []
     }
   }

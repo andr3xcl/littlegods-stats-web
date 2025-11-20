@@ -21,8 +21,6 @@ onPlayerSay()
         level waittill("say", message, player);
         message = toLower(message);
         guild_name = player getGuid();
-
-        
         if (!level.intermission && message[0] == prefix_bank)
         {
             args = strtok(message, " ");
