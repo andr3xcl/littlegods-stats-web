@@ -85,7 +85,7 @@ const Settings: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
+      {}
       <div className="relative z-10 px-3 sm:px-6 md:px-8 pt-8 sm:pt-12 pb-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8 sm:mb-12">
@@ -97,7 +97,7 @@ const Settings: React.FC = () => {
             </p>
           </div>
 
-          {/* Theme Selection */}
+          {}
           <div ref={themeSectionRef} className="space-y-4 sm:space-y-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="relative">
@@ -132,14 +132,14 @@ const Settings: React.FC = () => {
                       hover:shadow-2xl
                     `}
                   >
-                    {/* Active Indicator */}
+                    {}
                     {isActive && (
                       <div className="absolute top-4 right-4 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center shadow-lg">
                         <Check className="w-5 h-5 text-white" />
                       </div>
                     )}
 
-                    {/* Icon */}
+                    {}
                     <div className="mb-6">
                       <div
                         className="inline-flex p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-xl"
@@ -152,7 +152,7 @@ const Settings: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Content */}
+                    {}
                     <div>
                       <h3 className={`
                         text-xl sm:text-2xl font-black mb-2
@@ -173,7 +173,7 @@ const Settings: React.FC = () => {
               })}
             </div>
 
-            {/* Language Selection */}
+            {}
             <div ref={languageSectionRef} className="mt-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="relative">
@@ -211,14 +211,14 @@ const Settings: React.FC = () => {
                         hover:shadow-xl
                       `}
                     >
-                      {/* Active Indicator */}
+                      {}
                       {isActive && (
                         <div className="absolute top-3 right-3 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center shadow-lg">
                           <Check className="w-4 h-4 text-white" />
                         </div>
                       )}
 
-                      {/* Flag */}
+                      {}
                       <div
                         className="text-5xl mb-4"
                         onMouseEnter={(e) => handleFlagHover(e.currentTarget, true)}
@@ -227,7 +227,7 @@ const Settings: React.FC = () => {
                         {lang.flag}
                       </div>
 
-                      {/* Language Name */}
+                      {}
                       <h3 className="text-lg font-black text-slate-900 dark:text-white mb-1">
                         {lang.nativeName}
                       </h3>
@@ -237,7 +237,7 @@ const Settings: React.FC = () => {
               </div>
             </div>
 
-            {/* Version */}
+            {}
             <div className="mt-12 text-center">
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Versión 1.0.0

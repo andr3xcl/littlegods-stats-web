@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Asegurarse de que el html y body tomen el tema correctamente */
 html, body, #root {
   min-height: 100%;
   margin: 0;

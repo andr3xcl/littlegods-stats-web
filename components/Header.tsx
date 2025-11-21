@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
     <header ref={headerRef} className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-xl border-b border-slate-300 dark:border-slate-700 sticky top-0 z-40 shadow-lg">
       <nav className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-14 sm:h-16">
-          {/* Logo */}
+          {}
           <div className="flex items-center">
             <h1 className="text-lg sm:text-xl md:text-2xl font-black uppercase tracking-wider">
               <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Littlegods</span> 
@@ -65,7 +65,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
             </h1>
           </div>
 
-          {/* Desktop Navigation */}
+          {}
           <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             {navItems.map((item) => {
               const isActive = item.name === activeView;
@@ -90,7 +90,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
             })}
           </div>
 
-          {/* Mobile menu button */}
+          {}
           <button
             onClick={toggleMobileMenu}
             onMouseEnter={(e) => handleMenuButtonHover(e.currentTarget, true)}
@@ -105,7 +105,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
           </button>
         </div>
 
-        {/* Mobile Navigation */}
+        {}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-slate-300 dark:border-slate-700 py-3 space-y-2">
             {navItems.map((item) => {

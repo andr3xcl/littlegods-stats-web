@@ -37,13 +37,13 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
 
   return (
     <div className="w-80 h-screen sticky top-0 z-30 p-2 sm:p-4 md:p-6">
-      {/* Floating Banner Container */}
+      {}
       <div ref={sidebarRef} className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-full">
 
-        {/* Background glow effect */}
+        {}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 opacity-50"></div>
 
-        {/* Header */}
+        {}
         <div className="relative p-4 sm:p-6 border-b border-slate-300/50 dark:border-slate-700/50">
           <div className="flex items-center gap-2 sm:gap-3 mb-4">
             <div className="relative">
@@ -73,7 +73,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
           </div>
         </div>
 
-        {/* Player List */}
+        {}
         <div className="relative flex-1 overflow-y-auto p-2 sm:p-4">
           <div className="space-y-2">
             {filteredPlayers.map((player) => {
@@ -92,7 +92,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
                     }
                   `}
                 >
-                  {/* Background glow for selected */}
+                  {}
                   {isSelected && (
                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-50"></div>
                   )}
@@ -124,7 +124,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
                     )}
                   </div>
 
-                  {/* Hover effect */}
+                  {}
                   <div className={`absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 ${
                     isSelected ? 'bg-gradient-to-r from-indigo-500/5 to-purple-500/5' : 'bg-slate-200/20 dark:bg-slate-700/20'
                   }`}></div>
@@ -134,7 +134,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
           </div>
         </div>
 
-        {/* Footer with player count */}
+        {}
         <div className="relative p-4 sm:p-6 border-t border-slate-300/50 dark:border-slate-700/50">
           <div className="flex items-center justify-center gap-2">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300/50 dark:via-slate-700/50 to-transparent"></div>

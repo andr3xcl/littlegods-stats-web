@@ -2,50 +2,8 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useRef } from 'react';
 
-// Registrar plugins de GSAP
 gsap.registerPlugin(ScrollTrigger);
 
-// Hook personalizado para animaciones GSAP
-// Incluye funciones básicas de animación + ScrollTrigger para animaciones con scroll
-//
-// FUNCIONES DISPONIBLES:
-//
-// ANIMACIONES BÁSICAS:
-// - animateModalIn/Out: Entrada/salida de modales
-// - animateHoverIn/Out: Hover para tarjetas/botones
-// - animatePulse: Efectos de pulso
-// - animateSpinner: Animación de carga (spinner)
-// - animateFadeIn: Fade in con delay opcional
-// - animateStaggerIn: Animación escalonada de múltiples elementos
-// - animateBounce: Rebote hacia arriba
-// - animateGlow: Efecto de brillo pulsante
-//
-// ANIMACIONES CON SCROLL (ScrollTrigger):
-// - animateOnScroll: Animación personalizada al hacer scroll
-// - animateFadeInOnScroll: Fade in al hacer scroll
-// - animateSlideInLeft/Right: Slide in desde lados
-// - animateScaleInOnScroll: Scale in con efecto bounce
-// - animateStaggerOnScroll: Animación escalonada al hacer scroll
-//
-// UTILIDADES:
-// - createScrollTrigger: Crear ScrollTrigger personalizado
-// - refreshScrollTriggers: Actualizar todos los triggers
-// - killScrollTrigger/killAllScrollTriggers: Limpiar triggers
-//
-// EJEMPLOS DE USO:
-//
-// // Fade in básico
-// gsap.animateFadeIn(elementRef.current)
-//
-// // Fade in al hacer scroll
-// gsap.animateFadeInOnScroll(elementRef.current, 0.2)
-//
-// // Animación personalizada con scroll
-// gsap.animateOnScroll(elementRef.current, {
-//   from: { opacity: 0, y: 50 },
-//   to: { opacity: 1, y: 0, duration: 0.8 }
-// })
-//
 export const useGSAP = () => {
   const timelineRef = useRef<gsap.core.Timeline>();
 

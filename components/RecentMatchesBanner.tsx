@@ -77,7 +77,6 @@ const WEAPON_IMAGES: Record<string, string> = {
   'B93R': './data/images/weapons/B23R_Menu_Icon_BOII.jpg',
   'Mauser C96': './data/images/weapons/Mauser_C96_menu_icon_BOII.jpg',
 
-  
   'MP5': './data/images/weapons/MP5_menu_icon_BOII.jpg',
   'PDW-57': './data/images/weapons/PDW-57_Menu_Icon_BOII.jpg',
   'AK-74u': './data/images/weapons/AK-74u_Menu_Icon_BOII.jpg',
@@ -88,7 +87,6 @@ const WEAPON_IMAGES: Record<string, string> = {
   'Chicago Typewriter': './data/images/weapons/M1927_Menu_Icon_BOII.jpg',
   'UZI': './data/images/weapons/Uzi_menu_icon_BOII.jpg',
 
-  
   'M14': './data/images/weapons/M14_menu_icon_BOII.jpg',
   'FAL': './data/images/weapons/FAL_menu_icon_BOII.jpg',
   'Galil': './data/images/weapons/Galil_menu_icon_BOII.jpg',
@@ -101,37 +99,31 @@ const WEAPON_IMAGES: Record<string, string> = {
   'AK-47': './data/images/weapons/AK47_menu_icon_BOII.jpg',
   'M27': './data/images/weapons/M27_Menu_Icon_BOII.jpg',
 
-  
   'RPD': './data/images/weapons/RPD_Menu_Icon_BOII.jpg',
   'LSAT': './data/images/weapons/LSAT_Menu_Icon_BOII.jpg',
   'MG08': './data/images/weapons/MG08_menu_icon_Origins_BOII.jpg',
   'HAMR': './data/images/weapons/HAMR_Menu_Icon_BOII.jpg',
 
-  
   'Remington 870 MCS': './data/images/weapons/R-870_MCS_Menu_Icon_BOII.jpg',
   'Olympia': './data/images/weapons/Olympia_menu_icon_BOII.jpg',
   'S12': './data/images/weapons/S12_Menu_Icon_BOII.jpg',
   'SMR': './data/images/weapons/SMR_Menu_Icon_BOII.jpg',
   'KSG': './data/images/weapons/KSG_Menu_Icon_BOII.jpg',
 
-  
   'DSR 50': './data/images/weapons/DSR_50_menu_icon_BOII.jpg',
   'Ballista': './data/images/weapons/Ballista_Menu_Icon_BOII.jpg',
   'Barrett M82A1': './data/images/weapons/Barrett_M82A1_menu_icon_BOII.jpg',
   'SVU-AS': './data/images/weapons/SVU-AS_Menu_Icon_BOII.jpg',
 
-  
   'RPG': './data/images/weapons/RPG_Menu_Icon_BOII.jpg',
   'War Machine': './data/images/weapons/War_Machine_Side_View_BOII.jpg',
   'Death Machine': './data/images/weapons/Death_Machine_menu_icon_BOII.jpg',
 
-  
   'Ray Gun': './data/images/weapons/Ray_Gun_Menu_Icon_BOII.jpg',
   'Ray Gun Mark II': './data/images/weapons/Ray_Gun_Mark_II_menu_icon_BOII.jpg',
   'Blundergat': './data/images/weapons/Blundergat_Menu_Icon_BOII.jpg',
   'Paralyzer': './data/images/weapons/Paralyzer_menu_icon_BOII.jpg',
   'Sliquifier': './data/images/weapons/Sliquifier_Menu_Icon_BOII.jpg',
-
 
   'Ballistic Knife': './data/images/weapons/Spring_Knife_Create-a-Class_BOII.jpg',
   'Bowie Knife': './data/images/weapons/Bowie_Knife_3rd_Person_BOII.jpg',
@@ -162,17 +154,14 @@ const PERK_IMAGES: Record<string, string> = {
   'Widow\'s Wine': './data/images/perks_machine/Widow%27s_Wine_model_BO3.jpg'
 };
 
-
 function getWeaponBaseName(weaponName: string): string {
   
   if (WEAPON_IMAGES[weaponName]) {
     return weaponName;
   }
 
-  
   let cleanName = weaponName.toLowerCase().trim();
 
-  
   const displayUpgradeWords = [
     /\s+upgraded\d*/gi,
     /upgraded\d*/gi,
@@ -200,7 +189,6 @@ function getWeaponBaseName(weaponName: string): string {
     cleanName = cleanName.replace(pattern, '');
   }
 
-  
   const upgradePatterns = [
     /_upgraded_zm/gi,      
     /_reflex_zm/gi,        
@@ -217,15 +205,12 @@ function getWeaponBaseName(weaponName: string): string {
     /\+extclip/gi          
   ];
 
-  
   for (const pattern of upgradePatterns) {
     cleanName = cleanName.replace(pattern, '');
   }
 
-  
   cleanName = cleanName.replace(/\s+/g, ' ').trim();
 
-  
   const baseMappings: Record<string, string> = {
     'galil': 'Galil',
     'c96': 'Mauser C96',
@@ -329,12 +314,10 @@ function getWeaponBaseName(weaponName: string): string {
     'katana_zm': 'Katana'
   };
 
-  
   if (baseMappings[cleanName]) {
     return baseMappings[cleanName];
   }
 
-  
   const capitalized = cleanName
     .split(' ')
     .map(word => {
@@ -348,12 +331,10 @@ function getWeaponBaseName(weaponName: string): string {
     })
     .join(' ');
 
-  
   if (WEAPON_IMAGES[capitalized]) {
     return capitalized;
   }
 
-  
   return capitalized;
 }
 
@@ -393,7 +374,6 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
     };
 
     loadMatches();
-
 
     const interval = setInterval(loadMatches, 3000);
 
@@ -444,10 +424,10 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
   if (loading) {
     return (
       <div className="mb-8 relative">
-        {/* Contenedor principal con backdrop-blur y gradientes dinámicos */}
+        {}
         <div className="relative overflow-hidden rounded-2xl border border-slate-200/50 dark:border-slate-700/50 bg-gradient-to-br from-slate-50/80 via-white/60 to-slate-100/80 dark:from-slate-900/80 dark:via-slate-800/60 dark:to-slate-900/80 backdrop-blur-xl shadow-2xl">
 
-          {/* Sistema de partículas flotantes animadas */}
+          {}
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(12)].map((_, i) => (
               <div
@@ -477,34 +457,34 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
             ))}
           </div>
 
-          {/* Efectos de luz radial */}
+          {}
           <div className="absolute inset-0">
             <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-radial from-indigo-400/20 to-transparent rounded-full blur-xl animate-pulse" style={{ animationDuration: '4s' }} />
             <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-radial from-purple-400/15 to-transparent rounded-full blur-xl animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-gradient-radial from-pink-400/25 to-transparent rounded-full blur-lg animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
           </div>
 
-          {/* Contenido principal centrado */}
+          {}
           <div className="relative z-10 flex flex-col items-center justify-center py-16 px-8 min-h-[300px]">
 
-            {/* Spinner principal con múltiples anillos */}
+            {}
             <div className="relative mb-8">
-              {/* Anillo exterior - rotación lenta */}
+              {}
               <div className="w-24 h-24 border-4 border-indigo-200/30 dark:border-indigo-800/30 rounded-full animate-spin" style={{ animationDuration: '3s' }}>
                 <div className="absolute top-0 left-0 w-6 h-6 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full transform -translate-x-2 -translate-y-2 shadow-lg shadow-indigo-400/50" />
               </div>
 
-              {/* Anillo medio - rotación en sentido contrario */}
+              {}
               <div className="absolute inset-2 border-3 border-purple-300/40 dark:border-purple-700/40 rounded-full animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }}>
                 <div className="absolute top-0 right-0 w-4 h-4 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full transform translate-x-1 -translate-y-1 shadow-lg shadow-purple-400/50" />
               </div>
 
-              {/* Anillo interior - rotación rápida */}
+              {}
               <div className="absolute inset-4 border-2 border-pink-300/50 dark:border-pink-700/50 rounded-full animate-spin" style={{ animationDuration: '1.5s' }}>
                 <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full transform -translate-x-1/2 translate-y-1 shadow-lg shadow-pink-400/50" />
               </div>
 
-              {/* Centro pulsante */}
+              {}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-6 h-6 bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-500 rounded-full animate-pulse shadow-xl shadow-indigo-400/60" style={{ animationDuration: '1s' }}>
                   <div className="absolute inset-1 bg-white/20 dark:bg-black/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
@@ -512,22 +492,22 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
               </div>
             </div>
 
-            {/* Texto animado con efecto máquina de escribir */}
+            {}
             <div className="text-center space-y-3">
               <div className="relative">
                 <h3 className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-pulse">
                   {t('matches.loading')}
                 </h3>
-                {/* Cursor parpadeante */}
+                {}
                 <div className="absolute right-0 top-0 h-full w-0.5 bg-gradient-to-b from-indigo-400 to-pink-400 animate-pulse" />
               </div>
 
-              {/* Subtexto con fade in/out */}
+              {}
               <p className="text-sm text-slate-600 dark:text-slate-400 animate-pulse" style={{ animationDuration: '3s' }}>
                 Analizando estadísticas recientes...
               </p>
 
-              {/* Barra de progreso animada */}
+              {}
               <div className="w-48 h-1 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mx-auto mt-6">
                 <div className="h-full bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 rounded-full animate-pulse"
                      style={{
@@ -537,7 +517,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
               </div>
             </div>
 
-            {/* Efecto de ondas expansivas */}
+            {}
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <div className="w-32 h-32 border border-indigo-300/20 dark:border-indigo-700/20 rounded-full animate-ping" style={{ animationDuration: '3s' }} />
@@ -548,7 +528,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
           </div>
         </div>
 
-        {/* CSS personalizado para efectos especiales */}
+        {}
         <style jsx>{`
           @keyframes loading-bar {
             0% { background-position: -200% 0; }
@@ -559,13 +539,11 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
             background: radial-gradient(circle, var(--tw-gradient-stops));
           }
 
-          /* Efectos de hover para las partículas */
           .particle:hover {
             transform: scale(1.5);
             transition: transform 0.3s ease;
           }
 
-          /* Animación personalizada para el texto */
           @keyframes text-glow {
             0%, 100% { text-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
             50% { text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 30px rgba(236, 72, 153, 0.6); }

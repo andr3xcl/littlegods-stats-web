@@ -25,7 +25,7 @@ const MatchCard: React.FC<{
       onMouseEnter={(e) => handleCardHover(e.currentTarget, true)}
       onMouseLeave={(e) => handleCardHover(e.currentTarget, false)}
     >
-      {/* Header de la partida */}
+      {}
       <div className="flex justify-between items-center mb-3">
         <div className="flex flex-col gap-1">
           <h3 className="text-xl font-bold text-slate-100">{match.map}</h3>
@@ -38,7 +38,7 @@ const MatchCard: React.FC<{
             </p>
             <p className="text-xs text-slate-500">{match.date}</p>
           </div>
-          {/* Botón de expandir/colapsar */}
+          {}
           <button
             onClick={onToggleExpansion}
             className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors p-1"
@@ -56,11 +56,11 @@ const MatchCard: React.FC<{
         </div>
       </div>
 
-      {/* Estadísticas detalladas - se muestran cuando está expandido */}
+      {}
       {isExpanded && (
         <div className="border-t border-slate-700/50 pt-3">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {/* Round */}
+            {}
             <div className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/5 border border-indigo-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <Award className="w-3 h-3 text-white" />
@@ -69,7 +69,7 @@ const MatchCard: React.FC<{
               <p className="text-lg font-black text-indigo-400">{match.round}</p>
             </div>
 
-            {/* Kills */}
+            {}
             <div className="bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <Target className="w-3 h-3 text-white" />
@@ -78,7 +78,7 @@ const MatchCard: React.FC<{
               <p className="text-lg font-black text-red-400">{match.kills}</p>
             </div>
 
-            {/* Headshots */}
+            {}
             <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <CrosshairIcon className="w-3 h-3 text-white" />
@@ -87,7 +87,7 @@ const MatchCard: React.FC<{
               <p className="text-lg font-black text-orange-400">{match.headshots}</p>
             </div>
 
-            {/* Downs */}
+            {}
             <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <UserDownIcon className="w-3 h-3 text-white" />
@@ -97,9 +97,9 @@ const MatchCard: React.FC<{
             </div>
           </div>
 
-          {/* Fila adicional para Revives y Score */}
+          {}
           <div className="grid grid-cols-2 gap-3 mt-3">
-            {/* Revives */}
+            {}
             <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <Heart className="w-3 h-3 text-white" />
@@ -108,7 +108,7 @@ const MatchCard: React.FC<{
               <p className="text-lg font-black text-green-400">{match.revives}</p>
             </div>
 
-            {/* Score */}
+            {}
             <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-lg p-3 text-center">
               <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-1">
                 <TrendingUp className="w-3 h-3 text-white" />

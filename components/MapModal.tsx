@@ -311,7 +311,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
         })} backdrop-blur-xl`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header mejorado con gradientes */}
+        {}
         <div className="relative">
           <div className={`relative h-56 lg:h-64 overflow-hidden ${getThemeClasses({
             light: 'rounded-t-3xl',
@@ -340,11 +340,11 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               </div>
             )}
 
-            {/* Overlays mejorados */}
+            {}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-70% to-transparent"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 via-transparent to-purple-900/40"></div>
 
-            {/* Botón de cerrar */}
+            {}
             <button
               onClick={onClose}
               className="absolute top-6 right-6 rounded-full p-3 bg-black/30 hover:bg-black/50 text-white border border-white/20 hover:border-white/40 transition-all duration-200 hover:scale-105 backdrop-blur-sm"
@@ -352,7 +352,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               <X className="w-6 h-6" />
             </button>
 
-            {/* Header de información */}
+            {}
             <div className="absolute bottom-6 left-6 right-6">
               <div className="flex items-end justify-between">
                 <div className="flex items-center gap-4 mb-2">
@@ -369,7 +369,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                   </div>
                 </div>
 
-                {/* Estadísticas rápidas */}
+                {}
                 <div className="flex items-center gap-3">
                   {selectedMetric !== 'bank' && (
                     <div className="bg-black/30 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
@@ -387,7 +387,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           </div>
         </div>
 
-        {/* Contenido principal */}
+        {}
         <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-400/50 scrollbar-track-transparent hover:scrollbar-thumb-slate-500/70">
           {loading ? (
             <div className="flex items-center justify-center py-20">
@@ -418,7 +418,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
             </div>
           ) : (
             <>
-              {/* Selector de métricas mejorado */}
+              {}
               <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
                 light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
                 dark: 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-700/50 shadow-2xl'
@@ -448,7 +448,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                             })
                       } backdrop-blur-sm`}
                     >
-                      {/* Efecto de fondo animado */}
+                      {}
                       <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
                         selectedMetric === metric.key ? 'opacity-100' : ''
                       }`}>
@@ -485,7 +485,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                         {metric.description}
                       </p>
 
-                      {/* Indicador de selección */}
+                      {}
                       {selectedMetric === metric.key && (
                         <div className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
                           <div className={`w-3 h-3 rounded-full bg-[${metric.color}]`}></div>
@@ -496,7 +496,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               </div>
 
-              {/* Tarjeta del mejor resultado */}
+              {}
               {selectedMetric !== 'general' && statsComparison && (
                 <div className="flex justify-center">
                   <div className={`relative backdrop-blur-xl border-2 rounded-3xl p-8 text-center group overflow-hidden ${
@@ -506,17 +506,17 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     })
                   } border-[${currentMetricConfig.color}]/50 hover:shadow-[${currentMetricConfig.color}]/20 transition-all duration-500 hover:-translate-y-2 w-full max-w-md`}>
 
-                    {/* Efecto de fondo animado */}
+                    {}
                     <div className={`absolute inset-0 bg-gradient-to-br from-[${currentMetricConfig.color}]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
 
-                    {/* Icono principal */}
+                    {}
                     <div className={`relative w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[${currentMetricConfig.color}]/20 to-[${currentMetricConfig.color}]/10 flex items-center justify-center shadow-xl border border-[${currentMetricConfig.color}]/30`}>
                       <div className={`text-[${currentMetricConfig.color}]`}>
                         {React.cloneElement(currentMetricConfig.icon, { className: 'w-10 h-10' })}
                       </div>
                     </div>
 
-                    {/* Valor principal */}
+                    {}
                     <p className={`relative text-6xl font-black mb-4 text-[${currentMetricConfig.color}] drop-shadow-sm`}>
                       {selectedMetric === 'bank'
                         ? `$${(statsComparison[selectedMetric].best || 0).toLocaleString()}`
@@ -524,7 +524,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                       }
                     </p>
 
-                    {/* Etiqueta */}
+                    {}
                     <p className={`relative text-lg uppercase tracking-wider font-bold mb-3 ${getThemeClasses({
                       light: 'text-slate-600',
                       dark: 'text-slate-400'
@@ -532,7 +532,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                       {t('modal.record')}
                     </p>
 
-                    {/* Descripción */}
+                    {}
                     <p className={`relative text-base ${getThemeClasses({
                       light: 'text-slate-700',
                       dark: 'text-slate-500'
@@ -540,7 +540,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                       {selectedMetric === 'bank' ? t('modal.maximumBalance') : t('modal.bestMatch')}
                     </p>
 
-                    {/* Trofeo decorativo */}
+                    {}
                     <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
                       <Trophy className={`w-8 h-8 text-[${currentMetricConfig.color}]`} />
                     </div>
@@ -548,7 +548,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {/* Gráfico de evolución */}
+              {}
               {selectedMetric !== 'general' && chartData.length > 0 && (
                 <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
                   light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
@@ -666,7 +666,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Indicadores de transacciones bancarias */}
+                  {}
                   {selectedMetric === 'bank' && (
                     <div className="mt-6 p-6 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
                       <div className="flex items-center justify-center gap-8">
@@ -685,7 +685,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </div>
                   )}
 
-                  {/* Indicador de tendencia */}
+                  {}
                   {statsComparison && selectedMetric !== 'bank' && (
                     <div className={`mt-6 p-6 rounded-2xl border ${getThemeClasses({
                       light: 'bg-slate-50/50 border-slate-200/50',
@@ -719,7 +719,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {/* Tabla de historial */}
+              {}
               {(matchHistory.length > 0 || bankTransactions.length > 0) && (
                 <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
                   light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
@@ -941,7 +941,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </table>
                   </div>
 
-                  {/* Leyenda */}
+                  {}
                   <div className="mt-6 flex justify-center gap-6 text-sm">
                     {selectedMetric === 'bank' ? (
                       <>

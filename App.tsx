@@ -6,7 +6,6 @@ import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import Header from './components/Header';
 import PlayerSidebar from './components/PlayerSidebar';
 
-// Lazy load page components for code splitting
 const Home = React.lazy(() => import('./pages/Home'));
 const Statistics = React.lazy(() => import('./pages/Statistics'));
 const RecentMatches = React.lazy(() => import('./pages/RecentMatches'));

@@ -32,7 +32,6 @@ const MAP_DISPLAY_NAMES: { [key: string]: string } = {
     'rooftop': 'Rooftop'
 };
 
-// Función para cargar datos del jugador desde data_player.json
 const loadPlayerData = async (playerGuid: string) => {
     try {
         const response = await fetch('./data/data_player.json');
@@ -46,7 +45,6 @@ const loadPlayerData = async (playerGuid: string) => {
     return null;
 };
 
-// Función para cargar todos los datos de jugadores (cacheada)
 const loadAllPlayerData = async () => {
     const response = await fetch('./data/data_player.json');
     if (response.ok) {
@@ -141,16 +139,15 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
         });
     }, []);
 
-
     // Si no hay datos del jugador, mostrar página de feedback
     if (!playerData) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
                 <div className="relative z-20 px-4 sm:px-6 md:px-8 pt-8 sm:pt-12 md:pt-16">
                     <div className="max-w-4xl mx-auto">
-                        {/* Página de feedback cuando no hay estadísticas */}
+                        {}
                         <div className="text-center py-16 sm:py-20 md:py-24">
-                            {/* Icono principal */}
+                            {}
                             <div className="relative inline-block mb-8">
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full scale-150 blur-2xl"></div>
                                 <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-full flex items-center justify-center shadow-2xl">
@@ -158,19 +155,19 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {/* Título principal */}
+                            {}
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-slate-300 bg-clip-text text-transparent mb-4 sm:mb-6">
                                 {t('stats.noStatsTitle')}
                             </h1>
 
-                            {/* Subtítulo */}
+                            {}
                             <p className="text-lg sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
                                 {t('stats.noStatsSubtitle')}
                             </p>
 
-                            {/* Grid de sugerencias */}
+                            {}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
-                                {/* Sugerencia 1 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Gamepad2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -183,7 +180,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </p>
                                 </div>
 
-                                {/* Sugerencia 2 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Activity className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -196,7 +193,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </p>
                                 </div>
 
-                                {/* Sugerencia 3 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -210,7 +207,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {/* CTA Button */}
+                            {}
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                                 <button
                                     onClick={() => window.location.reload()}
@@ -237,13 +234,13 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
 
-            {/* Layout principal: Mapas a la izquierda, estadísticas a la derecha */}
+            {}
             <div className="relative z-20 px-2 sm:px-4 md:px-8 pt-4 sm:pt-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                        {/* Sección de Mapas (2/3 del ancho) */}
+                        {}
                         <div className="xl:col-span-2">
-                            {/* Sección de Mapas con diseño premium */}
+                            {}
                             <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 shadow-2xl ">
                                 <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
                                         <div className="flex items-center gap-2 sm:gap-3">
@@ -277,9 +274,9 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
                                         return (
                                             <div key={map} className="map-card group relative bg-gradient-to-br from-white/70 to-slate-50/70 dark:from-slate-800/70 dark:to-slate-900/70 backdrop-blur-xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg">
-                                                {/* Header del mapa - click para modal */}
+                                                {}
                                                 <div className="cursor-pointer" onClick={() => handleMapClick(map)}>
-                                                {/* Banner del mapa con overlay mejorado */}
+                                                {}
                                                 <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden">
                                                     <LazyImage
                                                         src={mapBanner}
@@ -289,7 +286,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                                                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100"></div>
 
-                                                    {/* Información principal sobre la imagen */}
+                                                    {}
                                                     <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3">
                                                         <h3 className="text-base sm:text-lg md:text-xl font-black text-white drop-shadow-2xl mb-1.5 sm:mb-2">{MAP_DISPLAY_NAMES[map]}</h3>
                                                         <div className="flex items-center justify-between gap-2">
@@ -304,11 +301,11 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                 </div>
 
                                                 </div>
-                                                {/* Fin del header clickeable */}
+                                                {}
 
-                                                {/* Estadísticas detalladas con funcionalidad de desplegar */}
+                                                {}
                                                 <div className="p-3 sm:p-4">
-                                                    {/* Botón de expandir/colapsar */}
+                                                    {}
                                                     <div className="flex items-center justify-between mb-3">
                                                         <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium">
                                                             {t('stats.performanceStats')}
@@ -332,32 +329,32 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                         </button>
                                                     </div>
 
-                                                    {/* Estadísticas detalladas - se muestran cuando está expandido */}
+                                                    {}
                                                     {isExpanded && (
                                                         <div className="space-y-2">
                                                             <div className="grid grid-cols-2 gap-2">
-                                                                {/* Kills */}
+                                                                {}
                                                                 <div className="relative bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/20 rounded-lg p-2 text-center group/stat hover:border-red-500/40">
                                                                     <Target className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.kills')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-red-500 dark:text-red-400">{mapStats.totalKills}</p>
                                                                 </div>
 
-                                                                {/* Headshots */}
+                                                                {}
                                                                 <div className="relative bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-lg p-2 text-center group/stat hover:border-orange-500/40">
                                                                     <CrosshairIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.headshots')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-orange-500 dark:text-orange-400">{mapStats.totalHeadshots}</p>
                                                                 </div>
 
-                                                                {/* Revives */}
+                                                                {}
                                                                 <div className="relative bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-lg p-2 text-center group/stat hover:border-green-500/40">
                                                                     <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.revives')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-green-500 dark:text-green-400">{mapStats.totalRevives}</p>
                                                                 </div>
 
-                                                                {/* Downs */}
+                                                                {}
                                                                 <div className="relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-lg p-2 text-center group/stat hover:border-blue-500/40">
                                                                     <UserDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.downs')}</p>
@@ -365,7 +362,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                                 </div>
                                                             </div>
 
-                                                            {/* Score total */}
+                                                            {}
                                                             <div className="relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-lg p-3 text-center group/stat hover:border-purple-500/40">
                                                                 <Award className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 mx-auto mb-1" />
                                                                 <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.totalScore')}</p>
@@ -374,7 +371,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                         </div>
                                                     )}
 
-                                                    {/* Mensaje cuando no está expandido */}
+                                                    {}
                                                     {!isExpanded && (
                                                         <div className="text-center">
                                                             <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.clickForDetails')}</p>
@@ -388,7 +385,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {/* Banner de partidas recientes - debajo de Map Performance */}
+                            {}
                             <div className="mt-6 sm:mt-8">
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl ">
                                     <RecentMatchesBanner playerGuid={player.guid} />
@@ -397,15 +394,15 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
                         </div>
 
-                        {/* Panel lateral derecho con avatar y estadísticas */}
+                        {}
                         <div className="xl:col-span-1">
                             <div className="xl:sticky xl:top-8 space-y-4 sm:space-y-6">
-                                {/* Avatar del jugador mejorado responsive */}
+                                {}
                                 <div
                                     className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl text-center overflow-hidden group cursor-pointer hover:border-purple-500/50 transition-all duration-300"
                                     onClick={() => setIsProfileModalOpen(true)}
                                 >
-                                    {/* Background glow effect */}
+                                    {}
                                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100"></div>
                                     
                                     <div className="relative">
@@ -423,7 +420,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </div>
                                 </div>
 
-                                {/* Estadísticas principales premium responsive */}
+                                {}
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl ">
                                     <div className="flex items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 justify-center">
                                         <Award className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
@@ -479,7 +476,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {/* Sección de Banco Premium responsive */}
+                                {}
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden ">
                                     
                                     <div className="relative">
@@ -488,7 +485,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                             <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">{t('stats.bankAccount')}</h3>
                                         </div>
                                         
-                                        {/* Balance principal */}
+                                        {}
                                         <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
                                             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2">
                                                 <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 dark:text-yellow-400" />
@@ -499,7 +496,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                         </p>
                                     </div>
 
-                                        {/* Transacciones recientes */}
+                                        {}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent"></div>

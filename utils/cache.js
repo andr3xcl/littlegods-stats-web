@@ -1,4 +1,4 @@
-// Sistema de caché para datos JSON
+
 const cache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
 
@@ -25,7 +25,6 @@ export function clearCache() {
   cache.clear();
 }
 
-// Hook personalizado para datos cacheados
 import { useState, useEffect } from 'react';
 
 export function useCachedData(key, fetcher) {

@@ -13,7 +13,6 @@ export interface MapStats {
   totalDowns: number;
   totalScore: number;
   gamesPlayed: number;
-  lastPlayed: string;
 }
 
 export interface PlayerProfile {
@@ -33,6 +32,7 @@ export interface RecentMatch {
   kills: number;
   deaths: number;
   date: string;
+  timestamp?: number;
 }
 
 export interface Transaction {

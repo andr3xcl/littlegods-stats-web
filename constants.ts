@@ -1,6 +1,5 @@
 import { PlayerProfile, RecentMatch, EconomyData } from './types';
 
-// Función para cargar datos desde archivos JSON
 async function loadDataFromFile<T>(filename: string): Promise<T> {
   try {
     const response = await fetch(`./data/${filename}`);
@@ -14,10 +13,8 @@ async function loadDataFromFile<T>(filename: string): Promise<T> {
   }
 }
 
-// Cargar lista de jugadores
 export const loadPlayersData = (): Promise<PlayerProfile[]> => loadDataFromFile<PlayerProfile[]>('players.json');
 
-// Cargar datos del jugador desde data_player.json
 export const loadPlayerData = async (guid?: string): Promise<PlayerProfile | null> => {
   try {
     const response = await fetch('./data/data_player.json');
@@ -36,7 +33,6 @@ export const loadPlayerData = async (guid?: string): Promise<PlayerProfile | nul
   return null;
 };
 
-// Cargar partidas recientes desde el directorio de Plutonium
 export const loadRecentMatches = async (playerGuid?: string): Promise<RecentMatch[]> => {
   try {
     // Ruta al directorio de recent matches
@@ -169,11 +165,8 @@ export const loadRecentMatches = async (playerGuid?: string): Promise<RecentMatc
   }
 };
 
-// Cargar datos económicos
 export const loadEconomyData = (): Promise<EconomyData> => loadDataFromFile<EconomyData>('economy.json');
 
-
-// Mapas de Black Ops 2 Zombies con sus imágenes locales
 export const MAP_BANNERS: Record<string, string> = {
   "zm_buried": "./data/images/load_maps/zm_buried.jpg",
   "zm_highrise": "./data/images/load_maps/zm_highrise.jpg",
@@ -186,7 +179,6 @@ export const MAP_BANNERS: Record<string, string> = {
   "zm_busdepot":"./data/images/load_maps/zm_busdepot.jpg"
 };
 
-// Mapeo de nombres de mapas del juego a códigos de mapas
 export const MAP_NAME_TO_CODE = {
   "highrise": "zm_highrise",
   "nuked": "zm_nuked",
