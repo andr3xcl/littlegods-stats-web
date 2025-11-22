@@ -19,8 +19,19 @@ finish()
 
     level.stats_system_initialized = true;
 
-    
-    level.current_game_map = getDvar("ui_zm_mapstartlocation");
+    // Fix for Tranzit map variants - distinguish between tranzit (with bus) and busdepot (survival)
+    level.mapnameforstats = level.scr_zm_map_start_location;
+
+    if(level.mapnameforstats == "transit")
+    {
+        var = getdvar( #"ui_gametype" );
+        if(var == "zclassic")
+            level.mapnameforstats = "tranzit";
+        else
+            level.mapnameforstats = "busdepot";
+    }
+
+    level.current_game_map = level.mapnameforstats;
 
     
     init_weapon_tracking_for_all_players();
@@ -205,6 +216,9 @@ get_map_display_name(map_code)
     {
         case "tomb": return "Origins";
         case "transit": return "Transit";
+        case "town": return "Town";
+        case "farm": return "Farm";
+        case "busdepot": return "Bus Depot";
         case "processing": return "Buried";
         case "prison": return "Mob of the Dead";
         case "nuked": return "Nuketown";

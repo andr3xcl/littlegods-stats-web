@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { MAP_BANNERS, MAP_NAME_TO_CODE } from '../constants';
-import { TrendingUp, Target, Skull, Heart, Award, Activity, Calendar, Trophy, X, BarChart3, Zap } from 'lucide-react';
+import { Target, Skull, Heart, Award, Activity, Calendar, X, BarChart3, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { useGSAP } from '../utils/gsap';
 
 interface MapModalProps {
   isOpen: boolean;
@@ -49,21 +48,43 @@ interface MetricConfig {
   description: string;
 }
 
+// Smart data sampling for large datasets
+const downsampleData = (data: any[], maxPoints: number = 300) => {
+  if (data.length <= maxPoints) return data;
+
+  const step = Math.floor(data.length / maxPoints);
+  const sampled = [];
+
+  // Always include first point
+  sampled.push(data[0]);
+
+  // Sample intermediate points
+  for (let i = step; i < data.length - step; i += step) {
+    sampled.push(data[i]);
+  }
+
+  // Always include last point
+  if (sampled[sampled.length - 1] !== data[data.length - 1]) {
+    sampled.push(data[data.length - 1]);
+  }
+
+  return sampled;
+};
+
 const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selectedMap, mapDisplayNames, playerData }) => {
   const [matchHistory, setMatchHistory] = useState<MatchData[]>([]);
   const [bankTransactions, setBankTransactions] = useState<BankTransaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('general');
+  const [tablePage, setTablePage] = useState(0);
   const { t } = useLanguage();
   const { theme } = useTheme();
 
-  const gsap = useGSAP();
-  const modalRef = useRef<HTMLDivElement>(null);
-  const hasAnimatedModal = useRef(false);
+  const ITEMS_PER_PAGE = 25;
 
-  const getThemeClasses = (classes: { light: string; dark: string }) => {
+  const getThemeClasses = useCallback((classes: { light: string; dark: string }) => {
     return theme === 'dark' ? classes.dark : classes.light;
-  };
+  }, [theme]);
 
   const METRICS_CONFIG: MetricConfig[] = useMemo(() => [
     {
@@ -84,7 +105,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
       key: 'downs',
       label: t('stats.downs'),
       color: '#f97316',
-      icon: <TrendingUp className="w-5 h-5" />,
+      icon: <Award className="w-5 h-5" />,
       description: t('metric.downs.desc')
     },
     {
@@ -105,7 +126,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
       key: 'score',
       label: t('stats.score'),
       color: '#eab308',
-      icon: <Award className="w-5 h-5" />,
+      icon: <Activity className="w-5 h-5" />,
       description: t('metric.score.desc')
     },
     {
@@ -119,17 +140,8 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
   const handleMetricChange = useCallback((metric: MetricType) => {
     setSelectedMetric(metric);
+    setTablePage(0); // Reset to first page
   }, []);
-
-  useEffect(() => {
-    if (isOpen && modalRef.current && !hasAnimatedModal.current) {
-      gsap.animateModalIn(modalRef.current);
-      hasAnimatedModal.current = true;
-    }
-    if (!isOpen) {
-      hasAnimatedModal.current = false;
-    }
-  }, [isOpen, gsap]);
 
   useEffect(() => {
     if (isOpen && selectedMap) {
@@ -167,7 +179,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           return;
         }
       } catch (apiError) {
-        console.warn('API not available, using limited frontend method');
+        console.warn('API not available, using local data');
       }
 
       const response = await fetch('./data/data_player.json');
@@ -199,7 +211,11 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
   const chartData = useMemo(() => {
     if (selectedMetric === 'bank') {
-      return bankTransactions.slice().sort((a, b) => a.timestamp - b.timestamp).map((transaction, index) => {
+      const rawData = bankTransactions
+        .slice()
+        .sort((a, b) => a.timestamp - b.timestamp);
+
+      return downsampleData(rawData.map((transaction, index) => {
         const timeString = transaction.timestamp ? `${Math.floor(transaction.timestamp / 3600)}h ${Math.floor((transaction.timestamp % 3600) / 60)}m` : '0h 0m';
         return {
           game: `T${index + 1}`,
@@ -213,9 +229,13 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           dotColor: (transaction.type === 'deposit' || transaction.type === 'deposit_from_player') ? '#10b981' :
                    (transaction.type === 'withdraw' || transaction.type === 'pay_to_player') ? '#ef4444' : '#6b7280'
         };
-      });
+      }));
     } else {
-      return matchHistory.slice().reverse().map((match, index) => ({
+      const rawData = matchHistory
+        .slice()
+        .reverse();
+
+      return downsampleData(rawData.map((match, index) => ({
         game: `${t('modal.matchNumber')} ${index + 1}`,
         kills: match.kills,
         downs: match.downs,
@@ -224,9 +244,9 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
         revives: match.revives,
         round: match.round,
         date: new Date(match.timestamp).toLocaleDateString()
-      }));
+      })));
     }
-  }, [matchHistory, bankTransactions, selectedMetric]);
+  }, [matchHistory, bankTransactions, selectedMetric, t]);
 
   const currentMetricConfig = useMemo(() =>
     METRICS_CONFIG.find(m => m.key === selectedMetric)!,
@@ -237,7 +257,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     if (chartData.length === 0 && selectedMetric !== 'general') return null;
     if (matchHistory.length === 0 && selectedMetric === 'general') return null;
 
-    const result: Record<MetricType, any> = {} as Record<MetricType, any>;
+    const result: Record<string, any> = {};
 
     if (selectedMetric === 'general') {
       ['kills', 'downs', 'revives', 'headshots', 'score'].forEach(metricKey => {
@@ -289,6 +309,27 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     return result;
   }, [chartData, playerData?.economy?.balance, selectedMetric, matchHistory]);
 
+  const getComparisonClass = useCallback((value: number, metric: string) => {
+    if (!statsComparison || !statsComparison[metric]) return '';
+    return value === statsComparison[metric].best ? 'text-green-400' :
+           value === statsComparison[metric].worst ? 'text-red-400' : '';
+  }, [statsComparison]);
+
+  const getComparisonEmoji = useCallback((value: number, metric: string) => {
+    if (!statsComparison || !statsComparison[metric]) return '';
+    return value === statsComparison[metric].best ? ' 🏆' : '';
+  }, [statsComparison]);
+
+  // Pagination data
+  const paginatedTableData = useMemo(() => {
+    const data = selectedMetric === 'bank' ? bankTransactions : matchHistory;
+    const startIndex = tablePage * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return data.slice(startIndex, endIndex);
+  }, [selectedMetric, bankTransactions, matchHistory, tablePage]);
+
+  const totalPages = Math.ceil((selectedMetric === 'bank' ? bankTransactions.length : matchHistory.length) / ITEMS_PER_PAGE);
+
   if (!isOpen || !selectedMap) return null;
 
   const mapCode = MAP_NAME_TO_CODE[selectedMap] || selectedMap;
@@ -296,89 +337,75 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
   const safeMapBanner = mapBanner && mapBanner.trim() !== '' ? mapBanner : null;
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${getThemeClasses({
-        light: 'bg-black/75 backdrop-blur-xl',
-        dark: 'bg-black/85 backdrop-blur-xl'
-      })}`}
-      onClick={onClose}
-    >
+    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${getThemeClasses({
+      light: 'bg-black/60',
+      dark: 'bg-black/80'
+    })}`} onClick={onClose}>
       <div
-        ref={modalRef}
-        className={`w-full max-w-6xl max-h-[95vh] overflow-hidden rounded-3xl shadow-2xl border ${getThemeClasses({
-          light: 'bg-white/95 border-slate-200/60',
-          dark: 'bg-slate-900/95 border-slate-700/60'
-        })} backdrop-blur-xl`}
+        className={`w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-2xl shadow-2xl border ${getThemeClasses({
+          light: 'bg-white border-gray-200',
+          dark: 'bg-gray-900 border-gray-700'
+        })}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {}
+        {/* Header with Map Banner */}
         <div className="relative">
-          <div className={`relative h-56 lg:h-64 overflow-hidden ${getThemeClasses({
-            light: 'rounded-t-3xl',
-            dark: 'rounded-t-3xl'
+          <div className={`relative h-48 lg:h-56 overflow-hidden rounded-t-2xl ${getThemeClasses({
+            light: '',
+            dark: ''
           })}`}>
             {safeMapBanner ? (
               <img
                 src={safeMapBanner}
                 alt={`${mapDisplayNames[selectedMap]} banner`}
                 className={`w-full h-full object-cover ${getThemeClasses({
-                  light: 'brightness-105 contrast-110',
-                  dark: 'brightness-110 contrast-105'
+                  light: 'brightness-105',
+                  dark: 'brightness-110'
                 })}`}
               />
             ) : (
               <div className={`w-full h-full flex items-center justify-center ${getThemeClasses({
-                light: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500',
-                dark: 'bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600'
+                light: 'bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500',
+                dark: 'bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600'
               })}`}>
                 <div className="text-center text-white">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <Trophy className="w-10 h-10" />
-                  </div>
                   <h3 className="text-2xl font-bold">{mapDisplayNames[selectedMap]}</h3>
                 </div>
               </div>
             )}
 
-            {}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-70% to-transparent"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/40 via-transparent to-purple-900/40"></div>
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
-            {}
+            {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 rounded-full p-3 bg-black/30 hover:bg-black/50 text-white border border-white/20 hover:border-white/40 transition-all duration-200 hover:scale-105 backdrop-blur-sm"
+              className="absolute top-4 right-4 rounded-full p-2 bg-black/30 hover:bg-black/50 text-white border border-white/20 hover:border-white/40 transition-colors"
             >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </button>
 
-            {}
-            <div className="absolute bottom-6 left-6 right-6">
+            {/* Title and Stats */}
+            <div className="absolute bottom-4 left-4 right-4">
               <div className="flex items-end justify-between">
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl lg:text-4xl font-black text-white mb-1 drop-shadow-2xl">
-                      {mapDisplayNames[selectedMap]}
-                    </h1>
-                    <p className="text-white/90 text-lg opacity-95 drop-shadow-lg">
-                      {t('modal.performanceAnalysis')}
-                    </p>
-                  </div>
+                <div>
+                  <h1 className="text-2xl lg:text-3xl font-bold text-white mb-1">
+                    {mapDisplayNames[selectedMap]}
+                  </h1>
+                  <p className="text-white/80 text-sm">
+                    {t('modal.performanceAnalysis')}
+                  </p>
                 </div>
 
-                {}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {selectedMetric !== 'bank' && (
-                    <div className="bg-black/30 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
-                      <span className="text-white font-bold text-sm">🏆 {mapStats.topRound}</span>
+                    <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1">
+                      <span className="text-white font-semibold text-sm">🏆 {mapStats.topRound}</span>
                     </div>
                   )}
-                  <div className="bg-black/30 backdrop-blur-md border border-white/20 rounded-full px-4 py-2">
-                    <span className="text-white font-bold text-sm">
-                      {selectedMetric === 'bank' ? '💰' : '🎮'} {(selectedMetric === 'bank' ? bankTransactions : matchHistory)?.length || 0}
+                  <div className="bg-black/30 backdrop-blur-sm border border-white/20 rounded-lg px-3 py-1">
+                    <span className="text-white font-semibold text-sm">
+                      📊 {(selectedMetric === 'bank' ? bankTransactions : matchHistory)?.length || 0}
                     </span>
                   </div>
                 </div>
@@ -387,181 +414,141 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           </div>
         </div>
 
-        {}
-        <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-400/50 scrollbar-track-transparent hover:scrollbar-thumb-slate-500/70">
+        {/* Content */}
+        <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
           {loading ? (
-            <div className="flex items-center justify-center py-20">
+            <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full mx-auto mb-6 animate-spin"></div>
+                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                 <p className={`text-lg font-medium ${getThemeClasses({
-                  light: 'text-slate-600',
-                  dark: 'text-slate-400'
+                  light: 'text-gray-600',
+                  dark: 'text-gray-400'
                 })}`}>{t('general.loading')}</p>
               </div>
             </div>
-          ) : matchHistory.length === 0 && selectedMetric !== 'bank' ? (
-            <div className="text-center py-20">
-              <div className={`w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center ${getThemeClasses({
-                light: 'bg-slate-200 text-slate-500',
-                dark: 'bg-slate-700 text-slate-600'
+          ) : matchHistory.length === 0 && bankTransactions.length === 0 ? (
+            /* No Data Message - Only show this when no data */
+            <div className="text-center py-12">
+              <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center ${getThemeClasses({
+                light: 'bg-gray-200 text-gray-500',
+                dark: 'bg-gray-700 text-gray-600'
               })}`}>
-                <Activity className="w-10 h-10" />
+                <Activity className="w-8 h-8" />
               </div>
-              <h3 className={`text-2xl font-bold mb-4 ${getThemeClasses({
-                light: 'text-slate-700',
-                dark: 'text-slate-300'
+              <h3 className={`text-xl font-bold mb-2 ${getThemeClasses({
+                light: 'text-gray-700',
+                dark: 'text-gray-300'
               })}`}>{t('modal.noDataAvailable')}</h3>
-              <p className={`text-lg ${getThemeClasses({
-                light: 'text-slate-600',
-                dark: 'text-slate-500'
+              <p className={`text-sm ${getThemeClasses({
+                light: 'text-gray-600',
+                dark: 'text-gray-500'
               })}`}>{t('modal.noMatchesFound')}</p>
             </div>
           ) : (
+            /* Data Available - Show all sections */
             <>
-              {}
-              <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
-                light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
-                dark: 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-700/50 shadow-2xl'
+              {/* Metrics Selector */}
+              <div className={`rounded-xl p-6 border ${getThemeClasses({
+                light: 'bg-gray-50 border-gray-200',
+                dark: 'bg-gray-800 border-gray-700'
               })}`}>
-                <h3 className={`text-2xl font-bold mb-8 flex items-center gap-3 ${getThemeClasses({
-                  light: 'text-slate-900',
+                <h3 className={`text-xl font-bold mb-4 flex items-center gap-3 ${getThemeClasses({
+                  light: 'text-gray-900',
                   dark: 'text-white'
                 })}`}>
-                  <Activity className={`w-7 h-7 ${getThemeClasses({
-                    light: 'text-indigo-600',
-                    dark: 'text-indigo-400'
-                  })}`} />
+                  <Activity className="w-6 h-6 text-blue-500" />
                   {t('modal.selectMetric')}
                 </h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
                   {METRICS_CONFIG.map((metric) => (
                     <button
                       key={metric.key}
                       onClick={() => handleMetricChange(metric.key)}
-                      className={`group relative p-6 rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
+                      className={`p-4 rounded-lg border-2 transition-all duration-200 ${
                         selectedMetric === metric.key
-                          ? `border-[${metric.color}] shadow-2xl shadow-[${metric.color}]/25 scale-105`
+                          ? `border-[${metric.color}] bg-[${metric.color}]/10 shadow-lg`
                           : getThemeClasses({
-                              light: 'border-slate-200/60 bg-white/60 hover:border-slate-300/80 hover:bg-white/80 hover:scale-102 hover:shadow-lg',
-                              dark: 'border-slate-600/60 bg-slate-700/60 hover:border-slate-500/80 hover:bg-slate-600/80 hover:scale-102 hover:shadow-xl'
+                              light: 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50',
+                              dark: 'border-gray-600 bg-gray-700 hover:border-gray-500 hover:bg-gray-600'
                             })
-                      } backdrop-blur-sm`}
+                      }`}
                     >
-                      {}
-                      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                        selectedMetric === metric.key ? 'opacity-100' : ''
-                      }`}>
-                        <div className={`absolute inset-0 bg-gradient-to-br from-[${metric.color}]/10 to-[${metric.color}]/5`}></div>
-                        <div className={`absolute inset-0 bg-[${metric.color}]/5 animate-pulse`}></div>
-                      </div>
-
-                      <div className={`relative w-10 h-10 mx-auto mb-4 rounded-xl flex items-center justify-center ${
+                      <div className={`w-8 h-8 mx-auto mb-2 rounded-lg flex items-center justify-center ${
                         selectedMetric === metric.key
-                          ? `bg-[${metric.color}] shadow-lg`
-                          : `bg-[${metric.color}]/20 group-hover:bg-[${metric.color}]/30`
-                      } transition-all duration-300`}>
-                        <div className={selectedMetric === metric.key ? 'text-white' : `text-[${metric.color}]`}>
-                          {metric.icon}
-                        </div>
+                          ? `bg-[${metric.color}] text-white`
+                          : `bg-[${metric.color}]/20 text-[${metric.color}]`
+                      }`}>
+                        {metric.icon}
                       </div>
 
-                      <p className={`relative text-lg font-bold text-center mb-2 ${
+                      <p className={`text-sm font-semibold text-center ${
                         selectedMetric === metric.key ? getThemeClasses({
-                          light: 'text-slate-900',
+                          light: 'text-gray-900',
                           dark: 'text-white'
                         }) : getThemeClasses({
-                          light: 'text-slate-700',
-                          dark: 'text-slate-300'
+                          light: 'text-gray-700',
+                          dark: 'text-gray-300'
                         })
                       }`}>
                         {metric.label}
                       </p>
-
-                      <p className={`relative text-sm text-center leading-tight ${getThemeClasses({
-                        light: 'text-slate-600',
-                        dark: 'text-slate-400'
-                      })}`}>
-                        {metric.description}
-                      </p>
-
-                      {}
-                      {selectedMetric === metric.key && (
-                        <div className="absolute top-3 right-3 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
-                          <div className={`w-3 h-3 rounded-full bg-[${metric.color}]`}></div>
-                        </div>
-                      )}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {}
+              {/* Stats Comparison */}
               {selectedMetric !== 'general' && statsComparison && (
                 <div className="flex justify-center">
-                  <div className={`relative backdrop-blur-xl border-2 rounded-3xl p-8 text-center group overflow-hidden ${
-                    getThemeClasses({
-                      light: 'bg-gradient-to-br from-white/90 to-slate-50/90 border-slate-200/60 shadow-2xl',
-                      dark: 'bg-gradient-to-br from-slate-800/90 to-slate-900/90 border-slate-700/60 shadow-2xl'
-                    })
-                  } border-[${currentMetricConfig.color}]/50 hover:shadow-[${currentMetricConfig.color}]/20 transition-all duration-500 hover:-translate-y-2 w-full max-w-md`}>
-
-                    {}
-                    <div className={`absolute inset-0 bg-gradient-to-br from-[${currentMetricConfig.color}]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-
-                    {}
-                    <div className={`relative w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[${currentMetricConfig.color}]/20 to-[${currentMetricConfig.color}]/10 flex items-center justify-center shadow-xl border border-[${currentMetricConfig.color}]/30`}>
-                      <div className={`text-[${currentMetricConfig.color}]`}>
-                        {React.cloneElement(currentMetricConfig.icon, { className: 'w-10 h-10' })}
+                  <div className={`rounded-xl p-6 text-center border ${getThemeClasses({
+                    light: 'bg-white border-gray-200 shadow-lg',
+                    dark: 'bg-gray-800 border-gray-700 shadow-xl'
+                  })}`}>
+                    <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[${currentMetricConfig.color}]/20 to-[${currentMetricConfig.color}]/10 flex items-center justify-center`}>
+                      <div className={`text-[${currentMetricConfig.color}] text-2xl`}>
+                        {React.cloneElement(currentMetricConfig.icon, { className: 'w-8 h-8' })}
                       </div>
                     </div>
 
-                    {}
-                    <p className={`relative text-6xl font-black mb-4 text-[${currentMetricConfig.color}] drop-shadow-sm`}>
+                    <p className={`text-4xl font-black mb-2 text-[${currentMetricConfig.color}]`}>
                       {selectedMetric === 'bank'
                         ? `$${(statsComparison[selectedMetric].best || 0).toLocaleString()}`
                         : (statsComparison[selectedMetric].best || 0)
                       }
                     </p>
 
-                    {}
-                    <p className={`relative text-lg uppercase tracking-wider font-bold mb-3 ${getThemeClasses({
-                      light: 'text-slate-600',
-                      dark: 'text-slate-400'
+                    <p className={`text-sm font-semibold uppercase tracking-wide mb-4 ${getThemeClasses({
+                      light: 'text-gray-600',
+                      dark: 'text-gray-400'
                     })}`}>
                       {t('modal.record')}
                     </p>
 
-                    {}
-                    <p className={`relative text-base ${getThemeClasses({
-                      light: 'text-slate-700',
-                      dark: 'text-slate-500'
+                    <p className={`text-sm ${getThemeClasses({
+                      light: 'text-gray-700',
+                      dark: 'text-gray-300'
                     })}`}>
                       {selectedMetric === 'bank' ? t('modal.maximumBalance') : t('modal.bestMatch')}
                     </p>
-
-                    {}
-                    <div className="absolute top-4 right-4 opacity-20 group-hover:opacity-40 transition-opacity duration-300">
-                      <Trophy className={`w-8 h-8 text-[${currentMetricConfig.color}]`} />
-                    </div>
                   </div>
                 </div>
               )}
 
-              {}
+              {/* Chart */}
               {selectedMetric !== 'general' && chartData.length > 0 && (
-                <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
-                  light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
-                  dark: 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-700/50 shadow-2xl'
+                <div className={`rounded-xl p-6 border ${getThemeClasses({
+                  light: 'bg-white border-gray-200 shadow-lg',
+                  dark: 'bg-gray-800 border-gray-700 shadow-xl'
                 })}`}>
-                  <h3 className={`text-2xl font-bold mb-6 flex items-center gap-3 text-[${currentMetricConfig.color}]`}>
-                    <TrendingUp className="w-7 h-7" />
+                  <h3 className={`text-xl font-bold mb-4 flex items-center gap-3 text-[${currentMetricConfig.color}]`}>
+                    <Activity className="w-6 h-6" />
                     {selectedMetric === 'bank' ? t('modal.balanceEvolution') : `${currentMetricConfig.label} ${t('modal.perMatch')}`}
                   </h3>
 
-                  <div className="relative">
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+                  <div className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
                         <defs>
                           <linearGradient id={`${selectedMetric}Gradient`} x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor={currentMetricConfig.color} stopOpacity={0.4}/>
@@ -569,411 +556,267 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                           </linearGradient>
                         </defs>
 
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          stroke="#374151"
-                          strokeOpacity={0.2}
-                        />
-
-                        <XAxis
-                          dataKey="game"
-                          stroke="#6b7280"
-                          fontSize={12}
-                          tick={{ fill: '#6b7280' }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-
-                        <YAxis
-                          stroke="#6b7280"
-                          fontSize={12}
-                          tick={{ fill: '#6b7280' }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" strokeOpacity={0.2} />
+                        <XAxis dataKey="game" stroke="#6b7280" fontSize={12} />
+                        <YAxis stroke="#6b7280" fontSize={12} />
 
                         <Tooltip
                           contentStyle={{
                             backgroundColor: theme === 'dark' ? '#1e293b' : '#ffffff',
                             border: `2px solid ${currentMetricConfig.color}`,
-                            borderRadius: '12px',
-                            color: theme === 'dark' ? '#f1f5f9' : '#1e293b',
-                            fontSize: '14px',
-                            boxShadow: `0 10px 25px -5px ${currentMetricConfig.color}20`,
-                            backdropFilter: 'blur(8px)'
+                            borderRadius: '8px',
+                            fontSize: '14px'
                           }}
-                          formatter={(value: any, name: any, props: any) => {
+                          formatter={(value: any) => {
                             if (selectedMetric === 'bank') {
-                              const data = props.payload;
-                              const transactionType = data.type;
+                              const data = chartData.find(d => d.bank === value);
+                              const transactionType = data?.type;
                               const prefix = (transactionType === 'deposit' || transactionType === 'deposit_from_player') ? '+' :
                                            (transactionType === 'withdraw' || transactionType === 'pay_to_player') ? '-' : '';
                               return [`${prefix}$${Number(value).toLocaleString()}`, 'Balance'];
                             }
-                            return [
-                              selectedMetric === 'score' ? Number(value).toLocaleString() : value,
-                              currentMetricConfig.label
-                            ];
+                            return [selectedMetric === 'score' ? Number(value).toLocaleString() : value, currentMetricConfig.label];
                           }}
-                          labelFormatter={(label: any, payload: any) => {
-                            if (selectedMetric === 'bank' && payload && payload[0]) {
-                              const data = payload[0].payload;
-                              return `${label} - ${data.time}: ${data.description}`;
-                            }
-                            return label;
-                          }}
+                          labelFormatter={(label: any) => label}
                         />
 
                         <Area
                           type="monotone"
                           dataKey={selectedMetric}
                           stroke={currentMetricConfig.color}
-                          strokeWidth={3}
+                          strokeWidth={2}
                           fill={`url(#${selectedMetric}Gradient)`}
-                          dot={(props: any) => {
-                            const { cx, cy, payload } = props;
-                            if (!payload || selectedMetric !== 'bank') {
-                              return <circle cx={cx} cy={cy} r={0} fill="transparent" />;
-                            }
-                            const color = payload.dotColor || currentMetricConfig.color;
-                            return (
-                              <circle
-                                cx={cx}
-                                cy={cy}
-                                r={5}
-                                fill={color}
-                                stroke="#1e293b"
-                                strokeWidth={2}
-                              />
-                            );
-                          }}
-                          activeDot={(props: any) => {
-                            const { cx, cy, payload } = props;
-                            const color = payload?.dotColor || currentMetricConfig.color;
-                            return (
-                              <circle
-                                cx={cx}
-                                cy={cy}
-                                r={8}
-                                fill={color}
-                                stroke="#ffffff"
-                                strokeWidth={3}
-                              />
-                            );
-                          }}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
-
-                  {}
-                  {selectedMetric === 'bank' && (
-                    <div className="mt-6 p-6 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
-                      <div className="flex items-center justify-center gap-8">
-                        <div className="flex items-center gap-3">
-                          <div className="w-4 h-4 bg-green-500 rounded-full border-2 border-green-400 shadow-sm"></div>
-                          <span className="font-semibold text-green-600 dark:text-green-400">Depósitos</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-4 h-4 bg-red-500 rounded-full border-2 border-red-400 shadow-sm"></div>
-                          <span className="font-semibold text-red-600 dark:text-red-400">Retiros</span>
-                        </div>
-                      </div>
-                      <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-3">
-                        {t('modal.dotsShowTransactionType')}
-                      </p>
-                    </div>
-                  )}
-
-                  {}
-                  {statsComparison && selectedMetric !== 'bank' && (
-                    <div className={`mt-6 p-6 rounded-2xl border ${getThemeClasses({
-                      light: 'bg-slate-50/50 border-slate-200/50',
-                      dark: 'bg-slate-800/30 border-slate-700/50'
-                    })}`}>
-                      <div className="flex items-center justify-between">
-                        <span className={`font-bold text-lg ${getThemeClasses({
-                          light: 'text-slate-700',
-                          dark: 'text-slate-300'
-                        })}`}>{t('modal.trend')}:</span>
-                        <div className="flex items-center gap-3">
-                          {statsComparison[selectedMetric].trend === 'up' ? (
-                            <>
-                              <div className="flex items-center gap-2 px-4 py-2 bg-green-500/20 rounded-full border border-green-500/30">
-                                <TrendingUp className="w-5 h-5 text-green-400" />
-                                <span className="text-green-600 dark:text-green-400 font-semibold">{t('modal.improving')}</span>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="flex items-center gap-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
-                                <TrendingUp className="w-5 h-5 text-red-400 rotate-180" />
-                                <span className="text-red-600 dark:text-red-400 font-semibold">{t('modal.worsening')}</span>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
 
-              {}
-              {(matchHistory.length > 0 || bankTransactions.length > 0) && (
-                <div className={`backdrop-blur-xl border rounded-3xl p-8 ${getThemeClasses({
-                  light: 'bg-gradient-to-br from-white/80 to-slate-50/80 border-slate-200/50 shadow-xl',
-                  dark: 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-700/50 shadow-2xl'
+              {/* Table */}
+              <div className={`rounded-xl p-6 border ${getThemeClasses({
+                light: 'bg-white border-gray-200 shadow-lg',
+                dark: 'bg-gray-800 border-gray-700 shadow-xl'
+              })}`}>
+                <h3 className={`text-xl font-bold mb-4 flex items-center gap-3 ${getThemeClasses({
+                  light: 'text-gray-900',
+                  dark: 'text-white'
                 })}`}>
-                  <h3 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${getThemeClasses({
-                    light: 'text-slate-900',
-                    dark: 'text-white'
-                  })}`}>
-                    <Calendar className={`w-7 h-7 ${getThemeClasses({
-                      light: 'text-green-600',
-                      dark: 'text-green-400'
-                    })}`} />
-                    {selectedMetric === 'bank' ? t('modal.transactionHistory') : t('modal.matchHistory')} {currentMetricConfig.label}
-                  </h3>
+                  <Calendar className="w-6 h-6 text-green-500" />
+                  {selectedMetric === 'bank' ? t('modal.transactionHistory') : t('modal.matchHistory')} {currentMetricConfig.label}
+                </h3>
 
-                  <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-400/50 scrollbar-track-transparent hover:scrollbar-thumb-slate-500/70">
-                    <table className="w-full text-sm">
-                      <thead className={`sticky top-0 ${getThemeClasses({
-                        light: 'bg-slate-100/80 backdrop-blur-sm',
-                        dark: 'bg-slate-800/80 backdrop-blur-sm'
-                      })}`}>
-                        <tr className={`border-b ${getThemeClasses({
-                          light: 'border-slate-300',
-                          dark: 'border-slate-700'
-                        })}`}>
-                          {selectedMetric === 'bank' ? (
-                            <>
-                              <th className={`text-left py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>#</th>
-                              <th className={`text-center py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Tipo</th>
-                              <th className={`text-center py-4 px-6 font-bold text-[${currentMetricConfig.color}]`}>
-                                Balance ⭐
-                              </th>
-                              <th className={`text-center py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Monto</th>
-                              <th className={`text-left py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Descripción</th>
-                            </>
-                          ) : selectedMetric === 'general' ? (
-                            <>
-                              <th className={`text-left py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Partida</th>
-                              <th className={`text-center py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Ronda</th>
-                              <th className={`text-center py-4 px-6 font-bold text-red-500`}>Kills ⭐</th>
-                              <th className={`text-center py-4 px-6 font-bold text-orange-500`}>Downs ⭐</th>
-                              <th className={`text-center py-4 px-6 font-bold text-purple-500`}>Headshots ⭐</th>
-                              <th className={`text-center py-4 px-6 font-bold text-green-500`}>Revives ⭐</th>
-                              <th className={`text-center py-4 px-6 font-bold text-yellow-500`}>Score ⭐</th>
-                            </>
-                          ) : (
-                            <>
-                              <th className={`text-left py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Partida</th>
-                              <th className={`text-center py-4 px-6 font-bold ${getThemeClasses({
-                                light: 'text-slate-700',
-                                dark: 'text-slate-300'
-                              })}`}>Ronda</th>
-                              <th className={`text-center py-4 px-6 font-bold text-[${currentMetricConfig.color}]`}>
-                                {currentMetricConfig.label} ⭐
-                              </th>
-                            </>
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedMetric === 'bank'
-                          ? bankTransactions.slice(0, 8).map((item, index) => {
-                              const bankValue = item.balanceAfter || 0;
-                              const isBestBalance = statsComparison && bankValue === statsComparison[selectedMetric].best;
-
-                              return (
-                                <tr
-                                  key={`bank-${item.id || index}`}
-                                  className={`border-b transition-colors ${getThemeClasses({
-                                    light: 'border-slate-200/50 hover:bg-slate-50/50',
-                                    dark: 'border-slate-700/50 hover:bg-slate-700/20'
-                                  })} ${isBestBalance ? 'bg-green-500/10' : ''}`}
-                                >
-                                  <td className={`py-4 px-6 font-semibold ${getThemeClasses({
-                                    light: 'text-slate-900',
-                                    dark: 'text-white'
-                                  })}`}>#{item.number || (bankTransactions.length - index)}</td>
-                                  <td className={`py-4 px-6 text-center`}>
-                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                      item.type === 'deposit' || item.type === 'deposit_from_player'
-                                        ? 'bg-green-500/20 text-green-600 dark:text-green-400'
-                                        : 'bg-red-500/20 text-red-600 dark:text-red-400'
-                                    }`}>
-                                      {item.type === 'deposit' ? 'Depósito' :
-                                       item.type === 'withdraw' ? 'Retiro' :
-                                       item.type === 'deposit_from_player' ? 'Recibido' : 'Enviado'}
-                                    </span>
-                                  </td>
-                                  <td className={`py-4 px-6 text-center font-bold text-[${currentMetricConfig.color}] ${
-                                    isBestBalance ? 'text-green-400' : ''
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className={getThemeClasses({
+                      light: 'bg-gray-50',
+                      dark: 'bg-gray-700'
+                    })}>
+                      <tr className={getThemeClasses({
+                        light: 'border-gray-200',
+                        dark: 'border-gray-600'
+                      })}>
+                        {selectedMetric === 'bank' ? (
+                          <>
+                            <th className={`text-left py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>#</th>
+                            <th className={`text-center py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Tipo</th>
+                            <th className={`text-center py-3 px-4 font-semibold text-[${currentMetricConfig.color}]`}>
+                              Balance
+                            </th>
+                            <th className={`text-center py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Monto</th>
+                            <th className={`text-left py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Descripción</th>
+                          </>
+                        ) : selectedMetric === 'general' ? (
+                          <>
+                            <th className={`text-left py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Partida</th>
+                            <th className={`text-center py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Ronda</th>
+                            <th className="text-center py-3 px-4 font-semibold text-red-500">Kills</th>
+                            <th className="text-center py-3 px-4 font-semibold text-orange-500">Downs</th>
+                            <th className="text-center py-3 px-4 font-semibold text-purple-500">Headshots</th>
+                            <th className="text-center py-3 px-4 font-semibold text-green-500">Revives</th>
+                            <th className="text-center py-3 px-4 font-semibold text-yellow-500">Score</th>
+                          </>
+                        ) : (
+                          <>
+                            <th className={`text-left py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Partida</th>
+                            <th className={`text-center py-3 px-4 font-semibold ${getThemeClasses({
+                              light: 'text-gray-700',
+                              dark: 'text-gray-300'
+                            })}`}>Ronda</th>
+                            <th className={`text-center py-3 px-4 font-semibold text-[${currentMetricConfig.color}]`}>
+                              {currentMetricConfig.label}
+                            </th>
+                          </>
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedMetric === 'bank'
+                        ? paginatedTableData.map((item: any, index: number) => {
+                            const globalIndex = tablePage * ITEMS_PER_PAGE + index;
+                            return (
+                              <tr key={`bank-${item.id || globalIndex}`} className={getThemeClasses({
+                                light: 'border-gray-100 hover:bg-gray-50',
+                                dark: 'border-gray-700 hover:bg-gray-800'
+                              })}>
+                                <td className={`py-3 px-4 font-semibold ${getThemeClasses({
+                                  light: 'text-gray-900',
+                                  dark: 'text-white'
+                                })}`}>#{globalIndex + 1}</td>
+                                <td className="py-3 px-4 text-center">
+                                  <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                                    item.type === 'deposit' || item.type === 'deposit_from_player'
+                                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                      : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                                   }`}>
-                                    ${bankValue.toLocaleString()}
-                                    {isBestBalance && ' 🏆'}
+                                    {item.type === 'deposit' ? t('modal.deposit') :
+                                     item.type === 'withdraw' ? t('modal.withdraw') :
+                                     item.type === 'deposit_from_player' ? t('modal.received') : t('modal.sent')}
+                                  </span>
+                                </td>
+                                <td className={`py-3 px-4 text-center font-bold text-[${currentMetricConfig.color}]`}>
+                                  ${item.balanceAfter?.toLocaleString()}
+                                </td>
+                                <td className={`py-3 px-4 text-center font-semibold ${getThemeClasses({
+                                  light: 'text-yellow-600',
+                                  dark: 'text-yellow-400'
+                                })}`}>
+                                  {item.type === 'deposit' || item.type === 'deposit_from_player' ? '+' : '-'}${item.amount}
+                                </td>
+                                <td className={`py-3 px-4 text-left text-sm ${getThemeClasses({
+                                  light: 'text-gray-700',
+                                  dark: 'text-gray-300'
+                                })}`}>
+                                  {item.description}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        : paginatedTableData.map((item: any, index: number) => {
+                            const globalIndex = tablePage * ITEMS_PER_PAGE + index;
+                            if (selectedMetric === 'general') {
+                              return (
+                                <tr key={`match-${item.fileName}-${globalIndex}`} className={getThemeClasses({
+                                  light: 'border-gray-100 hover:bg-gray-50',
+                                  dark: 'border-gray-700 hover:bg-gray-800'
+                                })}>
+                                  <td className={`py-3 px-4 font-semibold ${getThemeClasses({
+                                    light: 'text-gray-900',
+                                    dark: 'text-white'
+                                  })}`}>{`${t('modal.matchNumber')} ${globalIndex + 1}`}</td>
+                                  <td className={`py-3 px-4 text-center font-semibold ${getThemeClasses({
+                                    light: 'text-blue-600',
+                                    dark: 'text-blue-400'
+                                  })}`}>{item.round || 1}</td>
+                                  <td className={`py-3 px-4 text-center font-bold text-red-500 ${getComparisonClass(item.kills || 0, 'kills')}`}>
+                                    {item.kills || 0}{getComparisonEmoji(item.kills || 0, 'kills')}
                                   </td>
-                                  <td className={`py-4 px-6 text-center font-semibold ${getThemeClasses({
-                                    light: 'text-yellow-600',
-                                    dark: 'text-yellow-400'
-                                  })}`}>
-                                    {item.type === 'deposit' || item.type === 'deposit_from_player' ? '+' : '-'}${item.amount}
+                                  <td className={`py-3 px-4 text-center font-bold text-orange-500 ${getComparisonClass(item.downs || 0, 'downs')}`}>
+                                    {item.downs || 0}{getComparisonEmoji(item.downs || 0, 'downs')}
                                   </td>
-                                  <td className={`py-4 px-6 text-left text-sm max-w-xs truncate ${getThemeClasses({
-                                    light: 'text-slate-700',
-                                    dark: 'text-slate-300'
-                                  })}`} title={item.description}>
-                                    {item.description}
+                                  <td className={`py-3 px-4 text-center font-bold text-purple-500 ${getComparisonClass(item.headshots || 0, 'headshots')}`}>
+                                    {item.headshots || 0}{getComparisonEmoji(item.headshots || 0, 'headshots')}
+                                  </td>
+                                  <td className={`py-3 px-4 text-center font-bold text-green-500 ${getComparisonClass(item.revives || 0, 'revives')}`}>
+                                    {item.revives || 0}{getComparisonEmoji(item.revives || 0, 'revives')}
+                                  </td>
+                                  <td className={`py-3 px-4 text-center font-bold text-yellow-500 ${getComparisonClass(item.score || 0, 'score')}`}>
+                                    {(item.score || 0).toLocaleString()}{getComparisonEmoji(item.score || 0, 'score')}
                                   </td>
                                 </tr>
                               );
-                            })
-                          : matchHistory.slice(-8).reverse().map((item, index) => {
-                              if (selectedMetric === 'general') {
-                                return (
-                                  <tr
-                                    key={`${item.fileName}-${index}`}
-                                    className={`border-b transition-colors ${getThemeClasses({
-                                      light: 'border-slate-200/50 hover:bg-slate-50/50',
-                                      dark: 'border-slate-700/50 hover:bg-slate-700/20'
-                                    })}`}
-                                  >
-                                    <td className={`py-4 px-6 font-semibold ${getThemeClasses({
-                                      light: 'text-slate-900',
-                                      dark: 'text-white'
-                                    })}`}>{`${t('modal.matchNumber')} ${matchHistory.length - index}`}</td>
-                                    <td className={`py-4 px-6 text-center font-semibold ${getThemeClasses({
-                                      light: 'text-indigo-600',
-                                      dark: 'text-indigo-400'
-                                    })}`}>{item.round || 1}</td>
-                                    <td className={`py-4 px-6 text-center font-bold text-red-500 ${
-                                      statsComparison && (item.kills || 0) === statsComparison.kills.best ? 'text-green-400' :
-                                      statsComparison && (item.kills || 0) === statsComparison.kills.worst ? 'text-red-400' : ''
-                                    }`}>
-                                      {item.kills || 0}
-                                      {statsComparison && (item.kills || 0) === statsComparison.kills.best && ' 🏆'}
-                                    </td>
-                                    <td className={`py-4 px-6 text-center font-bold text-orange-500 ${
-                                      statsComparison && (item.downs || 0) === statsComparison.downs.best ? 'text-green-400' :
-                                      statsComparison && (item.downs || 0) === statsComparison.downs.worst ? 'text-red-400' : ''
-                                    }`}>
-                                      {item.downs || 0}
-                                      {statsComparison && (item.downs || 0) === statsComparison.downs.best && ' 🏆'}
-                                    </td>
-                                    <td className={`py-4 px-6 text-center font-bold text-purple-500 ${
-                                      statsComparison && (item.headshots || 0) === statsComparison.headshots.best ? 'text-green-400' :
-                                      statsComparison && (item.headshots || 0) === statsComparison.headshots.worst ? 'text-red-400' : ''
-                                    }`}>
-                                      {item.headshots || 0}
-                                      {statsComparison && (item.headshots || 0) === statsComparison.headshots.best && ' 🏆'}
-                                    </td>
-                                    <td className={`py-4 px-6 text-center font-bold text-green-500 ${
-                                      statsComparison && (item.revives || 0) === statsComparison.revives.best ? 'text-green-400' :
-                                      statsComparison && (item.revives || 0) === statsComparison.revives.worst ? 'text-red-400' : ''
-                                    }`}>
-                                      {item.revives || 0}
-                                      {statsComparison && (item.revives || 0) === statsComparison.revives.best && ' 🏆'}
-                                    </td>
-                                    <td className={`py-4 px-6 text-center font-bold text-yellow-500 ${
-                                      statsComparison && (item.score || 0) === statsComparison.score.best ? 'text-green-400' :
-                                      statsComparison && (item.score || 0) === statsComparison.score.worst ? 'text-red-400' : ''
-                                    }`}>
-                                      {(item.score || 0).toLocaleString()}
-                                      {statsComparison && (item.score || 0) === statsComparison.score.best && ' 🏆'}
-                                    </td>
-                                  </tr>
-                                );
-                              } else {
-                                const metricValue = item[selectedMetric as keyof typeof item] as number;
-                                const isBestMatch = statsComparison && metricValue === statsComparison[selectedMetric].best;
-
-                                return (
-                                  <tr
-                                    key={`${item.fileName}-${index}`}
-                                    className={`border-b transition-colors ${getThemeClasses({
-                                      light: 'border-slate-200/50 hover:bg-slate-50/50',
-                                      dark: 'border-slate-700/50 hover:bg-slate-700/20'
-                                    })} ${isBestMatch ? 'bg-green-500/10' : ''}`}
-                                  >
-                                    <td className={`py-4 px-6 font-semibold ${getThemeClasses({
-                                      light: 'text-slate-900',
-                                      dark: 'text-white'
-                                    })}`}>{`${t('modal.matchNumber')} ${matchHistory.length - index}`}</td>
-                                    <td className={`py-4 px-6 text-center font-semibold ${getThemeClasses({
-                                      light: 'text-indigo-600',
-                                      dark: 'text-indigo-400'
-                                    })}`}>{item.round || 1}</td>
-                                    <td className={`py-4 px-6 text-center font-bold text-[${currentMetricConfig.color}] ${
-                                      isBestMatch ? 'text-green-400' : ''
-                                    }`}>
-                                      {selectedMetric === 'score' ? (metricValue || 0).toLocaleString() : (metricValue || 0)}
-                                      {isBestMatch && ' 🏆'}
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                            })
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {}
-                  <div className="mt-6 flex justify-center gap-6 text-sm">
-                    {selectedMetric === 'bank' ? (
-                      <>
-                        <span className="flex items-center gap-2">
-                          <span className="text-green-400">🏆</span>
-                          <span className={getThemeClasses({
-                            light: 'text-slate-600',
-                            dark: 'text-slate-400'
-                          })}>Balance máximo</span>
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="flex items-center gap-2">
-                          <span className="text-green-400">🏆</span>
-                          <span className={getThemeClasses({
-                            light: 'text-slate-600',
-                            dark: 'text-slate-400'
-                          })}>{t('modal.recordMark')}</span>
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <span className="text-red-400">⚠️</span>
-                          <span className={getThemeClasses({
-                            light: 'text-slate-600',
-                            dark: 'text-slate-400'
-                          })}>{t('modal.worstPerformance')}</span>
-                        </span>
-                      </>
-                    )}
-                  </div>
+                            } else {
+                              const metricValue = item[selectedMetric] || 0;
+                              return (
+                                <tr key={`match-${item.fileName}-${globalIndex}`} className={getThemeClasses({
+                                  light: 'border-gray-100 hover:bg-gray-50',
+                                  dark: 'border-gray-700 hover:bg-gray-800'
+                                })}>
+                                  <td className={`py-3 px-4 font-semibold ${getThemeClasses({
+                                    light: 'text-gray-900',
+                                    dark: 'text-white'
+                                  })}`}>{`${t('modal.matchNumber')} ${globalIndex + 1}`}</td>
+                                  <td className={`py-3 px-4 text-center font-semibold ${getThemeClasses({
+                                    light: 'text-blue-600',
+                                    dark: 'text-blue-400'
+                                  })}`}>{item.round || 1}</td>
+                                  <td className={`py-3 px-4 text-center font-bold text-[${currentMetricConfig.color}] ${getComparisonClass(metricValue, selectedMetric)}`}>
+                                    {selectedMetric === 'score' ? metricValue.toLocaleString() : metricValue}{getComparisonEmoji(metricValue, selectedMetric)}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          })
+                      }
+                    </tbody>
+                  </table>
                 </div>
-              )}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-6 flex items-center justify-between">
+                    <button
+                      onClick={() => setTablePage(Math.max(0, tablePage - 1))}
+                      disabled={tablePage === 0}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        tablePage === 0
+                          ? 'opacity-50 cursor-not-allowed'
+                          : getThemeClasses({
+                              light: 'hover:bg-gray-100 text-gray-700',
+                              dark: 'hover:bg-gray-700 text-gray-300'
+                            })
+                      }`}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Anterior
+                    </button>
+
+                    <span className={`font-medium ${getThemeClasses({
+                      light: 'text-gray-700',
+                      dark: 'text-gray-300'
+                    })}`}>
+                      Página {tablePage + 1} de {totalPages}
+                    </span>
+
+                    <button
+                      onClick={() => setTablePage(Math.min(totalPages - 1, tablePage + 1))}
+                      disabled={tablePage === totalPages - 1}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                        tablePage === totalPages - 1
+                          ? 'opacity-50 cursor-not-allowed'
+                          : getThemeClasses({
+                              light: 'hover:bg-gray-100 text-gray-700',
+                              dark: 'hover:bg-gray-700 text-gray-300'
+                            })
+                      }`}
+                    >
+                      Siguiente
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>

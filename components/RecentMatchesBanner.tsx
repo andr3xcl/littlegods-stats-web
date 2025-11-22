@@ -44,7 +44,7 @@ interface RecentMatchesBannerProps {
 
 const MAP_NAMES: Record<string, string> = {
   'nuked': 'Nuketown',
-  'transit': 'TranZit',
+  'tranzit': 'TranZit',
   'farm': 'Farm',
   'town': 'Town',
   'prison': 'Mob of the Dead',
@@ -56,7 +56,7 @@ const MAP_NAMES: Record<string, string> = {
 
 const MAP_IMAGES: Record<string, string> = {
   'nuked': './data/images/load_maps/zm_nuked.jpg',
-  'transit': './data/images/load_maps/zm_transit.jpg',
+  'tranzit': './data/images/load_maps/zm_tranzit.jpg',
   'farm': './data/images/load_maps/zm_farm.jpg',
   'town': './data/images/load_maps/zm_town.jpg',
   'prison': './data/images/load_maps/zm_prison.jpg',
@@ -346,6 +346,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
   const [selectedMatch, setSelectedMatch] = useState<MatchData | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [weaponsExpanded, setWeaponsExpanded] = useState(false);
+  const [userTriggeredChange, setUserTriggeredChange] = useState(false);
   const { t } = useLanguage();
   const { theme } = useTheme();
 
@@ -382,17 +383,41 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
 
   useEffect(() => {
     setCurrentIndex(0);
+    setUserTriggeredChange(false);
   }, [playerGuid]);
 
-  const ITEMS_PER_PAGE = 3;
-  const totalPages = Math.ceil(matches.length / ITEMS_PER_PAGE);
+
+  // Animaciones GSAP para la entrada de banners (solo cuando el usuario navega)
+  useEffect(() => {
+    if (userTriggeredChange) {
+      const bannerElements = document.querySelectorAll('.match-banner');
+      gsap.fromTo(bannerElements,
+        {
+          opacity: 0,
+          y: 30
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: "power2.out"
+        }
+      );
+      setUserTriggeredChange(false);
+    }
+  }, [currentIndex, userTriggeredChange, gsap]);
+
+  const ITEMS_TO_SHOW = 3;
 
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    setUserTriggeredChange(true);
+    setCurrentIndex((prev) => Math.max(0, prev - ITEMS_TO_SHOW));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev < totalPages - 1 ? prev + 1 : prev));
+    setUserTriggeredChange(true);
+    setCurrentIndex((prev) => Math.min(matches.length - ITEMS_TO_SHOW, prev + ITEMS_TO_SHOW));
   };
 
   const toggleMatchExpansion = (matchIndex: number) => {
@@ -549,6 +574,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
             50% { text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 30px rgba(236, 72, 153, 0.6); }
           }
 
+
           .text-glow {
             animation: text-glow 2s ease-in-out infinite;
           }
@@ -588,7 +614,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
           <button
             onClick={handleNext}
             className="group relative p-2 sm:p-3 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-orange-500 hover:to-orange-600 border border-slate-300 dark:border-slate-600 hover:border-orange-500 rounded-lg sm:rounded-xl disabled:opacity-30 disabled:cursor-not-allowed shadow-lg hover:shadow-orange-500/20"
-            disabled={currentIndex >= totalPages - 1}
+            disabled={currentIndex >= matches.length - ITEMS_TO_SHOW}
           >
             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 dark:text-slate-300 group-hover:text-white" />
           </button>
@@ -597,23 +623,18 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
 
       {}
       <div className="relative overflow-hidden">
-        <div
-          className="flex gap-3 sm:gap-4"
-          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-        >
-          {Array.from({ length: totalPages }).map((_, pageIndex) => (
-            <div key={pageIndex} className="flex-shrink-0 w-full flex gap-3 sm:gap-4">
-              {matches
-                .slice(pageIndex * ITEMS_PER_PAGE, (pageIndex + 1) * ITEMS_PER_PAGE)
-                .map((match, index) => {
-                  const globalIndex = pageIndex * ITEMS_PER_PAGE + index;
-                  const isExpanded = expandedMatches.has(globalIndex);
+        <div className="flex gap-3 sm:gap-4">
+          {matches
+            .slice(currentIndex, currentIndex + ITEMS_TO_SHOW)
+            .map((match, index) => {
+              const globalIndex = currentIndex + index;
+              const isExpanded = expandedMatches.has(globalIndex);
 
-                  return (
-                  <div
-                    key={`${match.fileName}-${index}`}
-                    className="flex-shrink-0 w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-10.67px)] group cursor-pointer"
-                  >
+              return (
+              <div
+                key={`${match.fileName}-${globalIndex}`}
+                className="match-banner flex-shrink-0 w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-10.67px)] group cursor-pointer"
+              >
                     <div className="relative bg-gradient-to-br from-white/90 to-slate-50/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl hover:shadow-orange-500/20 hover:border-orange-500/50 hover:-translate-y-1 sm:hover:-translate-y-2">
                       
                       {}
@@ -637,7 +658,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                         {}
                         <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
                           <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-1 rounded-lg font-black text-xs shadow-lg">
-                            R{match.round}
+                            {t('matches.round')} {match.round}
                           </div>
                         </div>
                         
@@ -793,19 +814,16 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                   </div>
                   );
                 })}
-            </div>
-          ))}
         </div>
       </div>
 
-      {}
       <div className="flex justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6">
-        {Array.from({ length: totalPages }).map((_, index) => (
+        {Array.from({ length: Math.ceil(matches.length / ITEMS_TO_SHOW) }).map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => setCurrentIndex(index * ITEMS_TO_SHOW)}
             className={`h-1 rounded-full ${
-              index === currentIndex 
+              index === Math.floor(currentIndex / ITEMS_TO_SHOW) 
                 ? 'w-6 sm:w-8 bg-orange-500' 
                 : 'w-1.5 sm:w-2 bg-slate-400 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500'
             }`}
@@ -835,7 +853,7 @@ export default function RecentMatchesBanner({ playerGuid }: RecentMatchesBannerP
                       />
                     </div>
                     <div className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-black px-2 py-1 rounded-full shadow-lg">
-                      R{selectedMatch.round}
+                      {t('matches.round')} {selectedMatch.round}
                     </div>
                   </div>
                   <div>

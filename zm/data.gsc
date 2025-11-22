@@ -1047,6 +1047,9 @@ get_map_display_name(map_code)
     {
         case "tomb": return "Origins";
         case "transit": return "Transit";
+        case "town": return "Town";
+        case "farm": return "Farm";
+        case "busdepot": return "Bus Depot";
         case "processing": return "Buried";
         case "prison": return "Mob of the Dead";
         case "nuked": return "Nuketown";

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect, useLayoutEffect, memo } from 'react';
 import PlayerBanner from '../components/PlayerBanner';
 import StatCard from '../components/StatCard';
 import MapModal from '../components/MapModal';
@@ -18,20 +18,30 @@ interface StatisticsProps {
 }
 
 const MAPS = [
-    'transit', 'town', 'prison', 'tomb', 'farm', 'nuked', 'processing', 'rooftop'
+    'tranzit', 'town', 'prison', 'tomb', 'farm', 'nuked', 'processing', 'rooftop'
+];
+
+const SURVIVAL_MAPS = [
+    'busdepot', 'town', 'farm'
+];
+
+const CLASSIC_MAPS = [
+    'tranzit', 'prison', 'tomb', 'nuked', 'processing', 'rooftop'
 ];
 
 const MAP_DISPLAY_NAMES: { [key: string]: string } = {
-    'transit': 'Transit',
+    'tranzit': 'TranZit',
     'town': 'Town',
     'prison': 'Prison',
     'tomb': 'Tomb',
     'farm': 'Farm',
     'nuked': 'Nuketown',
     'processing': 'Processing',
-    'rooftop': 'Rooftop'
+    'rooftop': 'Rooftop',
+    'busdepot': 'Bus Depot'
 };
 
+// Función para cargar datos del jugador desde data_player.json
 const loadPlayerData = async (playerGuid: string) => {
     try {
         const response = await fetch('./data/data_player.json');
@@ -45,6 +55,7 @@ const loadPlayerData = async (playerGuid: string) => {
     return null;
 };
 
+// Función para cargar todos los datos de jugadores (cacheada)
 const loadAllPlayerData = async () => {
     const response = await fetch('./data/data_player.json');
     if (response.ok) {
@@ -53,7 +64,7 @@ const loadAllPlayerData = async () => {
     throw new Error('No se pudieron cargar datos de jugadores');
 };
 
-const Statistics: React.FC<StatisticsProps> = ({ player }) => {
+const Statistics: React.FC<StatisticsProps> = memo(({ player }) => {
     const [selectedMap, setSelectedMap] = useState<string | null>(null);
     const [isMapModalOpen, setIsMapModalOpen] = useState(false);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -111,15 +122,28 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
         return allPlayerData[player.guid] || null;
     }, [allPlayerData, player.guid]);
 
-    // Animaciones de scroll para las tarjetas de mapas - solo una vez al entrar a estadísticas
-    useEffect(() => {
+    // Animaciones de scroll optimizadas - solo una vez al entrar a estadísticas
+    useLayoutEffect(() => {
       if (mapsRef.current && playerData && !hasAnimated) {
-        // Animar las tarjetas de mapas con stagger al hacer scroll
         const mapCards = mapsRef.current.querySelectorAll('.map-card');
-        gsap.animateStaggerOnScroll(mapCards, 0.15, "top 85%");
-        setHasAnimated(true); // Marcar que ya se ejecutó la animación
+        if (mapCards.length > 0) {
+          gsap.set(mapCards, { opacity: 0, y: 30 });
+          gsap.to(mapCards, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: mapsRef.current,
+              start: "top 85%",
+              once: true
+            }
+          });
+          setHasAnimated(true);
+        }
       }
-    }, [playerData, hasAnimated, gsap]); // Se ejecuta cuando playerData cambia y no se ha animado
+    }, [playerData, hasAnimated, gsap]);
 
     const handleMapClick = useCallback((map: string) => {
         const newMap = selectedMap === map ? null : map;
@@ -139,15 +163,29 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
         });
     }, []);
 
+    const handleCloseMapModal = useCallback(() => {
+        setIsMapModalOpen(false);
+        setSelectedMap(null);
+    }, []);
+
+    const handleProfileClick = useCallback(() => {
+        setIsProfileModalOpen(true);
+    }, []);
+
+    const handleCloseProfileModal = useCallback(() => {
+        setIsProfileModalOpen(false);
+    }, []);
+
+
     // Si no hay datos del jugador, mostrar página de feedback
     if (!playerData) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
                 <div className="relative z-20 px-4 sm:px-6 md:px-8 pt-8 sm:pt-12 md:pt-16">
                     <div className="max-w-4xl mx-auto">
-                        {}
+                        {/* Página de feedback cuando no hay estadísticas */}
                         <div className="text-center py-16 sm:py-20 md:py-24">
-                            {}
+                            {/* Icono principal */}
                             <div className="relative inline-block mb-8">
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full scale-150 blur-2xl"></div>
                                 <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-full flex items-center justify-center shadow-2xl">
@@ -155,19 +193,19 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {}
+                            {/* Título principal */}
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-slate-300 bg-clip-text text-transparent mb-4 sm:mb-6">
                                 {t('stats.noStatsTitle')}
                             </h1>
 
-                            {}
+                            {/* Subtítulo */}
                             <p className="text-lg sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
                                 {t('stats.noStatsSubtitle')}
                             </p>
 
-                            {}
+                            {/* Grid de sugerencias */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
-                                {}
+                                {/* Sugerencia 1 */}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Gamepad2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -180,7 +218,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </p>
                                 </div>
 
-                                {}
+                                {/* Sugerencia 2 */}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Activity className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -193,7 +231,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </p>
                                 </div>
 
-                                {}
+                                {/* Sugerencia 3 */}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -207,7 +245,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {}
+                            {/* CTA Button */}
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                                 <button
                                     onClick={() => window.location.reload()}
@@ -234,13 +272,13 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
 
-            {}
+            {/* Layout principal: Mapas a la izquierda, estadísticas a la derecha */}
             <div className="relative z-20 px-2 sm:px-4 md:px-8 pt-4 sm:pt-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                        {}
+                        {/* Sección de Mapas (2/3 del ancho) */}
                         <div className="xl:col-span-2">
-                            {}
+                            {/* Sección de Mapas con diseño premium */}
                             <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 shadow-2xl ">
                                 <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
                                         <div className="flex items-center gap-2 sm:gap-3">
@@ -254,8 +292,15 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                         </div>
                                 </div>
 
-                                <div ref={mapsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6">
-                                    {MAPS.map((map) => {
+                                <div ref={mapsRef} className="space-y-8">
+                                    {/* Sección Supervivencia */}
+                                    <div>
+                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
+                                            <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
+                                            {t('stats.survivalMode') || 'Supervivencia'}
+                                        </h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                                            {SURVIVAL_MAPS.map((map) => {
                                         const mapStats = playerData?.maps?.[map] || {
                                             topRound: 0,
                                             totalKills: 0,
@@ -274,9 +319,9 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
                                         return (
                                             <div key={map} className="map-card group relative bg-gradient-to-br from-white/70 to-slate-50/70 dark:from-slate-800/70 dark:to-slate-900/70 backdrop-blur-xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg">
-                                                {}
+                                                {/* Header del mapa - click para modal */}
                                                 <div className="cursor-pointer" onClick={() => handleMapClick(map)}>
-                                                {}
+                                                {/* Banner del mapa con overlay mejorado */}
                                                 <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden">
                                                     <LazyImage
                                                         src={mapBanner}
@@ -286,7 +331,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                                                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100"></div>
 
-                                                    {}
+                                                    {/* Información principal sobre la imagen */}
                                                     <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3">
                                                         <h3 className="text-base sm:text-lg md:text-xl font-black text-white drop-shadow-2xl mb-1.5 sm:mb-2">{MAP_DISPLAY_NAMES[map]}</h3>
                                                         <div className="flex items-center justify-between gap-2">
@@ -301,11 +346,11 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                 </div>
 
                                                 </div>
-                                                {}
+                                                {/* Fin del header clickeable */}
 
-                                                {}
+                                                {/* Estadísticas detalladas con funcionalidad de desplegar */}
                                                 <div className="p-3 sm:p-4">
-                                                    {}
+                                                    {/* Botón de expandir/colapsar */}
                                                     <div className="flex items-center justify-between mb-3">
                                                         <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium">
                                                             {t('stats.performanceStats')}
@@ -329,32 +374,32 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                         </button>
                                                     </div>
 
-                                                    {}
+                                                    {/* Estadísticas detalladas - se muestran cuando está expandido */}
                                                     {isExpanded && (
                                                         <div className="space-y-2">
                                                             <div className="grid grid-cols-2 gap-2">
-                                                                {}
+                                                                {/* Kills */}
                                                                 <div className="relative bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/20 rounded-lg p-2 text-center group/stat hover:border-red-500/40">
                                                                     <Target className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.kills')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-red-500 dark:text-red-400">{mapStats.totalKills}</p>
                                                                 </div>
 
-                                                                {}
+                                                                {/* Headshots */}
                                                                 <div className="relative bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-lg p-2 text-center group/stat hover:border-orange-500/40">
                                                                     <CrosshairIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.headshots')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-orange-500 dark:text-orange-400">{mapStats.totalHeadshots}</p>
                                                                 </div>
 
-                                                                {}
+                                                                {/* Revives */}
                                                                 <div className="relative bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-lg p-2 text-center group/stat hover:border-green-500/40">
                                                                     <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.revives')}</p>
                                                                     <p className="text-base sm:text-lg md:text-xl font-black text-green-500 dark:text-green-400">{mapStats.totalRevives}</p>
                                                                 </div>
 
-                                                                {}
+                                                                {/* Downs */}
                                                                 <div className="relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-lg p-2 text-center group/stat hover:border-blue-500/40">
                                                                     <UserDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 mx-auto mb-0.5 sm:mb-1" />
                                                                     <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.downs')}</p>
@@ -362,7 +407,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                                 </div>
                                                             </div>
 
-                                                            {}
+                                                            {/* Score total */}
                                                             <div className="relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-lg p-3 text-center group/stat hover:border-purple-500/40">
                                                                 <Award className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 mx-auto mb-1" />
                                                                 <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.totalScore')}</p>
@@ -371,7 +416,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                                         </div>
                                                     )}
 
-                                                    {}
+                                                    {/* Mensaje cuando no está expandido */}
                                                     {!isExpanded && (
                                                         <div className="text-center">
                                                             <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.clickForDetails')}</p>
@@ -385,7 +430,132 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                 </div>
                             </div>
 
-                            {}
+                                    {/* Sección Classic */}
+                                    <div>
+                                        <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
+                                            <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
+                                            {t('stats.classicMode') || 'Classic'}
+                                        </h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                                            {CLASSIC_MAPS.map((map) => {
+                                                const mapStats = playerData?.maps?.[map] || {
+                                                    topRound: 0,
+                                                    totalKills: 0,
+                                                    totalHeadshots: 0,
+                                                    totalRevives: 0,
+                                                    totalDowns: 0,
+                                                    totalScore: 0,
+                                                    gamesPlayed: 0,
+                                                    lastPlayed: 'N/A'
+                                                };
+
+                                                const mapCode = MAP_NAME_TO_CODE[map] || map;
+                                                const mapBanner = MAP_BANNERS[mapCode] || 'https://picsum.photos/seed/map/400/200';
+
+                                                const isExpanded = expandedMaps.has(map);
+
+                                                return (
+                                                    <div key={map} className="map-card group relative bg-gradient-to-br from-white/70 to-slate-50/70 dark:from-slate-800/70 dark:to-slate-900/70 backdrop-blur-xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-xl sm:rounded-2xl overflow-hidden hover:border-purple-500/50 hover:shadow-lg">
+                                                        <div className="cursor-pointer" onClick={() => handleMapClick(map)}>
+                                                            <div className="relative h-28 sm:h-32 md:h-36 overflow-hidden">
+                                                                <LazyImage
+                                                                    src={mapBanner}
+                                                                    alt={`${MAP_DISPLAY_NAMES[map]} banner`}
+                                                                    className="w-full h-full object-cover group-hover:scale-105"
+                                                                />
+                                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100"></div>
+
+                                                                <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 right-2 sm:right-3">
+                                                                    <h3 className="text-base sm:text-lg md:text-xl font-black text-white drop-shadow-2xl mb-1.5 sm:mb-2">{MAP_DISPLAY_NAMES[map]}</h3>
+                                                                    <div className="flex items-center justify-between gap-2">
+                                                                        <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg font-black text-xs sm:text-sm shadow-lg">
+                                                                            {t('stats.round')} {mapStats.topRound}
+                                                                        </div>
+                                                                        <span className="bg-black/40 backdrop-blur-sm text-slate-200 px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-xs font-bold border border-white/10">
+                                                                            {mapStats.gamesPlayed} {t('stats.matches')}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="p-3 sm:p-4">
+                                                            <div className="flex items-center justify-between mb-3">
+                                                                <span className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-medium">
+                                                                    {t('stats.performanceStats')}
+                                                                </span>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        toggleMapExpansion(map);
+                                                                    }}
+                                                                    className="flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors"
+                                                                >
+                                                                    {isExpanded ? t('stats.collapse') : t('stats.expand')}
+                                                                    <svg
+                                                                        className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+
+                                                            {isExpanded && (
+                                                                <div className="space-y-2">
+                                                                    <div className="grid grid-cols-2 gap-2">
+                                                                        <div className="relative bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/20 rounded-lg p-2 text-center group/stat hover:border-red-500/40">
+                                                                            <Target className="w-3 h-3 sm:w-4 sm:h-4 text-red-400 mx-auto mb-0.5 sm:mb-1" />
+                                                                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.kills')}</p>
+                                                                            <p className="text-base sm:text-lg md:text-xl font-black text-red-500 dark:text-red-400">{mapStats.totalKills}</p>
+                                                                        </div>
+
+                                                                        <div className="relative bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-lg p-2 text-center group/stat hover:border-orange-500/40">
+                                                                            <CrosshairIcon className="w-3 h-3 sm:w-4 sm:h-4 text-orange-400 mx-auto mb-0.5 sm:mb-1" />
+                                                                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.headshots')}</p>
+                                                                            <p className="text-base sm:text-lg md:text-xl font-black text-orange-500 dark:text-orange-400">{mapStats.totalHeadshots}</p>
+                                                                        </div>
+
+                                                                        <div className="relative bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 rounded-lg p-2 text-center group/stat hover:border-green-500/40">
+                                                                            <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-green-400 mx-auto mb-0.5 sm:mb-1" />
+                                                                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.revives')}</p>
+                                                                            <p className="text-base sm:text-lg md:text-xl font-black text-green-500 dark:text-green-400">{mapStats.totalRevives}</p>
+                                                                        </div>
+
+                                                                        <div className="relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-lg p-2 text-center group/stat hover:border-blue-500/40">
+                                                                            <UserDownIcon className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400 mx-auto mb-0.5 sm:mb-1" />
+                                                                            <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-0.5 sm:mb-1">{t('stats.downs')}</p>
+                                                                            <p className="text-base sm:text-lg md:text-xl font-black text-blue-500 dark:text-blue-400">{mapStats.totalDowns}</p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="relative bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/20 rounded-lg p-3 text-center group/stat hover:border-purple-500/40">
+                                                                        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 mx-auto mb-1" />
+                                                                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.totalScore')}</p>
+                                                                        <p className="text-lg sm:text-xl md:text-2xl font-black text-purple-500 dark:text-purple-400">{mapStats.totalScore.toLocaleString()}</p>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {!isExpanded && (
+                                                                <div className="text-center">
+                                                                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">{t('stats.clickForDetails')}</p>
+                                                                    <p className="text-xs text-slate-400 dark:text-slate-500">{t('stats.detailedStats')}</p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Banner de partidas recientes - debajo de Map Performance */}
                             <div className="mt-6 sm:mt-8">
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl ">
                                     <RecentMatchesBanner playerGuid={player.guid} />
@@ -394,15 +564,15 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
                         </div>
 
-                        {}
+                        {/* Panel lateral derecho con avatar y estadísticas */}
                         <div className="xl:col-span-1">
                             <div className="xl:sticky xl:top-8 space-y-4 sm:space-y-6">
-                                {}
+                                {/* Avatar del jugador mejorado responsive */}
                                 <div
                                     className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-2xl text-center overflow-hidden group cursor-pointer hover:border-purple-500/50 transition-all duration-300"
-                                    onClick={() => setIsProfileModalOpen(true)}
+                                    onClick={handleProfileClick}
                                 >
-                                    {}
+                                    {/* Background glow effect */}
                                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100"></div>
                                     
                                     <div className="relative">
@@ -420,7 +590,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                     </div>
                                 </div>
 
-                                {}
+                                {/* Estadísticas principales premium responsive */}
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl ">
                                     <div className="flex items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 justify-center">
                                         <Award className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
@@ -476,7 +646,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                         </div>
                                     </div>
                                 </div>
-                                {}
+                                {/* Sección de Banco Premium responsive */}
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-2xl border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl overflow-hidden ">
                                     
                                     <div className="relative">
@@ -485,7 +655,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                             <h3 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">{t('stats.bankAccount')}</h3>
                                         </div>
                                         
-                                        {}
+                                        {/* Balance principal */}
                                         <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-2 border-yellow-500/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
                                             <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-2">
                                                 <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-500 dark:text-yellow-400" />
@@ -496,7 +666,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
                                         </p>
                                     </div>
 
-                                        {}
+                                        {/* Transacciones recientes */}
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-700 to-transparent"></div>
@@ -536,10 +706,7 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
             <MapModal
                 isOpen={isMapModalOpen}
-                onClose={() => {
-                    setIsMapModalOpen(false);
-                    setSelectedMap(null);
-                }}
+                onClose={handleCloseMapModal}
                 selectedMap={selectedMap}
                 mapDisplayNames={MAP_DISPLAY_NAMES}
                 playerData={playerData}
@@ -547,11 +714,11 @@ const Statistics: React.FC<StatisticsProps> = ({ player }) => {
 
             <ProfileModal
                 isOpen={isProfileModalOpen}
-                onClose={() => setIsProfileModalOpen(false)}
+                onClose={handleCloseProfileModal}
                 player={player}
             />
         </div>
     );
-};
+});
 
 export default Statistics;

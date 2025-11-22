@@ -173,7 +173,7 @@ export const MAP_BANNERS: Record<string, string> = {
   "zm_nuked": "./data/images/load_maps/zm_nuked.jpg",
   "zm_prison": "./data/images/load_maps/zm_prison.jpg",
   "zm_tomb": "./data/images/load_maps/zm_tomb.jpg",
-  "zm_transit": "./data/images/load_maps/zm_transit.jpg",
+  "zm_tranzit": "./data/images/load_maps/zm_tranzit.jpg",
   "zm_town": "./data/images/load_maps/zm_town.jpg",
   "zm_farm": "./data/images/load_maps/zm_farm.jpg",
   "zm_busdepot":"./data/images/load_maps/zm_busdepot.jpg"
@@ -184,11 +184,11 @@ export const MAP_NAME_TO_CODE = {
   "nuked": "zm_nuked",
   "prison": "zm_prison",
   "tomb": "zm_tomb",
-  "transit": "zm_transit",
-  "diner": "zm_transit",
-  "farm": "zm_farm", 
+  "tranzit": "zm_tranzit",
+  "diner": "zm_tranzit",
+  "farm": "zm_farm",
   "town": "zm_town",
-  "processing": "zm_buried", 
+  "processing": "zm_buried",
   "rooftop": "zm_highrise",
   "busdepot": "zm_busdepot"
 };

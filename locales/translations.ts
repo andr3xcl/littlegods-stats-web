@@ -8,7 +8,7 @@ export const translations = {
 
     // Sidebar
     'sidebar.players': 'Jugadores',
-    
+
     // Home
     'home.title': 'Player',
     'home.subtitle': 'Stats',
@@ -25,7 +25,7 @@ export const translations = {
     'home.feature.history.desc': 'Accede a todas tus partidas anteriores y progresión',
     'home.feature.economy': 'Sistema de Economía',
     'home.feature.economy.desc': 'Gestiona tu banco de puntos y transacciones del juego',
-    
+
     // Statistics
     'stats.mapPerformance': 'Rendimiento por Mapa',
     'stats.overallStats': 'Estadísticas Generales',
@@ -68,6 +68,10 @@ export const translations = {
     'stats.trackProgressDesc': 'Monitorea tus mejoras, récords y tendencias a lo largo del tiempo.',
     'stats.refreshData': 'Actualizar Datos',
     'stats.launchGame': 'Lanzar Juego',
+
+    // Modos de juego
+    'stats.survivalMode': 'Supervivencia',
+    'stats.classicMode': 'Classic',
 
     // Página cuando no hay jugador seleccionado
     'stats.selectPlayerTitle': 'Selecciona un Jugador',
@@ -121,6 +125,10 @@ export const translations = {
     'modal.withdraw': 'Retiro',
     'modal.received': 'Recibido',
     'modal.sent': 'Enviado',
+    'modal.deposits': 'Depósitos',
+    'modal.withdrawals': 'Retiros',
+    'modal.balance': 'Balance',
+    'modal.perMatch': 'por partida',
 
     // Metric descriptions
     'metric.kills.desc': 'Asesinatos por partida',
@@ -129,7 +137,7 @@ export const translations = {
     'metric.headshots.desc': 'Disparos a la cabeza',
     'metric.score.desc': 'Puntuación por partida',
     'metric.bank.desc': 'Balance bancario',
-    
+
     // Recent Matches
     'matches.title': 'Partidas Recientes',
     'matches.registered': 'partidas registradas',
@@ -138,7 +146,7 @@ export const translations = {
     'matches.downs.count': 'caídas',
     'matches.disconnect': 'disconnect',
     'matches.round': 'Ronda',
-    
+
     // Player Modal
     'player.select': 'Seleccionar Jugador',
     'player.search': 'Buscar por nombre o GUID...',
@@ -146,7 +154,7 @@ export const translations = {
     'player.singular': 'jugador',
     'player.plural': 'jugadores',
     'player.filtered': 'filtrados',
-    
+
     // Settings
     'settings.title': 'Configuración',
     'settings.subtitle': 'Personaliza la interfaz de la aplicación. Elige entre el tema claro y oscuro para una experiencia visual adaptada a tus preferencias.',
@@ -160,9 +168,9 @@ export const translations = {
     'settings.language.spanish': 'Español',
     'settings.language.english': 'English',
     'settings.language.portuguese': 'Português',
-    
+
     // Maps
-    'map.transit': 'Transit',
+    'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
     'map.tomb': 'Tomb',
@@ -175,10 +183,10 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
-    
+
     // Footer
     'footer.text': 'Littlegods Project',
-    
+
     // General
     'general.loading': 'Cargando datos...',
   },
@@ -253,6 +261,10 @@ export const translations = {
     'stats.refreshData': 'Refresh Data',
     'stats.launchGame': 'Launch Game',
 
+    // Game modes
+    'stats.survivalMode': 'Survival',
+    'stats.classicMode': 'Classic',
+
     // Page when no player is selected
     'stats.selectPlayerTitle': 'Select a Player',
     'stats.selectPlayerSubtitle': 'To view statistics, you must first select a player from the sidebar.',
@@ -305,6 +317,10 @@ export const translations = {
     'modal.withdraw': 'Withdraw',
     'modal.received': 'Received',
     'modal.sent': 'Sent',
+    'modal.deposits': 'Deposits',
+    'modal.withdrawals': 'Withdrawals',
+    'modal.balance': 'Balance',
+    'modal.perMatch': 'per match',
 
     // Metric descriptions
     'metric.kills.desc': 'Kills per match',
@@ -346,7 +362,7 @@ export const translations = {
     'settings.language.portuguese': 'Português',
     
     // Maps
-    'map.transit': 'Transit',
+    'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
     'map.tomb': 'Tomb',
@@ -359,10 +375,10 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
-    
+
     // Footer
     'footer.text': 'Littlegods Project',
-    
+
     // General
     'general.loading': 'Loading data...',
   },
@@ -437,6 +453,10 @@ export const translations = {
     'stats.refreshData': 'Atualizar Dados',
     'stats.launchGame': 'Iniciar Jogo',
 
+    // Modos de jogo
+    'stats.survivalMode': 'Sobrevivência',
+    'stats.classicMode': 'Classic',
+
     // Página quando nenhum jogador está selecionado
     'stats.selectPlayerTitle': 'Selecione um Jogador',
     'stats.selectPlayerSubtitle': 'Para ver as estatísticas, você deve primeiro selecionar um jogador na barra lateral.',
@@ -489,6 +509,10 @@ export const translations = {
     'modal.withdraw': 'Saque',
     'modal.received': 'Recebido',
     'modal.sent': 'Enviado',
+    'modal.deposits': 'Depósitos',
+    'modal.withdrawals': 'Saques',
+    'modal.balance': 'Saldo',
+    'modal.perMatch': 'por partida',
 
     // Metric descriptions
     'metric.kills.desc': 'Mortes por partida',
@@ -530,7 +554,7 @@ export const translations = {
     'settings.language.portuguese': 'Português',
     
     // Maps
-    'map.transit': 'Transit',
+    'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
     'map.tomb': 'Tomb',
@@ -543,10 +567,10 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
-    
+
     // Footer
     'footer.text': 'Projeto Littlegods',
-    
+
     // General
     'general.loading': 'Carregando dados...',
   },
