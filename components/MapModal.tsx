@@ -337,10 +337,14 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
   const safeMapBanner = mapBanner && mapBanner.trim() !== '' ? mapBanner : null;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${getThemeClasses({
-      light: 'bg-black/60',
-      dark: 'bg-black/80'
-    })}`} onClick={onClose}>
+    <div
+      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-in fade-in duration-200 ${getThemeClasses({
+        light: 'bg-black/90 backdrop-blur-xl',
+        dark: 'bg-black/95 backdrop-blur-xl'
+      })}`}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+      onClick={onClose}
+    >
       <div
         className={`w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-2xl shadow-2xl border ${getThemeClasses({
           light: 'bg-white border-gray-200',

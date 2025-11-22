@@ -78,6 +78,7 @@ const WEAPON_IMAGES: Record<string, string> = {
   'Mauser C96': './data/images/weapons/Mauser_C96_menu_icon_BOII.jpg',
 
   'MP5': './data/images/weapons/MP5_menu_icon_BOII.jpg',
+  'Mp5k Upgraded': './data/images/weapons/MP5_menu_icon_BOII.jpg',
   'PDW-57': './data/images/weapons/PDW-57_Menu_Icon_BOII.jpg',
   'AK-74u': './data/images/weapons/AK-74u_Menu_Icon_BOII.jpg',
   'Chicom CQB': './data/images/weapons/Chicom_CQB_Menu_Icon_BOII.jpg',
@@ -89,6 +90,7 @@ const WEAPON_IMAGES: Record<string, string> = {
 
   'M14': './data/images/weapons/M14_menu_icon_BOII.jpg',
   'FAL': './data/images/weapons/FAL_menu_icon_BOII.jpg',
+  'Fnfal+reflex Upgraded': './data/images/weapons/FAL_menu_icon_BOII.jpg',
   'Galil': './data/images/weapons/Galil_menu_icon_BOII.jpg',
   'M16': './data/images/weapons/Colt_M16A1_menu_icon_BOII.jpg',
   'TAR-21': './data/images/weapons/MTAR_Menu_Icon_BOII.jpg',
