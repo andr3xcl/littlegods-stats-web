@@ -8,7 +8,7 @@
 </h1>
 
 <p align="center">
-<img src="https://github.com/user-attachments/assets/4d2622db-13a4-4a53-8b2c-660c90a682c6"
+<img src="https://github.com/user-attachments/assets/1f5d4b20-bda4-4340-987b-99197c7ffc63"
 alt="Littlegods Stats Web"
 width="85%"
 style="border-radius:18px;box-shadow:0 0 25px #C000FF;">
@@ -22,81 +22,68 @@ style="border-radius:18px;box-shadow:0 0 25px #C000FF;">
 <a href="https://www.google.com/search?q=https://github.com/andr3xcl"><img src="https://img.shields.io/badge/CREATOR-andr3xcl-1A001A?style=for-the-badge&logo=github&logoColor=%23C300FF" alt="Creador: andr3xcl"></a>
 </p>
 
-<h3 align="center">
+# Littlegods Stats Web
 
-</h3>
+**Littlegods Stats Web** is a project created for the **T6 Zombies** community, designed for both personal use and server integration.  
+With this tool, you can **save your stats**, **view them through a web interface**, compare previous matches, and enjoy multiple **visual interactions**.
 
-**Littlegods Stats Web** is a tool created to visualize player statistics, player information, and Zombies mode data from **Call of Duty: Black Ops 2 (Plutonium)**.
+Although this project starts at version **v1.0.0**, it will be continuously updated to **fix issues**, **improve features**, and **add new content**.
 
-### Installation and Usage
+---
 
-Quick guide to set up and start the project locally.
+## 🛠️ Installation Guide
 
-### Prerequisites
+### 1. Requirements
+- Install **[Node.js](https://nodejs.org/en/download)**
 
-[Node.js](https://nodejs.org/)
+### 2. Get the project
+- Clone the repository or download the `.zip` version  
+- Extract the files and open the main folder  
+  Everything is automated to make the process easy — simply follow these steps:
 
-[Plutonium](https://plutonium.pw/docs/install/)
+---
 
-### Project Download
+## 🚀 Automatic Setup Steps
 
-You can download the latest version from the repository:
+### **Step 1:**  
+Go to the **`utils/automatic`** folder.  
+Inside you will find executables that allow the project to run correctly.
 
-### Download ZIP from the repository
+### **Step 2:**  
+Run **`npm_dependencies.bat`**  
+> This installs all required web dependencies.
 
-Once downloaded, extract the content into a folder where you keep your projects.
+### **Step 3:**  
+Run **`scripts_zm.bat`**  
+> This will copy all `.gsc` files from the project's `zm` folder into your game path:  
+`%localappdata%\Plutonium\storage\t6\raw\scripts\zm`
 
-### Web Project Configuration
+### **Step 4:**  
+Run **`run_stats_web.bat`**  
+> This starts the full project by running:
+- `npm run dev` (web server)  
+- `node utils/watchdog.js` (statistics tracking)
 
-Open a terminal (PowerShell) in the directory where you extracted the project and run the following commands:
+#### Optional individual start:
+- **Step 4.1:** `run_web.bat` → Starts only the web  
+- **Step 4.2:** `run_watchdog.bat` → Starts only the stats tracker (recommended for performance)
 
-### Install project dependencies
-```bash
-npm install
-```
-### GSC Script Installation (Game)
-
-These scripts are required for the game to collect and send statistics.
-
-Press **Windows + R** to open the "Run" dialog.
-
-Paste the following path and press **Enter**:
-
-```bash
-%localappdata%\Plutonium\storage\t6\raw\scripts\zm
-```
-Locate the **stats_gsc** folder that came in the ZIP you downloaded.
-
-Extract all the contents of the **stats_gsc** folder directly into the **zm** folder.
-
-### Launch the Application
-
-You will need to have two terminals open in the project folder:
-
-**Terminal 1:** Start the Web Server
-
-### Start the web project
-
-```bash
-npm run dev
-```
+### **Step 5:**  
+You're done! Launch **Plutonium → Zombies** and have fun.
 
 
-🟢 The web application will be available at [http://localhost:3000/](http://localhost:3000/).
+<img width="1903" height="964" alt="Captura de pantalla 2025-11-25 164437" src="https://github.com/user-attachments/assets/3095317f-fff4-42e9-b848-c9f6bf513eab" />
+<img width="1903" height="960" alt="Captura de pantalla 2025-11-25 164503" src="https://github.com/user-attachments/assets/3c5c31b6-6d2f-497b-a1d2-b7f62aa4703d" />
+<img width="1906" height="958" alt="Captura de pantalla 2025-11-25 164528" src="https://github.com/user-attachments/assets/cf56eb60-b586-45a0-b0f3-7ec519b70105" />
+<img width="1907" height="963" alt="image" src="https://github.com/user-attachments/assets/f5e399e5-dde0-4079-b4e6-c3fdc2300947" />
 
-**Terminal 2:** Start the Tracker (Watchdog)
 
-### Start the real-time statistics tracker
 
-```bash
-node utils/watchdog.js
-```
 
-🟢 This script monitors the statistics files and updates the web in real time.
+
 
 
 ## 📜 License
 This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).  
 See the [LICENSE](LICENSE) file for more details.
->>>>>>> e78839f886b3ed6bc3c824932df885e8376850c7
 
