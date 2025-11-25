@@ -102,6 +102,8 @@ bank_deposit(player, amount)
         player iPrintlnBold("^2Depositaste ^7" + amount + "^2 puntos. Balance: ^7" + new_balance);
     else
         player iPrintlnBold("^2Deposited ^7" + amount + "^2 points. Balance: ^7" + new_balance);
+
+    log_bank_transaction(player, "DEPOSIT", amount, "Balance: " + new_balance);
 }
 
 
@@ -284,6 +286,8 @@ bank_withdraw(player, amount)
         player iPrintlnBold("^2Retiraste ^7" + amount + "^2 puntos. Balance restante: ^7" + new_balance);
     else
         player iPrintlnBold("^2Withdrew ^7" + amount + "^2 points. Remaining balance: ^7" + new_balance);
+
+    log_bank_transaction(player, "WITHDRAW", amount, "Balance: " + new_balance);
 }
 
 
@@ -372,6 +376,9 @@ bank_pay_player(payer, receiver_name, amount)
         payer iPrintlnBold("^2Paid ^7" + amount + "^2 points to ^7" + receiver.name);
         receiver iPrintlnBold("^3Received ^7" + amount + "^3 points from ^7" + payer.name);
     }
+
+    log_bank_transaction(payer, "TRANSFER_SENT", amount, "To: " + receiver.name);
+    log_bank_transaction(receiver, "TRANSFER_RECEIVED", amount, "From: " + payer.name);
 }
 
 
@@ -482,6 +489,8 @@ bank_pay_to_guid(payer, target_guid, amount)
         payer iPrintlnBold("^2Depositaste ^7" + amount + "^2 puntos al banco de ^7" + player_name);
     else
         payer iPrintlnBold("^2Deposited ^7" + amount + "^2 points to ^7" + player_name + "'s bank");
+
+    log_bank_transaction(payer, "TRANSFER_SENT_GUID", amount, "To GUID: " + target_guid);
 }
 
 
@@ -712,7 +721,7 @@ save_recent_match(player, map_name, round_number, kills, headshots, revives, dow
     player_guid = player getGuid();
 
     
-    directory = "scriptdata/recent/" + player_guid + "/";
+    directory = "scriptdata/recent/" + player_guid + "/" + map_name + "/";
 
     
     next_match_number = get_next_recent_match_number(player_guid, map_name);
@@ -746,6 +755,21 @@ save_recent_match(player, map_name, round_number, kills, headshots, revives, dow
     fs_write(file, "GUID: " + player_guid + "\n");
     fs_write(file, "Mapa: " + map_name + "\n");
     fs_write(file, "Ronda Alcanzada: " + round_number + "\n");
+
+    time = int(getTime() / 1000);
+    hours = int(time / 3600);
+    minutes = int((time % 3600) / 60);
+    seconds = time % 60;
+    
+    time_str = "";
+    if (hours < 10) time_str += "0";
+    time_str += hours + ":";
+    if (minutes < 10) time_str += "0";
+    time_str += minutes + ":";
+    if (seconds < 10) time_str += "0";
+    time_str += seconds;
+
+    fs_write(file, "Duracion: " + time_str + "\n");
     fs_write(file, "\n");
     fs_write(file, "ESTADISTICAS DE LA PARTIDA:\n");
     fs_write(file, "Kills: " + kills + "\n");
@@ -804,6 +828,17 @@ save_recent_match(player, map_name, round_number, kills, headshots, revives, dow
         }
     }
 
+    if (isDefined(player.bank_transaction_history) && player.bank_transaction_history.size > 0)
+    {
+        fs_write(file, "\nTRANSACCIONES BANCARIAS:\n");
+        fs_write(file, "--------------------------------\n");
+        foreach (transaction in player.bank_transaction_history)
+        {
+            fs_write(file, transaction + "\n");
+        }
+        fs_write(file, "--------------------------------\n");
+    }
+
     fs_write(file, "\n");
     fs_write(file, "Fecha/Hora: " + current_time + "\n");
     fs_write(file, "================================\n");
@@ -817,11 +852,40 @@ save_recent_match(player, map_name, round_number, kills, headshots, revives, dow
     }
 }
 
+log_bank_transaction(player, type, amount, detail)
+{
+    if (!isDefined(player.bank_transaction_history))
+    {
+        player.bank_transaction_history = [];
+    }
+
+    // Format: [TIME] TYPE: AMOUNT - DETAIL
+    // Time in seconds since start of game roughly
+    time = int(getTime() / 1000);
+    
+    // Convert seconds to HH:MM:SS
+    hours = int(time / 3600);
+    minutes = int((time % 3600) / 60);
+    seconds = time % 60;
+    
+    time_str = "";
+    if (hours < 10) time_str += "0";
+    time_str += hours + ":";
+    if (minutes < 10) time_str += "0";
+    time_str += minutes + ":";
+    if (seconds < 10) time_str += "0";
+    time_str += seconds;
+
+    log_entry = "[" + time_str + "] " + type + ": " + amount + " - " + detail;
+    
+    player.bank_transaction_history[player.bank_transaction_history.size] = log_entry;
+}
+
 
 get_next_recent_match_number(player_guid, map_name)
 {
     
-    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "_index.txt";
+    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + map_name + "_index.txt";
 
     if (!fs_testfile(index_filename))
     {
@@ -850,7 +914,7 @@ get_next_recent_match_number(player_guid, map_name)
 
 update_match_index(player_guid, map_name, match_number)
 {
-    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "_index.txt";
+    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + map_name + "_index.txt";
 
     file = fs_fopen(index_filename, "write");
     if (!isDefined(file))
@@ -871,7 +935,7 @@ show_recent_matches(player, map_name)
     player_guid = player getGuid();
 
     
-    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "_index.txt";
+    index_filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + map_name + "_index.txt";
 
     if (!fs_testfile(index_filename))
     {
@@ -904,7 +968,7 @@ show_recent_matches(player, map_name)
     files = [];
     for (i = last_match_number; i > 0 && files.size < 5; i--)
     {
-        filename = "scriptdata/recent/" + player_guid + "/" + map_name + "_recent_" + i + ".txt";
+        filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + map_name + "_recent_" + i + ".txt";
         if (fs_testfile(filename))
         {
             files[files.size] = map_name + "_recent_" + i + ".txt";
@@ -931,7 +995,7 @@ show_recent_matches(player, map_name)
 
     for (i = 0; i < display_count; i++)
     {
-        filename = "scriptdata/recent/" + player_guid + "/" + files[i];
+        filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + files[i];
 
         if (!fs_testfile(filename))
             continue;
@@ -995,7 +1059,7 @@ show_recent_matches(player, map_name)
 show_recent_match_details(player, map_name, match_number)
 {
     player_guid = player getGuid();
-    filename = "scriptdata/recent/" + player_guid + "/" + map_name + "_recent_" + match_number + ".txt";
+    filename = "scriptdata/recent/" + player_guid + "/" + map_name + "/" + map_name + "_recent_" + match_number + ".txt";
 
     if (!fs_testfile(filename))
     {

@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-// Script para procesar archivos .txt y generar JSONs
-// Uso: node process-stats.js
-
 import { createExampleTxtFiles } from './utils/txtParser.js';
 
 const args = process.argv.slice(2);

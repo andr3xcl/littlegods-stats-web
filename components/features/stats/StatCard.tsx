@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { useGSAP } from '../utils/gsap';
+import { useGSAP } from '../../../utils/gsap';
 
 interface StatCardProps {
   label: string;

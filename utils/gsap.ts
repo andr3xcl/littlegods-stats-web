@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,7 +16,7 @@ export const useGSAP = () => {
     };
   }, []);
 
-  return {
+  return useMemo(() => ({
     // Animación de entrada para modales
     animateModalIn: (element: HTMLElement | string) => {
       gsap.set(element, { opacity: 0, scale: 0.9, y: 20 });
@@ -158,6 +158,11 @@ export const useGSAP = () => {
     createTimeline: () => {
       timelineRef.current = gsap.timeline();
       return timelineRef.current;
+    },
+
+    // Exponer gsap.context
+    context: (func: gsap.ContextFunc, scope?: Element | React.RefObject<Element> | string) => {
+      return gsap.context(func, scope);
     },
 
     // Función para matar todas las animaciones de un elemento
@@ -322,5 +327,5 @@ export const useGSAP = () => {
     killAllScrollTriggers: () => {
       ScrollTrigger.killAll();
     }
-  };
+  }), []);
 };

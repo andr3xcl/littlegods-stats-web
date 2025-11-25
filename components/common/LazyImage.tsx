@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useGSAP } from '../utils/gsap';
+import { useGSAP } from '../../utils/gsap';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -84,14 +84,14 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      {}
+      { }
       {!isLoaded && !hasError && (
         <div ref={placeholderRef} className="absolute inset-0 bg-slate-700 flex items-center justify-center">
           <div ref={spinnerRef} className="w-8 h-8 border-2 border-slate-400 border-t-slate-200 rounded-full"></div>
         </div>
       )}
 
-      {}
+      { }
       <img
         ref={imgRef}
         src={isInView ? src : placeholder || ''}
@@ -102,7 +102,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
         {...props}
       />
 
-      {}
+      { }
       {hasError && (
         <div className="absolute inset-0 bg-slate-700 flex items-center justify-center">
           <div className="text-slate-400 text-sm text-center p-2">

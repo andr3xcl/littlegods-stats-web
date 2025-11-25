@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { loadPlayersData, loadPlayerData, loadRecentMatches, loadEconomyData } from './constants';
+import { loadPlayersIndex, loadPlayerData, loadRecentMatches, loadEconomyData } from './constants';
 import type { PlayerProfile, RecentMatch, EconomyData } from './types';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
-import Header from './components/Header';
-import PlayerSidebar from './components/PlayerSidebar';
+import { SoundProvider } from './contexts/SoundContext';
+import Header from './components/layout/Header';
 
 const Home = React.lazy(() => import('./pages/Home'));
 const Statistics = React.lazy(() => import('./pages/Statistics'));
@@ -28,23 +28,26 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Cargar datos desde data_player.json
-        const response = await fetch('./data/data_player.json');
-        if (response.ok) {
-          const allPlayerData = await response.json();
-          const playerGuids = Object.keys(allPlayerData);
-          const players = playerGuids.map(guid => allPlayerData[guid]);
+        // Load players index first
+        const index = await loadPlayersIndex();
 
+        // Then load data for each player
+        const playerPromises = index.map(entry => loadPlayerData(entry.username));
+        const players = (await Promise.all(playerPromises)).filter((p): p is PlayerProfile => p !== null);
+
+        if (players.length > 0) {
           setPlayersData(players);
-          setSelectedPlayer(players[0] || null);
-          setRecentMatches([]); // Mantener datos mock por ahora
-          setEconomyData({ balance: 0, transactions: [] }); // Mantener datos mock por ahora
+          // If no selectedPlayer or selectedPlayer not in list, select first
+          if (!selectedPlayer || !players.find(p => p.guid === selectedPlayer.guid)) {
+            setSelectedPlayer(players[0]);
+          }
+          setRecentMatches([]); // Mock/Empty initially, loaded by components
+          setEconomyData({ balance: 0, transactions: [] });
         } else {
-          throw new Error('No se pudo cargar data_player.json');
+          console.warn('Players index is empty.');
         }
       } catch (error) {
-        console.warn('Failed to load data from files, using mock data:', error);
-        // Ya tenemos los datos mock por defecto
+        console.warn('Failed to load data:', error);
       } finally {
         setLoading(false);
       }
@@ -52,7 +55,7 @@ const AppContent: React.FC = () => {
 
     loadData();
   }, []);
-  
+
   const renderContent = () => {
     if (loading) {
       return (
@@ -68,17 +71,21 @@ const AppContent: React.FC = () => {
       </div>
     );
 
-    switch(activeView) {
+    switch (activeView) {
       case 'Home':
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <Home />
+            <Home onNavigate={setActiveView} />
           </Suspense>
         );
       case 'Estadisticas':
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <Statistics player={selectedPlayer} />
+            <Statistics
+              player={selectedPlayer}
+              players={playersData}
+              onSelectPlayer={setSelectedPlayer}
+            />
           </Suspense>
         );
       case 'Settings':
@@ -90,11 +97,11 @@ const AppContent: React.FC = () => {
       default:
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <Home />
+            <Home onNavigate={setActiveView} />
           </Suspense>
         );
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -106,24 +113,9 @@ const AppContent: React.FC = () => {
       />
 
       {activeView === 'Estadisticas' ? (
-        <div className="flex">
-          <PlayerSidebar
-            players={playersData}
-            selectedPlayer={selectedPlayer}
-            onSelectPlayer={setSelectedPlayer}
-          />
-          <div className="flex-1 p-2 sm:p-4 md:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto">
-              <main>
-                {renderContent()}
-              </main>
-
-              <footer className="text-center mt-8 sm:mt-12 text-slate-400 dark:text-slate-500 text-xs sm:text-sm px-4">
-                <p>{t('footer.text')}</p>
-              </footer>
-            </div>
-          </div>
-        </div>
+        <main>
+          {renderContent()}
+        </main>
       ) : (
         <div className="p-2 sm:p-4 md:p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
@@ -145,7 +137,9 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AppContent />
+        <SoundProvider>
+          <AppContent />
+        </SoundProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

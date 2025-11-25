@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from 'react';
-import type { PlayerProfile } from '../types';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useGSAP } from '../utils/gsap';
+import type { PlayerProfile } from '../../../types';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useGSAP } from '../../../utils/gsap';
+
+import { useUISounds } from '../../../hooks/useUISounds';
 
 interface PlayerModalProps {
   isOpen: boolean;
@@ -14,6 +16,7 @@ interface PlayerModalProps {
 
 const PlayerModal: React.FC<PlayerModalProps> = ({ isOpen, onClose, players, onSelectPlayer, searchTerm, setSearchTerm }) => {
   const { t } = useLanguage();
+  const { playExit } = useUISounds();
 
   // GSAP hooks y referencias
   const gsap = useGSAP();
@@ -28,10 +31,15 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ isOpen, onClose, players, onS
 
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    playExit();
+    onClose();
+  };
+
   return (
-    <div 
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4" 
-      onClick={onClose}
+    <div
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      onClick={handleClose}
       style={{ margin: 0 }}
     >
       <div

@@ -1,7 +1,7 @@
 
 import React, { useRef, useEffect } from 'react';
-import type { PlayerProfile } from '../types';
-import { useGSAP } from '../utils/gsap';
+import type { PlayerProfile } from '../../../types';
+import { useGSAP } from '../../../utils/gsap';
 
 interface PlayerBannerProps {
   player: PlayerProfile;
@@ -21,7 +21,7 @@ const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
 
   return (
     <div className="relative w-full h-80 overflow-hidden">
-      {}
+      { }
       <div className="absolute inset-0 bg-slate-900"></div>
       <img
         src={player.bannerUrl}
@@ -29,13 +29,13 @@ const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
         className="absolute top-0 left-0 w-full h-full object-cover opacity-30"
       />
 
-      {}
+      { }
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 
-      {}
+      { }
       <div className="relative z-10 w-full h-full flex items-center justify-center px-8">
         <div className="text-center">
-          {}
+          { }
           <div className="relative mb-6">
             <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full blur-xl opacity-50 scale-110"></div>
             <img
@@ -48,7 +48,7 @@ const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
             </div>
           </div>
 
-          {}
+          { }
           <h1 className="text-6xl md:text-7xl font-black mb-8">
             <span className="bg-gradient-to-r from-white via-indigo-200 to-purple-200 bg-clip-text text-transparent">
               {player.username}

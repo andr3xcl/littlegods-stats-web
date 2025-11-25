@@ -18,13 +18,11 @@ export const translations = {
     'home.stats.matches': 'Partidas',
     'home.stats.hours': 'Horas',
     'home.feature.tracking': 'Seguimiento en Tiempo Real',
-    'home.feature.tracking.desc': 'Monitorea tus estadísticas de zombies en vivo mientras juegas',
-    'home.feature.detailed': 'Análisis Detallado',
-    'home.feature.detailed.desc': 'Revisa kills, headshots, rondas y más por cada mapa',
-    'home.feature.history': 'Historial Completo',
-    'home.feature.history.desc': 'Accede a todas tus partidas anteriores y progresión',
-    'home.feature.economy': 'Sistema de Economía',
-    'home.feature.economy.desc': 'Gestiona tu banco de puntos y transacciones del juego',
+    'home.feature.tracking.desc': 'Monitorea bajas, caídas y reanimaciones al instante mientras ocurren en el juego.',
+    'home.feature.profiles': 'Perfiles de Jugador',
+    'home.feature.profiles.desc': 'Estadísticas detalladas para cada jugador, incluyendo uso de armas y rendimiento en mapas.',
+    'home.feature.rankings': 'Rankings Globales',
+    'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
 
     // Statistics
     'stats.mapPerformance': 'Rendimiento por Mapa',
@@ -42,6 +40,11 @@ export const translations = {
     'stats.bank': 'Banco',
     'stats.round': 'Ronda',
     'stats.zombies': 'Zombies',
+    'stats.bankTransactions': 'Transacciones Bancarias',
+    'common.time': 'Hora',
+    'common.type': 'Tipo',
+    'common.amount': 'Cantidad',
+    'stats.balance': 'Balance',
     'stats.matches': 'partidas',
     'stats.clickForDetails': 'Haz clic para detalles',
     'stats.detailedStats': 'Estadísticas detalladas disponibles',
@@ -112,7 +115,7 @@ export const translations = {
     'modal.noDescription': 'Sin descripción',
     'modal.improving': 'Mejorando',
     'modal.worsening': 'Empeorando',
-    'modal.matchHistory': 'Historial de Partidas - Enfoque en',
+    'modal.matchHistory': 'Historial de Partidas',
     'modal.recordMark': 'Marca récord destacada',
     'modal.worstPerformance': 'Peor rendimiento marcado',
     'modal.selectedMetric': 'Métrica seleccionada',
@@ -146,6 +149,8 @@ export const translations = {
     'matches.downs.count': 'caídas',
     'matches.disconnect': 'disconnect',
     'matches.round': 'Ronda',
+    'matches.last30Days': 'Últimos 30 días',
+    'matches.total': 'Total',
 
     // Player Modal
     'player.select': 'Seleccionar Jugador',
@@ -168,6 +173,11 @@ export const translations = {
     'settings.language.spanish': 'Español',
     'settings.language.english': 'English',
     'settings.language.portuguese': 'Português',
+    'settings.sound.title': 'Efectos de Sonido',
+    'settings.sound.enabled': 'Habilitado',
+    'settings.sound.disabled': 'Deshabilitado',
+    'settings.sound.enabledDesc': 'Reproducir sonidos al interactuar con la interfaz',
+    'settings.sound.disabledDesc': 'Desactivar todos los efectos de sonido de la UI',
 
     // Maps
     'map.transit': 'TranZit',
@@ -177,7 +187,7 @@ export const translations = {
     'map.farm': 'Farm',
     'map.nuked': 'Nuketown',
     'map.nuketown': 'Nuketown Zombies',
-    'map.processing': 'Processing',
+    'map.processing': 'Buried',
     'map.rooftop': 'Rooftop',
     'map.buried': 'Buried',
     'map.dieRise': 'Die Rise',
@@ -185,12 +195,12 @@ export const translations = {
     'map.origins': 'Origins',
 
     // Footer
-    'footer.text': 'Littlegods Project',
+    'footer.text': '© Littlegods Project - Todos los derechos reservados',
 
     // General
     'general.loading': 'Cargando datos...',
   },
-  
+
   en: {
     // Header / Navigation
     'nav.home': 'Home',
@@ -200,7 +210,7 @@ export const translations = {
 
     // Sidebar
     'sidebar.players': 'Players',
-    
+
     // Home
     'home.title': 'Player',
     'home.subtitle': 'Stats',
@@ -209,15 +219,13 @@ export const translations = {
     'home.stats.players': 'Players',
     'home.stats.matches': 'Matches',
     'home.stats.hours': 'Hours',
-    'home.feature.tracking': 'Real-Time Tracking',
-    'home.feature.tracking.desc': 'Monitor your zombie stats live while you play',
-    'home.feature.detailed': 'Detailed Analysis',
-    'home.feature.detailed.desc': 'Review kills, headshots, rounds and more per map',
-    'home.feature.history': 'Complete History',
-    'home.feature.history.desc': 'Access all your previous matches and progression',
-    'home.feature.economy': 'Economy System',
-    'home.feature.economy.desc': 'Manage your points bank and game transactions',
-    
+    'home.feature.tracking': 'Real-time Tracking',
+    'home.feature.tracking.desc': 'Monitor kills, downs, and revives instantly as they happen in-game.',
+    'home.feature.profiles': 'Player Profiles',
+    'home.feature.profiles.desc': 'Detailed statistics for every player, including weapon usage and map performance.',
+    'home.feature.rankings': 'Global Rankings',
+    'home.feature.rankings.desc': 'Compare your performance with others and climb the leaderboards.',
+
     // Statistics
     'stats.mapPerformance': 'Map Performance',
     'stats.overallStats': 'Overall Stats',
@@ -234,6 +242,11 @@ export const translations = {
     'stats.bank': 'Bank',
     'stats.round': 'Round',
     'stats.zombies': 'Zombies',
+    'stats.bankTransactions': 'Bank Transactions',
+    'common.time': 'Time',
+    'common.type': 'Type',
+    'common.amount': 'Amount',
+    'stats.balance': 'Balance',
     'stats.matches': 'matches',
     'stats.clickForDetails': 'Click for details',
     'stats.detailedStats': 'Detailed stats available',
@@ -304,7 +317,7 @@ export const translations = {
     'modal.noDescription': 'No description',
     'modal.improving': 'Improving',
     'modal.worsening': 'Worsening',
-    'modal.matchHistory': 'Match History - Focus on',
+    'modal.matchHistory': 'Match History',
     'modal.recordMark': 'Record mark highlighted',
     'modal.worstPerformance': 'Worst performance marked',
     'modal.selectedMetric': 'Selected metric',
@@ -329,7 +342,7 @@ export const translations = {
     'metric.headshots.desc': 'Headshots',
     'metric.score.desc': 'Score per match',
     'metric.bank.desc': 'Bank balance',
-    
+
     // Recent Matches
     'matches.title': 'Recent Matches',
     'matches.registered': 'registered matches',
@@ -338,7 +351,9 @@ export const translations = {
     'matches.downs.count': 'downs',
     'matches.disconnect': 'disconnect',
     'matches.round': 'Round',
-    
+    'matches.last30Days': 'Last 30 Days',
+    'matches.total': 'Total',
+
     // Player Modal
     'player.select': 'Select Player',
     'player.search': 'Search by name or GUID...',
@@ -346,7 +361,7 @@ export const translations = {
     'player.singular': 'player',
     'player.plural': 'players',
     'player.filtered': 'filtered',
-    
+
     // Settings
     'settings.title': 'Settings',
     'settings.subtitle': 'Customize the application interface. Choose between light and dark theme for a visual experience tailored to your preferences.',
@@ -360,7 +375,12 @@ export const translations = {
     'settings.language.spanish': 'Español',
     'settings.language.english': 'English',
     'settings.language.portuguese': 'Português',
-    
+    'settings.sound.title': 'Sound Effects',
+    'settings.sound.enabled': 'Enabled',
+    'settings.sound.disabled': 'Disabled',
+    'settings.sound.enabledDesc': 'Play sounds when interacting with the interface',
+    'settings.sound.disabledDesc': 'Disable all UI sound effects',
+
     // Maps
     'map.transit': 'TranZit',
     'map.town': 'Town',
@@ -369,7 +389,7 @@ export const translations = {
     'map.farm': 'Farm',
     'map.nuked': 'Nuketown',
     'map.nuketown': 'Nuketown Zombies',
-    'map.processing': 'Processing',
+    'map.processing': 'Buried',
     'map.rooftop': 'Rooftop',
     'map.buried': 'Buried',
     'map.dieRise': 'Die Rise',
@@ -377,12 +397,12 @@ export const translations = {
     'map.origins': 'Origins',
 
     // Footer
-    'footer.text': 'Littlegods Project',
+    'footer.text': '© Littlegods Project - All rights reserved',
 
     // General
     'general.loading': 'Loading data...',
   },
-  
+
   pt: {
     // Header / Navegação
     'nav.home': 'Início',
@@ -392,7 +412,7 @@ export const translations = {
 
     // Sidebar
     'sidebar.players': 'Jogadores',
-    
+
     // Home
     'home.title': 'Player',
     'home.subtitle': 'Stats',
@@ -401,15 +421,13 @@ export const translations = {
     'home.stats.players': 'Jogadores',
     'home.stats.matches': 'Partidas',
     'home.stats.hours': 'Horas',
-    'home.feature.tracking': 'Rastreamento em Tempo Real',
-    'home.feature.tracking.desc': 'Monitore suas estatísticas de zumbis ao vivo enquanto joga',
-    'home.feature.detailed': 'Análise Detalhada',
-    'home.feature.detailed.desc': 'Revise mortes, headshots, rodadas e mais por mapa',
-    'home.feature.history': 'Histórico Completo',
-    'home.feature.history.desc': 'Acesse todas as suas partidas anteriores e progressão',
-    'home.feature.economy': 'Sistema de Economia',
-    'home.feature.economy.desc': 'Gerencie seu banco de pontos e transações do jogo',
-    
+    'home.feature.tracking': 'Seguimiento en Tiempo Real',
+    'home.feature.tracking.desc': 'Monitorea bajas, caídas y reanimaciones al instante mientras ocurren en el juego.',
+    'home.feature.profiles': 'Perfiles de Jugador',
+    'home.feature.profiles.desc': 'Estadísticas detalladas para cada jugador, incluyendo uso de armas y rendimiento en mapas.',
+    'home.feature.rankings': 'Rankings Globales',
+    'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
+
     // Statistics
     'stats.mapPerformance': 'Desempenho por Mapa',
     'stats.overallStats': 'Estatísticas Gerais',
@@ -426,6 +444,11 @@ export const translations = {
     'stats.bank': 'Banco',
     'stats.round': 'Rodada',
     'stats.zombies': 'Zumbis',
+    'stats.bankTransactions': 'Transações Bancárias',
+    'common.time': 'Hora',
+    'common.type': 'Tipo',
+    'common.amount': 'Quantidade',
+    'stats.balance': 'Saldo',
     'stats.matches': 'partidas',
     'stats.clickForDetails': 'Clique para detalhes',
     'stats.detailedStats': 'Estatísticas detalhadas disponíveis',
@@ -496,7 +519,7 @@ export const translations = {
     'modal.noDescription': 'Sem descrição',
     'modal.improving': 'Melhorando',
     'modal.worsening': 'Piorando',
-    'modal.matchHistory': 'Histórico de Partidas - Foco em',
+    'modal.matchHistory': 'Histórico de Partidas',
     'modal.recordMark': 'Marca recorde destacada',
     'modal.worstPerformance': 'Pior desempenho marcado',
     'modal.selectedMetric': 'Métrica selecionada',
@@ -521,7 +544,7 @@ export const translations = {
     'metric.headshots.desc': 'Tiros na cabeça',
     'metric.score.desc': 'Pontuação por partida',
     'metric.bank.desc': 'Saldo bancário',
-    
+
     // Recent Matches
     'matches.title': 'Partidas Recentes',
     'matches.registered': 'partidas registradas',
@@ -530,7 +553,9 @@ export const translations = {
     'matches.downs.count': 'quedas',
     'matches.disconnect': 'disconnect',
     'matches.round': 'Rodada',
-    
+    'matches.last30Days': 'Últimos 30 dias',
+    'matches.total': 'Total',
+
     // Player Modal
     'player.select': 'Selecionar Jogador',
     'player.search': 'Buscar por nome ou GUID...',
@@ -538,7 +563,7 @@ export const translations = {
     'player.singular': 'jogador',
     'player.plural': 'jogadores',
     'player.filtered': 'filtrados',
-    
+
     // Settings
     'settings.title': 'Configurações',
     'settings.subtitle': 'Personalize a interface do aplicativo. Escolha entre o tema claro e escuro para uma experiência visual adaptada às suas preferências.',
@@ -552,7 +577,12 @@ export const translations = {
     'settings.language.spanish': 'Español',
     'settings.language.english': 'English',
     'settings.language.portuguese': 'Português',
-    
+    'settings.sound.title': 'Efeitos Sonoros',
+    'settings.sound.enabled': 'Ativado',
+    'settings.sound.disabled': 'Desativado',
+    'settings.sound.enabledDesc': 'Reproduzir sons ao interagir com a interface',
+    'settings.sound.disabledDesc': 'Desativar todos os efeitos sonoros da interface',
+
     // Maps
     'map.transit': 'TranZit',
     'map.town': 'Town',
@@ -561,7 +591,7 @@ export const translations = {
     'map.farm': 'Farm',
     'map.nuked': 'Nuketown',
     'map.nuketown': 'Nuketown Zombies',
-    'map.processing': 'Processing',
+    'map.processing': 'Buried',
     'map.rooftop': 'Rooftop',
     'map.buried': 'Buried',
     'map.dieRise': 'Die Rise',
@@ -569,7 +599,7 @@ export const translations = {
     'map.origins': 'Origins',
 
     // Footer
-    'footer.text': 'Projeto Littlegods',
+    'footer.text': '© Projeto Littlegods - Todos os direitos reservados',
 
     // General
     'general.loading': 'Carregando dados...',

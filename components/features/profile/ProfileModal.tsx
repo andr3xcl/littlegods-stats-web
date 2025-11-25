@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { X, ExternalLink } from 'lucide-react';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
-import { useGSAP } from '../utils/gsap';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { useTheme } from '../../../contexts/ThemeContext';
+import { useGSAP } from '../../../utils/gsap';
+import { useUISounds } from '../../../hooks/useUISounds';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface ProfileModalProps {
 const ProfileModal: React.FC<ProfileModalProps> = React.memo(({ isOpen, onClose, player }) => {
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const { playExit } = useUISounds();
 
   const gsap = useGSAP();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -39,6 +41,11 @@ const ProfileModal: React.FC<ProfileModalProps> = React.memo(({ isOpen, onClose,
     }
   };
 
+  const handleClose = () => {
+    playExit();
+    onClose();
+  };
+
   if (!isOpen || !player) return null;
 
   return (
@@ -47,7 +54,7 @@ const ProfileModal: React.FC<ProfileModalProps> = React.memo(({ isOpen, onClose,
         light: 'bg-black/85 backdrop-blur-xl',
         dark: 'bg-black/95 backdrop-blur-xl'
       })}`}
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         ref={modalRef}
@@ -68,7 +75,7 @@ const ProfileModal: React.FC<ProfileModalProps> = React.memo(({ isOpen, onClose,
             })}`}></div>
 
             <div className={`absolute inset-0 ${getThemeClasses({
-              light: 'bg-black/10',
+              light: ' bg-black/10',
               dark: 'bg-black/20'
             })}`}></div>
 
@@ -76,7 +83,7 @@ const ProfileModal: React.FC<ProfileModalProps> = React.memo(({ isOpen, onClose,
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onClose();
+                handleClose();
               }}
               className={`absolute top-4 right-4 sm:top-6 sm:right-6 z-20 rounded-full p-3 bg-black/50 hover:bg-black/70 text-white border border-white/30 hover:border-white/50 transition-all duration-200 hover:scale-110 cursor-pointer`}
             >
