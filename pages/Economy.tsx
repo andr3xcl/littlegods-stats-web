@@ -53,7 +53,7 @@ const Economy: React.FC<EconomyProps> = ({ economyData }) => {
 
   return (
     <div ref={containerRef} className="max-w-5xl mx-auto px-4 py-8">
-      {/* Header Section */}
+      {}
       <div className="flex items-center gap-4 mb-8">
         <div className="p-3 bg-indigo-500/10 rounded-2xl">
           <Wallet className="w-8 h-8 text-indigo-500" />
@@ -64,7 +64,7 @@ const Economy: React.FC<EconomyProps> = ({ economyData }) => {
         </div>
       </div>
 
-      {/* Balance Card */}
+      {}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 mb-12 shadow-2xl">
         <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl -ml-16 -mb-16"></div>
@@ -81,7 +81,7 @@ const Economy: React.FC<EconomyProps> = ({ economyData }) => {
         </div>
       </div>
 
-      {/* Transactions Section */}
+      {}
       <div className="bg-white dark:bg-slate-800/50 backdrop-blur-xl border border-slate-200 dark:border-slate-700/50 rounded-3xl overflow-hidden shadow-xl">
         <div className="p-6 border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
           <div className="flex items-center gap-3">

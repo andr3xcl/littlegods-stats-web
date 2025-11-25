@@ -36,7 +36,7 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                 onOpenModal();
             }}
         >
-            {/* Background Image with Parallax Effect */}
+            {}
             <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110">
                 <LazyImage
                     src={mapBanner}
@@ -47,10 +47,10 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
             </div>
 
-            {/* Content Container */}
+            {}
             <div className="relative h-full p-6 z-10">
 
-                {/* Header: Map Name & Round */}
+                {}
                 <div className="flex justify-between items-start">
                     <div>
                         <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-lg mb-1">
@@ -65,10 +65,10 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
 
                 </div>
 
-                {/* Stats Grid (Slide up from bottom) */}
+                {}
                 <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-12 transform transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[20%] opacity-0 pointer-events-none'}`}>
                     <div className="space-y-3">
-                        {/* Primary Stats Row */}
+                        {}
                         <div className="grid grid-cols-2 gap-3">
                             <div className="flex flex-col items-center justify-center text-center">
                                 <div className="flex items-center gap-2 mb-1">
@@ -87,7 +87,7 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                             </div>
                         </div>
 
-                        {/* Secondary Stats */}
+                        {}
                         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
                             <div className="flex flex-col items-center justify-center text-center">
                                 <div className="flex items-center gap-2 mb-1">

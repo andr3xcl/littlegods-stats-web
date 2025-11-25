@@ -45,8 +45,8 @@ const MatchDetailsModal: React.FC<MatchDetailsModalProps> = ({ isOpen, onClose, 
 
     if (!mounted || !isOpen || !match) return null;
 
-    // Resolve map code (e.g., 'rooftop' -> 'zm_highrise')
-    // @ts-ignore - MAP_NAME_TO_CODE might not have index signature
+    
+    
     const mapCode = MAP_NAME_TO_CODE[match.map] || match.map;
     const mapBanner = MAP_BANNERS[mapCode] || 'https://picsum.photos/seed/map/800/400';
 
@@ -60,7 +60,7 @@ const MatchDetailsModal: React.FC<MatchDetailsModalProps> = ({ isOpen, onClose, 
                 className={`w-full max-w-6xl max-h-[85vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col border ${theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/60' : 'bg-white border-slate-300/60'}`}
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header with Map Banner */}
+                {}
                 <div className="relative shrink-0">
                     <div className="relative h-48 lg:h-64 overflow-hidden">
                         <img
@@ -70,7 +70,7 @@ const MatchDetailsModal: React.FC<MatchDetailsModalProps> = ({ isOpen, onClose, 
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
 
-                        {/* Close Button */}
+                        {}
                         <button
                             onClick={handleClose}
                             className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md border border-white/10 transition-all duration-300 hover:scale-110 group"
@@ -78,7 +78,7 @@ const MatchDetailsModal: React.FC<MatchDetailsModalProps> = ({ isOpen, onClose, 
                             <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                         </button>
 
-                        {/* Title Info */}
+                        {}
                         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 <div>
@@ -106,11 +106,11 @@ const MatchDetailsModal: React.FC<MatchDetailsModalProps> = ({ isOpen, onClose, 
                     </div>
                 </div>
 
-                {/* Content */}
+                {}
                 <div className="flex-1 overflow-y-auto p-6 sm:p-8 bg-slate-50 dark:bg-slate-900/50">
                     <MatchDetails
                         match={match}
-                        onViewWeapons={() => { }} // Already inside the modal, no need to navigate
+                        onViewWeapons={() => { }} 
                         t={t}
                     />
                 </div>

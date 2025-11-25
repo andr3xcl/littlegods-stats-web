@@ -31,7 +31,7 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
         >
             <div className="relative bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-orange-500/20 hover:border-orange-500/50 transition-all duration-300 aspect-[3/4]">
 
-                {/* Banner Image */}
+                {}
                 <div className="absolute inset-0">
                     <img
                         src={MAP_IMAGES[match.map] || './data/images/Nuketown_menu_selection_BO2.jpg'}
@@ -42,10 +42,10 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 to-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
                 </div>
 
-                {/* Content Container */}
+                {}
                 <div className="relative h-full p-5 z-10">
 
-                    {/* Header */}
+                    {}
                     <div className="flex justify-between items-start">
                         <div className="flex flex-col gap-2 items-start">
                             <div className="flex items-center gap-2">
@@ -69,7 +69,7 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
                         </div>
                     </div>
 
-                    {/* Stats Grid (Slide up from bottom) */}
+                    {}
                     <div className={`absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-12 transform transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[20%] opacity-0 pointer-events-none'}`}>
                         <div className="space-y-3">
                             <div className="grid grid-cols-2 gap-2">

@@ -1,15 +1,15 @@
 export const translations = {
   es: {
-    // Header / Navegación
+    
     'nav.home': 'Inicio',
     'nav.players': 'Estadisticas',
     'nav.settings': 'Configuración',
     'nav.statistics': 'Estadísticas',
 
-    // Sidebar
+    
     'sidebar.players': 'Jugadores',
 
-    // Home
+    
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Rastrea y analiza el rendimiento de tus partidas de zombies en Black Ops 2 Plutonium',
@@ -24,7 +24,7 @@ export const translations = {
     'home.feature.rankings': 'Rankings Globales',
     'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
 
-    // Statistics
+    
     'stats.mapPerformance': 'Rendimiento por Mapa',
     'stats.overallStats': 'Estadísticas Generales',
     'stats.general': 'General',
@@ -60,7 +60,7 @@ export const translations = {
     'stats.use': 'uso',
     'stats.uses': 'usos',
 
-    // Página de feedback cuando no hay estadísticas
+    
     'stats.noStatsTitle': 'Sin Estadísticas Disponibles',
     'stats.noStatsSubtitle': 'Aún no tienes estadísticas de juego registradas. ¡Comienza a jugar para ver tu progreso!',
     'stats.playGamesTitle': 'Juega Partidas',
@@ -72,16 +72,16 @@ export const translations = {
     'stats.refreshData': 'Actualizar Datos',
     'stats.launchGame': 'Lanzar Juego',
 
-    // Modos de juego
+    
     'stats.survivalMode': 'Supervivencia',
     'stats.classicMode': 'Classic',
 
-    // Página cuando no hay jugador seleccionado
+    
     'stats.selectPlayerTitle': 'Selecciona un Jugador',
     'stats.selectPlayerSubtitle': 'Para ver las estadísticas, primero debes seleccionar un jugador del panel lateral.',
     'stats.selectPlayerInstructions': 'Haz clic en cualquier jugador de la lista para ver sus estadísticas detalladas.',
 
-    // Map Modal
+    
     'modal.selectMetric': 'Selecciona una Métrica para Analizar',
     'modal.generalDescription': 'Vista general de todas las estadísticas',
     'modal.analysisOf': 'Análisis de',
@@ -102,7 +102,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Los puntos del gráfico muestran el tipo de cada transacción',
     'modal.bankActivity': 'Actividad bancaria',
 
-    // Profile Modal
+    
     'profile.playerDescription': 'Jugador de Black Ops 2 Plutonium',
     'profile.viewForumProfile': 'Ver perfil en Plutonium Forum',
     'profile.opensInNewTab': 'Se abrirá en una nueva pestaña',
@@ -120,7 +120,7 @@ export const translations = {
     'modal.worstPerformance': 'Peor rendimiento marcado',
     'modal.selectedMetric': 'Métrica seleccionada',
 
-    // Traducciones específicas del modal de mapas
+    
     'modal.matchNumber': 'Partida',
     'modal.balanceEvolution': 'Evolución del Balance Bancario',
     'modal.transaction': 'Transacción',
@@ -133,7 +133,7 @@ export const translations = {
     'modal.balance': 'Balance',
     'modal.perMatch': 'por partida',
 
-    // Metric descriptions
+    
     'metric.kills.desc': 'Asesinatos por partida',
     'metric.downs.desc': 'Caídas por partida',
     'metric.revives.desc': 'Reanimaciones por partida',
@@ -141,7 +141,7 @@ export const translations = {
     'metric.score.desc': 'Puntuación por partida',
     'metric.bank.desc': 'Balance bancario',
 
-    // Recent Matches
+    
     'matches.title': 'Partidas Recientes',
     'matches.registered': 'partidas registradas',
     'matches.loading': 'Cargando partidas...',
@@ -152,7 +152,7 @@ export const translations = {
     'matches.last30Days': 'Últimos 30 días',
     'matches.total': 'Total',
 
-    // Player Modal
+    
     'player.select': 'Seleccionar Jugador',
     'player.search': 'Buscar por nombre o GUID...',
     'player.guid': 'GUID',
@@ -160,7 +160,7 @@ export const translations = {
     'player.plural': 'jugadores',
     'player.filtered': 'filtrados',
 
-    // Settings
+    
     'settings.title': 'Configuración',
     'settings.subtitle': 'Personaliza la interfaz de la aplicación. Elige entre el tema claro y oscuro para una experiencia visual adaptada a tus preferencias.',
     'settings.theme.title': 'Tema de la Aplicación',
@@ -179,7 +179,7 @@ export const translations = {
     'settings.sound.enabledDesc': 'Reproducir sonidos al interactuar con la interfaz',
     'settings.sound.disabledDesc': 'Desactivar todos los efectos de sonido de la UI',
 
-    // Maps
+    
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -194,24 +194,24 @@ export const translations = {
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
 
-    // Footer
+    
     'footer.text': '© Littlegods Project - Todos los derechos reservados',
 
-    // General
+    
     'general.loading': 'Cargando datos...',
   },
 
   en: {
-    // Header / Navigation
+    
     'nav.home': 'Home',
     'nav.players': 'Statistics',
     'nav.settings': 'Settings',
     'nav.statistics': 'Statistics',
 
-    // Sidebar
+    
     'sidebar.players': 'Players',
 
-    // Home
+    
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Track and analyze your zombie match performance in Black Ops 2 Plutonium',
@@ -226,7 +226,7 @@ export const translations = {
     'home.feature.rankings': 'Global Rankings',
     'home.feature.rankings.desc': 'Compare your performance with others and climb the leaderboards.',
 
-    // Statistics
+    
     'stats.mapPerformance': 'Map Performance',
     'stats.overallStats': 'Overall Stats',
     'stats.general': 'General',
@@ -262,7 +262,7 @@ export const translations = {
     'stats.use': 'use',
     'stats.uses': 'uses',
 
-    // Feedback page when no statistics available
+    
     'stats.noStatsTitle': 'No Statistics Available',
     'stats.noStatsSubtitle': 'You don\'t have any game statistics recorded yet. Start playing to see your progress!',
     'stats.playGamesTitle': 'Play Games',
@@ -274,16 +274,16 @@ export const translations = {
     'stats.refreshData': 'Refresh Data',
     'stats.launchGame': 'Launch Game',
 
-    // Game modes
+    
     'stats.survivalMode': 'Survival',
     'stats.classicMode': 'Classic',
 
-    // Page when no player is selected
+    
     'stats.selectPlayerTitle': 'Select a Player',
     'stats.selectPlayerSubtitle': 'To view statistics, you must first select a player from the sidebar.',
     'stats.selectPlayerInstructions': 'Click on any player in the list to view their detailed statistics.',
 
-    // Map Modal
+    
     'modal.selectMetric': 'Select a Metric to Analyze',
     'modal.generalDescription': 'General view of all statistics',
     'modal.analysisOf': 'Analysis of',
@@ -304,7 +304,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Chart dots show the type of each transaction',
     'modal.bankActivity': 'Bank activity',
 
-    // Profile Modal
+    
     'profile.playerDescription': 'Black Ops 2 Plutonium Player',
     'profile.viewForumProfile': 'View profile on Plutonium Forum',
     'profile.opensInNewTab': 'Will open in a new tab',
@@ -322,7 +322,7 @@ export const translations = {
     'modal.worstPerformance': 'Worst performance marked',
     'modal.selectedMetric': 'Selected metric',
 
-    // Map modal specific translations
+    
     'modal.matchNumber': 'Match',
     'modal.balanceEvolution': 'Bank Balance Evolution',
     'modal.transaction': 'Transaction',
@@ -335,7 +335,7 @@ export const translations = {
     'modal.balance': 'Balance',
     'modal.perMatch': 'per match',
 
-    // Metric descriptions
+    
     'metric.kills.desc': 'Kills per match',
     'metric.downs.desc': 'Downs per match',
     'metric.revives.desc': 'Revives per match',
@@ -343,7 +343,7 @@ export const translations = {
     'metric.score.desc': 'Score per match',
     'metric.bank.desc': 'Bank balance',
 
-    // Recent Matches
+    
     'matches.title': 'Recent Matches',
     'matches.registered': 'registered matches',
     'matches.loading': 'Loading matches...',
@@ -354,7 +354,7 @@ export const translations = {
     'matches.last30Days': 'Last 30 Days',
     'matches.total': 'Total',
 
-    // Player Modal
+    
     'player.select': 'Select Player',
     'player.search': 'Search by name or GUID...',
     'player.guid': 'GUID',
@@ -362,7 +362,7 @@ export const translations = {
     'player.plural': 'players',
     'player.filtered': 'filtered',
 
-    // Settings
+    
     'settings.title': 'Settings',
     'settings.subtitle': 'Customize the application interface. Choose between light and dark theme for a visual experience tailored to your preferences.',
     'settings.theme.title': 'Application Theme',
@@ -381,7 +381,7 @@ export const translations = {
     'settings.sound.enabledDesc': 'Play sounds when interacting with the interface',
     'settings.sound.disabledDesc': 'Disable all UI sound effects',
 
-    // Maps
+    
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -396,24 +396,24 @@ export const translations = {
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
 
-    // Footer
+    
     'footer.text': '© Littlegods Project - All rights reserved',
 
-    // General
+    
     'general.loading': 'Loading data...',
   },
 
   pt: {
-    // Header / Navegação
+    
     'nav.home': 'Início',
     'nav.players': 'Estatísticas',
     'nav.settings': 'Configurações',
     'nav.statistics': 'Estatísticas',
 
-    // Sidebar
+    
     'sidebar.players': 'Jogadores',
 
-    // Home
+    
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Rastreie e analise o desempenho de suas partidas de zumbis no Black Ops 2 Plutonium',
@@ -428,7 +428,7 @@ export const translations = {
     'home.feature.rankings': 'Rankings Globales',
     'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
 
-    // Statistics
+    
     'stats.mapPerformance': 'Desempenho por Mapa',
     'stats.overallStats': 'Estatísticas Gerais',
     'stats.general': 'Geral',
@@ -464,7 +464,7 @@ export const translations = {
     'stats.use': 'uso',
     'stats.uses': 'usos',
 
-    // Página de feedback quando não há estatísticas
+    
     'stats.noStatsTitle': 'Nenhuma Estatística Disponível',
     'stats.noStatsSubtitle': 'Você ainda não tem estatísticas de jogo registradas. Comece a jogar para ver seu progresso!',
     'stats.playGamesTitle': 'Jogue Partidas',
@@ -476,16 +476,16 @@ export const translations = {
     'stats.refreshData': 'Atualizar Dados',
     'stats.launchGame': 'Iniciar Jogo',
 
-    // Modos de jogo
+    
     'stats.survivalMode': 'Sobrevivência',
     'stats.classicMode': 'Classic',
 
-    // Página quando nenhum jogador está selecionado
+    
     'stats.selectPlayerTitle': 'Selecione um Jogador',
     'stats.selectPlayerSubtitle': 'Para ver as estatísticas, você deve primeiro selecionar um jogador na barra lateral.',
     'stats.selectPlayerInstructions': 'Clique em qualquer jogador da lista para ver suas estatísticas detalhadas.',
 
-    // Map Modal
+    
     'modal.selectMetric': 'Selecione uma Métrica para Analisar',
     'modal.generalDescription': 'Visão geral de todas as estatísticas',
     'modal.analysisOf': 'Análise de',
@@ -506,7 +506,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Os pontos do gráfico mostram o tipo de cada transação',
     'modal.bankActivity': 'Atividade bancária',
 
-    // Profile Modal
+    
     'profile.playerDescription': 'Jogador do Black Ops 2 Plutonium',
     'profile.viewForumProfile': 'Ver perfil no Fórum Plutonium',
     'profile.opensInNewTab': 'Será aberto em uma nova aba',
@@ -524,7 +524,7 @@ export const translations = {
     'modal.worstPerformance': 'Pior desempenho marcado',
     'modal.selectedMetric': 'Métrica selecionada',
 
-    // Traduções específicas do modal de mapas
+    
     'modal.matchNumber': 'Partida',
     'modal.balanceEvolution': 'Evolução do Saldo Bancário',
     'modal.transaction': 'Transação',
@@ -537,7 +537,7 @@ export const translations = {
     'modal.balance': 'Saldo',
     'modal.perMatch': 'por partida',
 
-    // Metric descriptions
+    
     'metric.kills.desc': 'Mortes por partida',
     'metric.downs.desc': 'Quedas por partida',
     'metric.revives.desc': 'Reanimações por partida',
@@ -545,7 +545,7 @@ export const translations = {
     'metric.score.desc': 'Pontuação por partida',
     'metric.bank.desc': 'Saldo bancário',
 
-    // Recent Matches
+    
     'matches.title': 'Partidas Recentes',
     'matches.registered': 'partidas registradas',
     'matches.loading': 'Carregando partidas...',
@@ -556,7 +556,7 @@ export const translations = {
     'matches.last30Days': 'Últimos 30 dias',
     'matches.total': 'Total',
 
-    // Player Modal
+    
     'player.select': 'Selecionar Jogador',
     'player.search': 'Buscar por nome ou GUID...',
     'player.guid': 'GUID',
@@ -564,7 +564,7 @@ export const translations = {
     'player.plural': 'jogadores',
     'player.filtered': 'filtrados',
 
-    // Settings
+    
     'settings.title': 'Configurações',
     'settings.subtitle': 'Personalize a interface do aplicativo. Escolha entre o tema claro e escuro para uma experiência visual adaptada às suas preferências.',
     'settings.theme.title': 'Tema do Aplicativo',
@@ -583,7 +583,7 @@ export const translations = {
     'settings.sound.enabledDesc': 'Reproduzir sons ao interagir com a interface',
     'settings.sound.disabledDesc': 'Desativar todos os efeitos sonoros da interface',
 
-    // Maps
+    
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -598,10 +598,10 @@ export const translations = {
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
 
-    // Footer
+    
     'footer.text': '© Projeto Littlegods - Todos os direitos reservados',
 
-    // General
+    
     'general.loading': 'Carregando dados...',
   },
 };

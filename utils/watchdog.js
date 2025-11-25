@@ -8,7 +8,7 @@ const BANK_TRANSACTIONS_DIR = path.join(PLUTONIUM_BASE_DIR, 'bank_transactions')
 const DATA_DIR = path.join(process.cwd(), 'data');
 const PLAYERS_DIR = path.join(DATA_DIR, 'players');
 const PLAYERS_INDEX_FILE = path.join(DATA_DIR, 'players.json');
-// Legacy files for fallback/migration if needed, but we will write to new structure
+
 const DATA_FILE = path.join(DATA_DIR, 'data_player.json');
 const RECENT_MATCHES_FILE = path.join(DATA_DIR, 'recent_matches.json');
 const WATCHER_DELAY = 500;
@@ -112,7 +112,7 @@ function _getWeaponDisplayName(weaponName) {
     /_steadyaim_zm/gi,
     /_dualclip_zm/gi,
     /_zm/gi,
-    /upgraded\d*$/gi  // "upgraded" + números al final
+    /upgraded\d*$/gi  
   ];
   for (const suffix of upgradeSuffixes) {
     cleanName = cleanName.replace(suffix, '');
@@ -160,7 +160,7 @@ function _getPlayerDir(username) {
 function _loadPlayersData() {
   const playersData = {};
 
-  // 1. Try to load from new folder structure
+  
   if (fs.existsSync(PLAYERS_DIR)) {
     try {
       const playerDirs = fs.readdirSync(PLAYERS_DIR, { withFileTypes: true })
@@ -185,7 +185,7 @@ function _loadPlayersData() {
     }
   }
 
-  // 2. Fallback/Merge with legacy if needed (only if empty)
+  
   if (Object.keys(playersData).length === 0 && fs.existsSync(DATA_FILE)) {
     try {
       const legacyData = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
@@ -200,18 +200,18 @@ function _loadPlayersData() {
 
 function _savePlayersData(data) {
   try {
-    // 1. Save Legacy for safety (DISABLED)
-    // fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    
+    
 
-    // 2. Save Index
+    
     const playersIndex = Object.values(data).map(p => ({
       guid: p.guid,
       username: p.username,
-      lastSeen: new Date().toISOString() // Approximate
+      lastSeen: new Date().toISOString() 
     }));
     fs.writeFileSync(PLAYERS_INDEX_FILE, JSON.stringify(playersIndex, null, 2));
 
-    // 3. Save Individual Player Data
+    
     for (const guid in data) {
       const player = data[guid];
       if (!player.username) continue;
@@ -248,7 +248,7 @@ function _parseStatsFromFileContent(content) {
   for (const line of lines) {
     const trimmed = line.trim();
 
-    // Basic Stats
+    
     if (trimmed.includes('Nombre:') || trimmed.includes('Jugador:')) {
       stats.playerName = trimmed.split(':')[1]?.trim() || stats.playerName;
     }
@@ -257,9 +257,9 @@ function _parseStatsFromFileContent(content) {
     }
     if (trimmed.includes('Duracion:') || trimmed.includes('Duration:')) {
       stats.duration = trimmed.split(':')[1]?.trim() + ':' + trimmed.split(':')[2]?.trim() + ':' + trimmed.split(':')[3]?.trim();
-      // Fix potential split issue if format is HH:MM:SS
+      
       const parts = trimmed.split(':');
-      if (parts.length >= 4) { // Label + HH + MM + SS
+      if (parts.length >= 4) { 
         stats.duration = `${parts[1].trim()}:${parts[2].trim()}:${parts[3].trim()}`;
       } else if (trimmed.includes('Duracion: ')) {
         stats.duration = trimmed.replace('Duracion: ', '').trim();
@@ -281,7 +281,7 @@ function _parseStatsFromFileContent(content) {
       stats.score = parseInt(trimmed.split(':')[1]?.trim()) || stats.score;
     }
 
-    // Weapons
+    
     if (trimmed.includes('ARMAS USADAS EN LA PARTIDA:')) {
       const weaponsSectionIndex = lines.indexOf(line);
       if (weaponsSectionIndex !== -1) {
@@ -303,7 +303,7 @@ function _parseStatsFromFileContent(content) {
       }
     }
 
-    // Perks
+    
     if (trimmed.includes('PERKS USADOS EN LA PARTIDA:')) {
       const perksSectionIndex = lines.indexOf(line);
       if (perksSectionIndex !== -1) {
@@ -325,28 +325,28 @@ function _parseStatsFromFileContent(content) {
       }
     }
 
-    // Transactions
+    
     if (trimmed.includes('TRANSACCIONES BANCARIAS:')) {
       inTransactionsSection = true;
       continue;
     }
     if (inTransactionsSection) {
       if (trimmed.startsWith('--------------------------------') || trimmed.includes('Fecha/Hora:')) {
-        if (trimmed.includes('Fecha/Hora:')) inTransactionsSection = false; // End of file usually
-        // Don't disable immediately on separator line as it starts and ends the section
+        if (trimmed.includes('Fecha/Hora:')) inTransactionsSection = false; 
+        
         if (stats.transactions.length > 0 && trimmed.startsWith('--------------------------------')) {
           inTransactionsSection = false;
         }
         continue;
       }
 
-      // Parse Transaction Line: [00:00:04] DEPOSIT: 500 - Balance: 1792
-      // Regex: \[([\d:]+)\] (DEPOSIT|WITHDRAW): (\d+) - Balance: (\d+)
+      
+      
       const txnMatch = trimmed.match(/^\[([\d:]+)\] (DEPOSIT|WITHDRAW): (\d+) - Balance: (\d+)$/);
       if (txnMatch) {
         stats.transactions.push({
           time: txnMatch[1],
-          type: txnMatch[2].toLowerCase(), // 'deposit' or 'withdraw'
+          type: txnMatch[2].toLowerCase(), 
           amount: parseInt(txnMatch[3]),
           balanceAfter: parseInt(txnMatch[4])
         });
@@ -376,7 +376,7 @@ function _parseStatsFromFileContent(content) {
 
 function getGamesPlayedCount(guid, map) {
   try {
-    // New structure: recent/guid/map/map_index.txt
+    
     const indexFile = path.join(RECENT_DIR, guid, map, `${map}_index.txt`);
     if (fs.existsSync(indexFile)) {
       const content = fs.readFileSync(indexFile, 'utf-8').trim();
@@ -399,7 +399,7 @@ function recalculateMapStats(guid, map) {
     totalScore: 0
   };
   try {
-    // New structure: recent/guid/map/
+    
     const mapDir = path.join(RECENT_DIR, guid, map);
     if (!fs.existsSync(mapDir)) {
       return stats;
@@ -468,7 +468,7 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
       guid: guid,
       stats: { kills: 0, downs: 0, revives: 0, headshots: 0 },
       maps: {},
-      economy: { balance: 0, transactions: [] } // Transactions will now be empty/unused here or aggregated differently if needed
+      economy: { balance: 0, transactions: [] } 
     };
   }
   if (playerName && playerName !== 'Unknown' && playerName !== playersData[guid].username) {
@@ -476,7 +476,7 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
   }
   const gamesPlayed = getGamesPlayedCount(guid, map);
   if (gamesPlayed === 0) {
-    return; // No guardar si no hay índice
+    return; 
   }
   const recalculatedStats = recalculateMapStats(guid, map);
   playersData[guid].maps[map] = {
@@ -486,7 +486,7 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
   const mapStats = playersData[guid].maps[map];
   playersData[guid].stats = recalculatePlayerTotalStats(playersData[guid].maps);
 
-  // Update bank balance from file
+  
   try {
     const bankFile = path.join(BANK_DIR, `${guid}.txt`);
     if (fs.existsSync(bankFile)) {
@@ -520,7 +520,7 @@ function processRecentMatchesFromDir() {
     for (const guid of guidDirs) {
       const guidPath = path.join(RECENT_DIR, guid);
 
-      // Iterate over map directories inside guid directory
+      
       const mapDirs = fs.readdirSync(guidPath, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
@@ -529,7 +529,7 @@ function processRecentMatchesFromDir() {
         const mapPath = path.join(guidPath, map);
         const files = fs.readdirSync(mapPath)
           .filter(file => file.endsWith('.txt'))
-          .sort(); // Ordenar alfabéticamente
+          .sort(); 
 
         for (const file of files) {
           try {
@@ -537,12 +537,12 @@ function processRecentMatchesFromDir() {
             const fileName = path.basename(file, '.txt');
             const parts = fileName.split('_recent_');
             if (parts.length !== 2) {
-              if (!fileName.endsWith('_index.txt')) { // Ignorar archivos de índice
+              if (!fileName.endsWith('_index.txt')) { 
                 continue;
               }
               continue;
             }
-            // map is already known from directory, but let's verify or use it
+            
             const fileMap = parts[0];
 
             const matchNumber = parseInt(parts[1]);
@@ -576,7 +576,7 @@ function processRecentMatchesFromDir() {
     }
     recentMatches.sort((a, b) => b.timestamp - a.timestamp);
 
-    // Save player specific recent matches
+    
     const matchesByPlayer = {};
     for (const match of recentMatches) {
       if (!match.playerName) continue;
@@ -590,7 +590,7 @@ function processRecentMatchesFromDir() {
       const playerDir = _getPlayerDir(playerName);
       _ensureDirExists(playerDir);
       const playerMatchesFile = path.join(playerDir, 'matches.json');
-      // Limit to 50 per player
+      
       const playerMatches = matchesByPlayer[playerName].slice(0, 50);
       fs.writeFileSync(playerMatchesFile, JSON.stringify(playerMatches, null, 2));
     }
@@ -604,8 +604,8 @@ function main() {
   const dirsToCreate = [
     PLUTONIUM_BASE_DIR,
     RECENT_DIR,
-    DATA_DIR, // Directorio 'data' local
-    PLAYERS_DIR // New players directory
+    DATA_DIR, 
+    PLAYERS_DIR 
   ];
   dirsToCreate.forEach(_ensureDirExists);
 

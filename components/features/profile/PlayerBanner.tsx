@@ -8,11 +8,11 @@ interface PlayerBannerProps {
 }
 
 const PlayerBanner: React.FC<PlayerBannerProps> = ({ player }) => {
-  // GSAP hooks y referencias
+  
   const gsap = useGSAP();
   const pulseRef = useRef<HTMLDivElement>(null);
 
-  // Animación del pulso del indicador de estado
+  
   useEffect(() => {
     if (pulseRef.current) {
       gsap.animatePulse(pulseRef.current, 2);

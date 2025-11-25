@@ -13,7 +13,7 @@ interface MatchDetailsProps {
 const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onViewWeapons, t }) => {
     return (
         <div className="space-y-6 animate-in slide-in-from-top-2 duration-300">
-            {/* Stats Grid */}
+            {}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center hover:bg-red-500/15 transition-colors group">
                     <Target className="w-5 h-5 text-red-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
@@ -46,7 +46,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onViewWeapons, t }) 
                 </div>
             </div>
 
-            {/* Weapons and Perks Grid */}
+            {}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <WeaponDisplay
                     bestWeapon={match.bestWeapon}
@@ -70,7 +70,7 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onViewWeapons, t }) 
                 />
             </div>
 
-            {/* Bank Transactions */}
+            {}
             {match.transactions && match.transactions.length > 0 && (
                 <div className="col-span-full animate-in slide-in-from-bottom-2 duration-500 delay-200">
                     <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">

@@ -23,7 +23,7 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
   const { t } = useLanguage();
   const { theme } = useTheme();
 
-  // GSAP hooks
+  
   const gsap = useGSAP();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +45,7 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
     };
 
     loadMatches();
-    const interval = setInterval(() => loadMatches(true), 30000); // Background refresh every 30s
+    const interval = setInterval(() => loadMatches(true), 30000); 
     return () => {
       isMounted = false;
       clearInterval(interval);
@@ -107,7 +107,7 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
 
   return (
     <div className="relative">
-      {/* Premium Header */}
+      {}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-orange-500/10 rounded-xl border border-orange-500/20">
@@ -124,7 +124,7 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
           </div>
         </div>
 
-        {/* Custom Navigation */}
+        {}
         <div className="flex gap-2">
           <button
             onClick={handlePrevious}
@@ -143,9 +143,9 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
         </div>
       </div>
 
-      {/* Matches Timeline/Grid */}
+      {}
       <div className="relative" ref={containerRef}>
-        {/* Timeline Line (Visual only) */}
+        {}
         <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent -z-10 hidden md:block"></div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -166,7 +166,7 @@ export default function RecentMatchesBanner({ playerIdentifier }: RecentMatchesB
         </div>
       </div>
 
-      {/* Match Details Modal */}
+      {}
       <MatchDetailsModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

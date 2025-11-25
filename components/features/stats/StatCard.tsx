@@ -13,7 +13,7 @@ const StatCard: React.FC<StatCardProps> = React.memo(({ label, value, icon }) =>
     [value]
   );
 
-  // GSAP hooks y referencias
+  
   const gsap = useGSAP();
   const cardRef = useRef<HTMLDivElement>(null);
 

@@ -10,7 +10,7 @@ const Settings: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { soundEnabled, setSoundEnabled } = useSound();
 
-  // GSAP hooks
+  
   const gsap = useGSAP();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +52,7 @@ const Settings: React.FC = () => {
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div ref={containerRef} className="max-w-4xl mx-auto">
 
-        {/* Header */}
+        {}
         <div className="text-center mb-12">
           <div className="inline-flex p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-4 shadow-lg">
             <SettingsIcon className="w-8 h-8 text-slate-900 dark:text-white" />
@@ -65,7 +65,7 @@ const Settings: React.FC = () => {
           </p>
         </div>
 
-        {/* Theme Section */}
+        {}
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-indigo-500 rounded-full"></span>
@@ -116,7 +116,7 @@ const Settings: React.FC = () => {
           </div>
         </div>
 
-        {/* Language Section */}
+        {}
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-purple-500 rounded-full"></span>
@@ -161,7 +161,7 @@ const Settings: React.FC = () => {
           </div>
         </div>
 
-        {/* Sound Effects Section */}
+        {}
         <div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-orange-500 rounded-full"></span>

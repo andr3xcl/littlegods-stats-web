@@ -26,7 +26,7 @@ export const loadPlayersIndex = (): Promise<PlayerIndexEntry[]> => loadDataFromF
 export const loadPlayerData = async (identifier?: string): Promise<PlayerProfile | null> => {
   try {
     if (!identifier) {
-      // If no identifier, try to get the first player from the index
+      
       const index = await loadPlayersIndex();
       if (index.length > 0) {
         identifier = index[0].username;
@@ -35,13 +35,13 @@ export const loadPlayerData = async (identifier?: string): Promise<PlayerProfile
       }
     }
 
-    // Check if identifier is a GUID (numeric string) or Username
-    // For now, we assume if it's passed here it might be a username if we updated the calls,
-    // but if it's a GUID we might need to look it up. 
-    // However, the new structure uses Username folders.
-    // Let's try to fetch as username first.
+    
+    
+    
+    
+    
 
-    // Sanitize username for URL (simple version matching watchdog)
+    
     const sanitized = identifier.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
     try {
@@ -50,19 +50,19 @@ export const loadPlayerData = async (identifier?: string): Promise<PlayerProfile
         return await response.json();
       }
     } catch (e) {
-      // Ignore and try fallback
+      
     }
 
-    // Fallback: Try legacy data_player.json if specific file fails (DISABLED)
-    // const response = await fetch('./data/data_player.json');
-    // if (response.ok) {
-    //   const allData = await response.json();
-    //   // If identifier is GUID
-    //   if (allData[identifier]) return allData[identifier];
-    //   // If identifier is Username, search for it
-    //   const found = Object.values(allData).find((p: any) => p.username === identifier);
-    //   if (found) return found as PlayerProfile;
-    // }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
   } catch (error) {
     console.warn('Error loading player data:', error);
   }
@@ -84,14 +84,14 @@ export const loadRecentMatches = async (playerIdentifier?: string): Promise<Rece
         }
       }
 
-      // Fallback: load global recent matches (DISABLED)
-      // console.warn('Cargando recent matches desde archivo JSON global (fallback)');
-      // return loadDataFromFile<RecentMatch[]>('recent_matches.json');
+      
+      
+      
       return [];
     }
 
-    // Node.js backend logic (kept as is or updated if needed, but mostly unused in browser)
-    // ... (rest of the function is for Node environment, skipping modification for brevity as user is on web)
+    
+    
     return [];
   } catch (error) {
     console.error('Error cargando recent matches:', error);

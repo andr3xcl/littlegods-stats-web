@@ -11,7 +11,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Inicializar tema inmediatamente desde localStorage o usar 'dark' por defecto
+  
   const [theme, setThemeState] = useState<Theme>(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme') as Theme | null;
@@ -20,20 +20,20 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return 'dark';
   });
 
-  // Aplicar tema cuando cambie
+  
   useEffect(() => {
     const root = document.documentElement;
 
-    // Guardar en localStorage
+    
     localStorage.setItem('theme', theme);
 
-    // Remover todas las clases de tema primero
+    
     root.classList.remove('light', 'dark');
 
-    // Aplicar la clase correcta
+    
     root.classList.add(theme);
 
-    // Debug log
+    
     console.log('🎨 Tema aplicado:', theme);
     console.log('📋 Clases del HTML:', root.className);
   }, [theme]);

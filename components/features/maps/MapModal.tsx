@@ -57,22 +57,22 @@ interface MetricConfig {
   description: string;
 }
 
-// Smart data sampling for large datasets
+
 const downsampleData = (data: any[], maxPoints: number = 300) => {
   if (data.length <= maxPoints) return data;
 
   const step = Math.floor(data.length / maxPoints);
   const sampled = [];
 
-  // Always include first point
+  
   sampled.push(data[0]);
 
-  // Sample intermediate points
+  
   for (let i = step; i < data.length - step; i += step) {
     sampled.push(data[i]);
   }
 
-  // Always include last point
+  
   if (sampled[sampled.length - 1] !== data[data.length - 1]) {
     sampled.push(data[data.length - 1]);
   }
@@ -91,7 +91,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
   const { theme } = useTheme();
   const { playExit } = useUISounds();
 
-  // GSAP
+  
   const gsap = useGSAP();
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -102,49 +102,49 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     {
       key: 'general',
       label: t('stats.general'),
-      color: '#6366f1', // Indigo
+      color: '#6366f1', 
       icon: <BarChart3 className="w-5 h-5" />,
       description: t('modal.generalDescription')
     },
     {
       key: 'kills',
       label: t('stats.kills'),
-      color: '#ef4444', // Red
+      color: '#ef4444', 
       icon: <Target className="w-5 h-5" />,
       description: t('metric.kills.desc')
     },
     {
       key: 'downs',
       label: t('stats.downs'),
-      color: '#f97316', // Orange
+      color: '#f97316', 
       icon: <Award className="w-5 h-5" />,
       description: t('metric.downs.desc')
     },
     {
       key: 'revives',
       label: t('stats.revives'),
-      color: '#10b981', // Emerald
+      color: '#10b981', 
       icon: <Heart className="w-5 h-5" />,
       description: t('metric.revives.desc')
     },
     {
       key: 'headshots',
       label: t('stats.headshots'),
-      color: '#8b5cf6', // Violet
+      color: '#8b5cf6', 
       icon: <Skull className="w-5 h-5" />,
       description: t('metric.headshots.desc')
     },
     {
       key: 'score',
       label: t('stats.score'),
-      color: '#eab308', // Yellow
+      color: '#eab308', 
       icon: <Activity className="w-5 h-5" />,
       description: t('metric.score.desc')
     },
     {
       key: 'bank',
       label: t('stats.bank'),
-      color: '#f59e0b', // Amber
+      color: '#f59e0b', 
       icon: <Zap className="w-5 h-5" />,
       description: t('metric.bank.desc')
     }
@@ -152,13 +152,13 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
   const handleMetricChange = useCallback((metric: MetricType) => {
     setSelectedMetric(metric);
-    setTablePage(0); // Reset to first page
+    setTablePage(0); 
   }, []);
 
   useEffect(() => {
     if (isOpen && selectedMap) {
       loadMatchHistory();
-      // Animate modal in
+      
       if (modalRef.current) {
         gsap.animateModalIn(modalRef.current);
       }
@@ -182,15 +182,15 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
       const matches = (await loadRecentMatches(identifier)) as unknown as MatchData[];
 
-      // 1. Get all entries for the selected map
+      
       const mapEntries = matches.filter(match => match.map === selectedMap);
 
-      // 2. Filter for "Real Matches" (must have gameplay stats like kills) for the General/Stats tabs
-      // We check for 'kills' being defined to distinguish a played match from a transaction-only entry
+      
+      
       const realMatches = mapEntries.filter(m => m.round !== undefined && m.kills !== undefined);
       setMatchHistory(realMatches);
 
-      // 3. Process bank transactions from ALL map entries (including transaction-only ones)
+      
       const transactions: BankTransaction[] = [];
       mapEntries.forEach(match => {
         if (match.transactions) {
@@ -208,7 +208,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           });
         }
       });
-      // Sort by timestamp
+      
       transactions.sort((a, b) => a.timestamp - b.timestamp);
       setBankTransactions(transactions);
 
@@ -219,7 +219,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     }
   }, [selectedMap, playerData]);
 
-  // Removed separate loadBankTransactions as it's now integrated
+  
 
   const mapStats = useMemo(() => {
     return playerData?.maps?.[selectedMap] || {
@@ -236,7 +236,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
   const chartData = useMemo(() => {
     if (selectedMetric === 'bank') {
-      const rawData = bankTransactions; // Already sorted
+      const rawData = bankTransactions; 
 
       return downsampleData(rawData.map((transaction, index) => {
         const date = new Date(transaction.timestamp);
@@ -343,7 +343,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     return value === statsComparison[metric].best ? ' 🏆' : '';
   }, [statsComparison]);
 
-  // Pagination data
+  
   const paginatedTableData = useMemo(() => {
     const data = selectedMetric === 'bank' ? bankTransactions : matchHistory;
     const startIndex = tablePage * ITEMS_PER_PAGE;
@@ -369,7 +369,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
         className={`w-full max-w-7xl max-h-[95vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col border ${theme === 'dark' ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border-slate-700/60' : 'bg-white border-slate-300/60'}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header with Map Banner */}
+        {}
         <div className="relative shrink-0">
           <div className="relative h-48 lg:h-64 overflow-hidden">
             {safeMapBanner ? (
@@ -386,10 +386,10 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               </div>
             )}
 
-            {/* Overlay Gradient */}
+            {}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
 
-            {/* Close Button */}
+            {}
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md border border-white/10 transition-all duration-300 hover:scale-110 group"
@@ -397,7 +397,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
             </button>
 
-            {/* Title and Stats */}
+            {}
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
@@ -432,7 +432,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div ref={contentRef} className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 bg-slate-50 dark:bg-slate-900/50">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -452,7 +452,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
             </div>
           ) : (
             <>
-              {/* Metrics Selector */}
+              {}
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-2 shadow-sm border border-slate-200 dark:border-slate-700/50">
                 <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 no-scrollbar">
                   {METRICS_CONFIG.map((metric) => (
@@ -476,10 +476,10 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               </div>
 
-              {/* Stats Comparison Cards */}
+              {}
               {selectedMetric !== 'general' && statsComparison && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Best Performance */}
+                  {}
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-24 h-24 bg-[${currentMetricConfig.color}]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110`}></div>
                     <div className="relative z-10">
@@ -499,7 +499,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </div>
                   </div>
 
-                  {/* Average */}
+                  {}
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                     <div className="relative z-10">
@@ -519,7 +519,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </div>
                   </div>
 
-                  {/* Trend */}
+                  {}
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-24 h-24 ${statsComparison[selectedMetric].trend === 'up' ? 'bg-green-500/10' : 'bg-red-500/10'} rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110`}></div>
                     <div className="relative z-10">
@@ -538,7 +538,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {/* Chart Section */}
+              {}
               {selectedMetric !== 'general' && chartData.length > 0 && (
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm">
                   <div className="flex items-center justify-between mb-6">
@@ -599,7 +599,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {/* Table Section */}
+              {}
               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -717,7 +717,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                   </table>
                 </div>
 
-                {/* Pagination */}
+                {}
                 {totalPages > 1 && (
                   <div className="p-4 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                     <button

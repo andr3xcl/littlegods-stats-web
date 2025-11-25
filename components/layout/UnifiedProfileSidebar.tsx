@@ -44,13 +44,13 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                                 time: tx.time,
                                 type: tx.type,
                                 amount: tx.amount,
-                                timestamp: match.timestamp // Use match timestamp for sorting
+                                timestamp: match.timestamp 
                             });
                         });
                     }
                 });
 
-                // Sort by timestamp descending (newest first)
+                
                 allTransactions.sort((a, b) => b.timestamp - a.timestamp);
                 setRecentTransactions(allTransactions.slice(0, 5));
             } catch (error) {
@@ -63,15 +63,15 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
     return (
         <div className="lg:sticky lg:top-20 space-y-6">
-            {/* Unified Premium Card */}
+            {}
             <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-md border-2 border-slate-200/50 dark:border-slate-700/50 rounded-3xl shadow-2xl overflow-hidden group">
 
-                {/* Decorative Background Elements */}
+                {}
                 <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 opacity-10 dark:opacity-20"></div>
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl"></div>
                 <div className="absolute top-20 -left-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl"></div>
 
-                {/* Profile Header Section */}
+                {}
                 <div
                     className="relative pt-8 px-6 pb-6 text-center cursor-pointer transition-transform duration-300 hover:scale-[1.02]"
                     onClick={() => {
@@ -96,10 +96,10 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                 </div>
 
-                {/* Divider */}
+                {}
                 <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mx-6"></div>
 
-                {/* Stats Grid Section */}
+                {}
                 <div className="p-6">
                     <div className="flex items-center gap-2 mb-4">
                         <TrendingUp className="w-5 h-5 text-orange-500" />
@@ -107,7 +107,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                        {/* Kills */}
+                        {}
                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-red-500/30 transition-colors group/stat">
                             <div className="flex items-center gap-2 mb-1">
                                 <Target className="w-4 h-4 text-red-500" />
@@ -118,7 +118,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                             </span>
                         </div>
 
-                        {/* Downs */}
+                        {}
                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-orange-500/30 transition-colors group/stat">
                             <div className="flex items-center gap-2 mb-1">
                                 <UserDownIcon className="w-4 h-4 text-orange-500" />
@@ -129,7 +129,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                             </span>
                         </div>
 
-                        {/* Revives */}
+                        {}
                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-green-500/30 transition-colors group/stat">
                             <div className="flex items-center gap-2 mb-1">
                                 <Heart className="w-4 h-4 text-green-500" />
@@ -140,7 +140,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                             </span>
                         </div>
 
-                        {/* Headshots */}
+                        {}
                         <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-blue-500/30 transition-colors group/stat">
                             <div className="flex items-center gap-2 mb-1">
                                 <Skull className="w-4 h-4 text-blue-500" />
@@ -153,10 +153,10 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                     </div>
                 </div>
 
-                {/* Divider */}
+                {}
                 <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mx-6"></div>
 
-                {/* Economy Section */}
+                {}
                 <div className="p-6 bg-slate-50/30 dark:bg-slate-800/30">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                     </div>
 
-                    {/* Balance Card */}
+                    {}
                     <div className="relative overflow-hidden bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl p-5 mb-4 shadow-lg group/card border border-slate-200 dark:border-slate-700">
                         <div className="absolute top-0 right-0 p-3 opacity-10">
                             <DollarSign className="w-24 h-24 text-slate-900 dark:text-white transform rotate-12 translate-x-4 -translate-y-4" />
@@ -178,7 +178,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                     </div>
 
-                    {/* Recent Transactions Mini-List */}
+                    {}
                     <div className="space-y-3">
                         <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">{t('stats.recentActivity')}</h4>
                         {recentTransactions.length > 0 ? (

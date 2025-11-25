@@ -10,14 +10,14 @@ export default {
       "./utils*.{js,ts,jsx,tsx}",
       "./locales*.{js,ts,jsx,tsx}",
     ],
-    // Opciones de transformación para una purga más eficiente
+    
     transform: {
       js: (content) => content.replace(/tailwindcss/g, ''),
     },
-    // Opciones de extracción
+    
     options: {
       safelist: [
-        // Clases que podrían no ser detectadas pero son necesarias
+        
         'dark',
         'group-hover',
         'hover',
@@ -28,18 +28,18 @@ export default {
       ],
     },
   },
-  darkMode: 'class', // Habilita dark mode con clase 'dark'
+  darkMode: 'class', 
   theme: {
     extend: {
-      // Optimizaciones de animación
+      
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
-      // Optimizaciones de backdrop
+      
       backdropBlur: {
         'xs': '2px',
       },
-      // Colores optimizados para el proyecto
+      
       colors: {
         'brand-purple': {
           50: '#faf5ff',
@@ -57,9 +57,9 @@ export default {
     },
   },
   plugins: [],
-  // Optimizaciones adicionales
+  
   corePlugins: {
-    // Deshabilitar plugins no utilizados para reducir el tamaño
+    
     fontVariantNumeric: false,
     touchAction: false,
     ringOffsetWidth: false,
@@ -72,7 +72,7 @@ export default {
     textOpacity: false,
     backgroundOpacity: false,
   },
-  // Configuración experimental para mejor rendimiento
+  
   experimental: {
     optimizeUniversalDefaults: true,
   },

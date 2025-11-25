@@ -56,7 +56,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
     const [expandedMaps, setExpandedMaps] = useState<Set<string>>(new Set());
     const { t } = useLanguage();
 
-    // Si no hay jugador seleccionado, mostrar página de selección
+    
     if (!player) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -90,29 +90,29 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
         );
     }
 
-    // GSAP hooks y referencias
+    
     const gsap = useGSAP();
     const mapsRef = useRef<HTMLDivElement>(null);
 
-    // Use the passed player prop directly as it now contains the full profile data
+    
     const playerData = useMemo(() => {
         return player;
     }, [player]);
 
-    // Animaciones de scroll optimizadas - solo una vez al entrar a estadísticas
+    
     useLayoutEffect(() => {
         if (mapsRef.current && playerData && !hasAnimated) {
             const ctx = gsap.context(() => {
                 const mapCards = mapsRef.current?.querySelectorAll('.map-card');
                 if (mapCards && mapCards.length > 0) {
-                    gsap.set(mapCards, { opacity: 0, y: 20 }); // Reduced y distance
+                    gsap.set(mapCards, { opacity: 0, y: 20 }); 
                     gsap.to(mapCards, {
                         opacity: 1,
                         y: 0,
-                        duration: 0.4, // Faster animation
-                        stagger: 0.05, // Faster stagger
+                        duration: 0.4, 
+                        stagger: 0.05, 
                         ease: "power2.out",
-                        clearProps: "all" // Clean up
+                        clearProps: "all" 
                     });
                 }
             }, mapsRef);
@@ -154,15 +154,15 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
     }, []);
 
 
-    // Si no hay datos del jugador, mostrar página de feedback
+    
     if (!playerData) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
                 <div className="relative z-20 px-4 sm:px-6 md:px-8 pt-8 sm:pt-12 md:pt-16">
                     <div className="max-w-4xl mx-auto">
-                        {/* Página de feedback cuando no hay estadísticas */}
+                        {}
                         <div className="text-center py-16 sm:py-20 md:py-24">
-                            {/* Icono principal */}
+                            {}
                             <div className="relative inline-block mb-8">
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-full scale-150 blur-2xl"></div>
                                 <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-full flex items-center justify-center shadow-2xl">
@@ -170,19 +170,19 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                 </div>
                             </div>
 
-                            {/* Título principal */}
+                            {}
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-200 dark:to-slate-300 bg-clip-text text-transparent mb-4 sm:mb-6">
                                 {t('stats.noStatsTitle')}
                             </h1>
 
-                            {/* Subtítulo */}
+                            {}
                             <p className="text-lg sm:text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed">
                                 {t('stats.noStatsSubtitle')}
                             </p>
 
-                            {/* Grid de sugerencias */}
+                            {}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-12 sm:mb-16">
-                                {/* Sugerencia 1 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Gamepad2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -195,7 +195,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                     </p>
                                 </div>
 
-                                {/* Sugerencia 2 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Activity className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -208,7 +208,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                     </p>
                                 </div>
 
-                                {/* Sugerencia 3 */}
+                                {}
                                 <div className="bg-gradient-to-br from-white/80 to-slate-50/80 dark:from-slate-800/80 dark:to-slate-900/80 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 md:col-span-2 lg:col-span-1">
                                     <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mb-4 shadow-lg">
                                         <Trophy className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
@@ -222,7 +222,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                 </div>
                             </div>
 
-                            {/* CTA Button */}
+                            {}
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                                 <button
                                     onClick={() => window.location.reload()}
@@ -249,12 +249,12 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
 
-            {/* Layout principal: Mapas a la izquierda, estadísticas a la derecha */}
+            {}
             <div className="relative z-20 px-2 sm:px-4 md:px-8 pt-24 sm:pt-28">
                 <div className="max-w-[1600px] mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
 
-                        {/* Columna 1: Lista de Jugadores */}
+                        {}
                         <div className="lg:col-span-1">
                             <PlayerSidebar
                                 players={players}
@@ -263,9 +263,9 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                             />
                         </div>
 
-                        {/* Columna 2 y 3: Sección de Mapas (Central) */}
+                        {}
                         <div className="lg:col-span-2">
-                            {/* Sección de Mapas con diseño premium */}
+                            {}
                             <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-md border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-3 sm:p-4 md:p-6 shadow-2xl ">
                                 <div className="flex items-center justify-between mb-3 sm:mb-4 md:mb-6">
                                     <div className="flex items-center gap-2 sm:gap-3">
@@ -280,7 +280,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                 </div>
 
                                 <div ref={mapsRef} className="space-y-8">
-                                    {/* Sección Supervivencia */}
+                                    {}
                                     <div>
                                         <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
                                             <div className="w-2 h-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"></div>
@@ -313,7 +313,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                         </div>
                                     </div>
 
-                                    {/* Sección Classic */}
+                                    {}
                                     <div>
                                         <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-3">
                                             <div className="w-2 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
@@ -348,7 +348,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                                 </div>
                             </div>
 
-                            {/* Banner de partidas recientes - debajo de Map Performance */}
+                            {}
                             <div className="mt-6 sm:mt-8">
                                 <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-md border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl ">
                                     <RecentMatchesBanner playerIdentifier={player.username || player.guid} />
@@ -357,7 +357,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
 
                         </div>
 
-                        {/* Panel lateral derecho con avatar y estadísticas */}
+                        {}
                         <div className="lg:col-span-1">
                             <UnifiedProfileSidebar
                                 player={player}
@@ -368,7 +368,7 @@ const Statistics: React.FC<StatisticsProps> = memo(({ player, players, onSelectP
                 </div>
             </div>
 
-            {/* Footer */}
+            {}
             <footer className="text-center mt-8 sm:mt-12 pb-6 text-slate-400 dark:text-slate-500 text-xs sm:text-sm px-4">
                 <p>{t('footer.text')}</p>
             </footer>

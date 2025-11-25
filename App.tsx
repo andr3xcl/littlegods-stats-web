@@ -28,20 +28,20 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load players index first
+        
         const index = await loadPlayersIndex();
 
-        // Then load data for each player
+        
         const playerPromises = index.map(entry => loadPlayerData(entry.username));
         const players = (await Promise.all(playerPromises)).filter((p): p is PlayerProfile => p !== null);
 
         if (players.length > 0) {
           setPlayersData(players);
-          // If no selectedPlayer or selectedPlayer not in list, select first
+          
           if (!selectedPlayer || !players.find(p => p.guid === selectedPlayer.guid)) {
             setSelectedPlayer(players[0]);
           }
-          setRecentMatches([]); // Mock/Empty initially, loaded by components
+          setRecentMatches([]); 
           setEconomyData({ balance: 0, transactions: [] });
         } else {
           console.warn('Players index is empty.');

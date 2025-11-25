@@ -4,15 +4,15 @@ import { useGSAP } from '../utils/gsap';
 import { ArrowRight, BarChart3, Users, Globe } from 'lucide-react';
 
 
-// If Home doesn't receive props, we might need to adjust how navigation works if it was prop-based in App.tsx
-// Checking App.tsx (from memory/previous context), it seems to use conditional rendering based on state.
-// So Home might need a prop to trigger navigation or just be a presentation component.
-// The original Home.tsx didn't take props. It seems App.tsx handles the view switching.
-// I will keep it simple and just make it a presentation component for now, maybe adding a button that does nothing or emits an event if I can change the signature.
-// But wait, App.tsx renders <Home />.
-// Let's check App.tsx again to see how to trigger navigation from Home.
-// I'll assume for now I can't easily change App.tsx props without seeing it again.
-// I'll just make the buttons look good.
+
+
+
+
+
+
+
+
+
 
 interface HomeProps {
   onNavigate: (view: 'Home' | 'Estadisticas' | 'Settings') => void;
@@ -43,7 +43,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 relative overflow-hidden">
-      {/* Background Elements */}
+      {}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }}></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }}></div>

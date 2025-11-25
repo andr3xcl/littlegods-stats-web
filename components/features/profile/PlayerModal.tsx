@@ -18,11 +18,11 @@ const PlayerModal: React.FC<PlayerModalProps> = ({ isOpen, onClose, players, onS
   const { t } = useLanguage();
   const { playExit } = useUISounds();
 
-  // GSAP hooks y referencias
+  
   const gsap = useGSAP();
   const modalRef = useRef<HTMLDivElement>(null);
 
-  // Animación de entrada del modal
+  
   useEffect(() => {
     if (isOpen && modalRef.current) {
       gsap.animateModalIn(modalRef.current);

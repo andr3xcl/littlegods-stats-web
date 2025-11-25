@@ -11,7 +11,7 @@ export const SoundProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('soundEnabled');
-            return saved !== null ? JSON.parse(saved) : true; // Default to enabled
+            return saved !== null ? JSON.parse(saved) : true; 
         }
         return true;
     });

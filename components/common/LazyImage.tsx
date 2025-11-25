@@ -23,7 +23,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
   const placeholderRef = useRef<HTMLDivElement>(null);
   const spinnerRef = useRef<HTMLDivElement>(null);
 
-  // GSAP hooks
+  
   const gsap = useGSAP();
 
   useEffect(() => {
@@ -51,14 +51,14 @@ const LazyImage: React.FC<LazyImageProps> = ({
     };
   }, []);
 
-  // Animación del placeholder (pulse)
+  
   useEffect(() => {
     if (placeholderRef.current && !isLoaded) {
       gsap.animatePulse(placeholderRef.current, 1.5);
     }
   }, [isLoaded, gsap]);
 
-  // Animación del spinner
+  
   useEffect(() => {
     if (spinnerRef.current && !isLoaded) {
       gsap.animateSpinner(spinnerRef.current);
@@ -67,7 +67,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
   const handleLoad = () => {
     setIsLoaded(true);
-    // Animar la transición de opacidad con GSAP
+    
     if (imgRef.current) {
       gsap.to(imgRef.current, {
         opacity: 1,

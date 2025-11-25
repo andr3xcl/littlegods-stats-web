@@ -10,7 +10,7 @@ export const useUISounds = () => {
     const { soundEnabled } = useSound();
 
     const playSound = useCallback((path: string, volume = 0.2) => {
-        if (!soundEnabled) return; // Don't play if sounds are disabled
+        if (!soundEnabled) return; 
 
         try {
             const audio = new Audio(path);

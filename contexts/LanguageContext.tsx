@@ -12,7 +12,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Inicializar idioma desde localStorage o usar español por defecto
+  
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language | null;
@@ -21,7 +21,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return 'es';
   });
 
-  // Guardar idioma cuando cambie
+  
   useEffect(() => {
     localStorage.setItem('language', language);
     console.log('🌍 Idioma aplicado:', language);
@@ -31,7 +31,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setLanguageState(newLanguage);
   };
 
-  // Función de traducción
+  
   const t = (key: TranslationKey): string => {
     return translations[language][key] || key;
   };
