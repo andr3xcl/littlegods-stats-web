@@ -1,15 +1,15 @@
 export const translations = {
   es: {
-    
+
     'nav.home': 'Inicio',
     'nav.players': 'Estadisticas',
     'nav.settings': 'Configuración',
     'nav.statistics': 'Estadísticas',
 
-    
+
     'sidebar.players': 'Jugadores',
 
-    
+
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Rastrea y analiza el rendimiento de tus partidas de zombies en Black Ops 2 Plutonium',
@@ -24,9 +24,10 @@ export const translations = {
     'home.feature.rankings': 'Rankings Globales',
     'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
 
-    
+
     'stats.mapPerformance': 'Rendimiento por Mapa',
     'stats.overallStats': 'Estadísticas Generales',
+    'stats.viewDetailedStats': 'Ver estadísticas detalladas',
     'stats.general': 'General',
     'stats.bankAccount': 'Cuenta Bancaria',
     'stats.currentBalance': 'Balance Actual',
@@ -37,10 +38,14 @@ export const translations = {
     'stats.revives': 'Revividas',
     'stats.downs': 'Caídas',
     'stats.score': 'Puntuación',
+    'stats.timePlayed': 'Tiempo Jugado',
     'stats.bank': 'Banco',
     'stats.round': 'Ronda',
     'stats.zombies': 'Zombies',
     'stats.bankTransactions': 'Transacciones Bancarias',
+    'stats.combat': 'Combate',
+    'stats.magicBox': 'Caja Mágica',
+    'stats.powerups': 'Powerups',
     'common.time': 'Hora',
     'common.type': 'Tipo',
     'common.amount': 'Cantidad',
@@ -59,8 +64,13 @@ export const translations = {
     'stats.perks': 'Perks',
     'stats.use': 'uso',
     'stats.uses': 'usos',
+    'stats.topWeapons': 'Top 3 Armas',
+    'modal.weaponsDescription': 'Desglose detallado del rendimiento de cada arma',
+    'stats.topMaps': 'Top 3 Mapas',
+    'stats.killsLabel': 'Bajas',
+    'stats.matchesLabel': 'Partidas',
 
-    
+
     'stats.noStatsTitle': 'Sin Estadísticas Disponibles',
     'stats.noStatsSubtitle': 'Aún no tienes estadísticas de juego registradas. ¡Comienza a jugar para ver tu progreso!',
     'stats.playGamesTitle': 'Juega Partidas',
@@ -72,16 +82,16 @@ export const translations = {
     'stats.refreshData': 'Actualizar Datos',
     'stats.launchGame': 'Lanzar Juego',
 
-    
+
     'stats.survivalMode': 'Supervivencia',
     'stats.classicMode': 'Classic',
 
-    
+
     'stats.selectPlayerTitle': 'Selecciona un Jugador',
     'stats.selectPlayerSubtitle': 'Para ver las estadísticas, primero debes seleccionar un jugador del panel lateral.',
     'stats.selectPlayerInstructions': 'Haz clic en cualquier jugador de la lista para ver sus estadísticas detalladas.',
 
-    
+
     'modal.selectMetric': 'Selecciona una Métrica para Analizar',
     'modal.generalDescription': 'Vista general de todas las estadísticas',
     'modal.analysisOf': 'Análisis de',
@@ -102,7 +112,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Los puntos del gráfico muestran el tipo de cada transacción',
     'modal.bankActivity': 'Actividad bancaria',
 
-    
+
     'profile.playerDescription': 'Jugador de Black Ops 2 Plutonium',
     'profile.viewForumProfile': 'Ver perfil en Plutonium Forum',
     'profile.opensInNewTab': 'Se abrirá en una nueva pestaña',
@@ -120,7 +130,7 @@ export const translations = {
     'modal.worstPerformance': 'Peor rendimiento marcado',
     'modal.selectedMetric': 'Métrica seleccionada',
 
-    
+
     'modal.matchNumber': 'Partida',
     'modal.balanceEvolution': 'Evolución del Balance Bancario',
     'modal.transaction': 'Transacción',
@@ -132,8 +142,67 @@ export const translations = {
     'modal.withdrawals': 'Retiros',
     'modal.balance': 'Balance',
     'modal.perMatch': 'por partida',
+    'modal.combatDescription': 'Detalles de combate y precisión',
+    'modal.survivalDescription': 'Estadísticas de supervivencia',
+    'modal.magicBoxDescription': 'Uso de la caja mágica',
+    'modal.powerupsDescription': 'Bonificaciones recogidas',
+    'modal.perksDescription': 'Ventajas compradas',
+    'modal.historyOf': 'Historial de {{metric}}',
+    'stats.nukes': 'Bombas',
+    'stats.instaKill': 'Insta Kill',
+    'stats.maxAmmo': 'Munición Max',
+    'stats.doublePoints': 'Puntos Dobles',
+    'stats.carpenter': 'Carpintero',
+    'stats.fireSale': 'Liquidación',
+    'stats.boxUses': 'Usos Caja',
+    'stats.papUses': 'Usos PAP',
+    'stats.boxTaken': 'Armas Caja',
+    'stats.papTaken': 'Armas PAP',
+    'stats.accuracy': 'Precisión',
+    'stats.gibs': 'Gibs',
+    'stats.melee': 'Melee',
+    'stats.grenades': 'Granadas',
+    'stats.miles': 'Millas',
+    'stats.doors': 'Puertas',
+    'stats.drops': 'Drops',
+    'stats.failedRevives': 'Revivir (F)',
+    'stats.total': 'Total',
+    'stats.tomahawkAcquired': 'Tomahawk Obtenido',
+    'stats.fanTraps': 'Trampas Ventilador',
+    'stats.acidTraps': 'Trampas Ácido',
+    'stats.sniperTowers': 'Torres Francotirador',
+    'stats.eeGood': 'EE Final Bueno',
+    'stats.eeBad': 'EE Final Malo',
+    'stats.spoon': 'Cuchara',
+    'stats.brutus': 'Brutus Eliminados',
+    'stats.lsat': 'LSAT Comprada',
+    'stats.fountain': 'Fuente Usada',
+    'stats.ghosts': 'Fantasmas Eliminados',
+    'stats.ghostDrained': 'Drenado por Fantasma',
+    'stats.ghostPerk': 'Perk de Fantasma',
+    'stats.slothBooze': 'Alcohol a Arthur',
+    'stats.slothBarricades': 'Barricadas Rotas',
+    'stats.slothCandy': 'Caramelos a Arthur',
+    'stats.wallbuysPlaced': 'Armas Pared Colocadas',
+    'stats.mechz': 'Mechz Eliminados',
+    'stats.robotStomped': 'Aplastado por Robot',
+    'stats.robotAccessed': 'Entradas a Robot',
+    'stats.generatorsCap': 'Generadores Capturados',
+    'stats.generatorsDef': 'Generadores Defendidos',
+    'stats.generatorsLost': 'Generadores Perdidos',
+    'stats.digs': 'Excavaciones',
+    'stats.goldenShovel': 'Pala Dorada',
+    'stats.goldenHelmet': 'Casco Dorado',
+    'stats.perkSlots': 'Slots Extra',
+    'stats.cheatFlags': 'Flags Cheat',
+    'stats.persJugg': 'Jugg Persistente',
+    'stats.persRevive': 'Revive Rápido',
+    'stats.persHeadshots': 'Headshots Multi',
+    'stats.persInsta': 'Insta-Kill Pers',
+    'stats.persCarpenter': 'Carpintero Pers',
+    'stats.persCashBack': 'Cash Back',
 
-    
+
     'metric.kills.desc': 'Asesinatos por partida',
     'metric.downs.desc': 'Caídas por partida',
     'metric.revives.desc': 'Reanimaciones por partida',
@@ -141,7 +210,7 @@ export const translations = {
     'metric.score.desc': 'Puntuación por partida',
     'metric.bank.desc': 'Balance bancario',
 
-    
+
     'matches.title': 'Partidas Recientes',
     'matches.registered': 'partidas registradas',
     'matches.loading': 'Cargando partidas...',
@@ -152,7 +221,7 @@ export const translations = {
     'matches.last30Days': 'Últimos 30 días',
     'matches.total': 'Total',
 
-    
+
     'player.select': 'Seleccionar Jugador',
     'player.search': 'Buscar por nombre o GUID...',
     'player.guid': 'GUID',
@@ -160,7 +229,7 @@ export const translations = {
     'player.plural': 'jugadores',
     'player.filtered': 'filtrados',
 
-    
+
     'settings.title': 'Configuración',
     'settings.subtitle': 'Personaliza la interfaz de la aplicación. Elige entre el tema claro y oscuro para una experiencia visual adaptada a tus preferencias.',
     'settings.theme.title': 'Tema de la Aplicación',
@@ -178,8 +247,34 @@ export const translations = {
     'settings.sound.disabled': 'Deshabilitado',
     'settings.sound.enabledDesc': 'Reproducir sonidos al interactuar con la interfaz',
     'settings.sound.disabledDesc': 'Desactivar todos los efectos de sonido de la UI',
+    'settings.sound.configure': 'Configurar Audio',
+    'settings.sound.configureDesc': 'Personaliza música y efectos de sonido',
+    'settings.sound.modalSubtitle': 'Personaliza tu experiencia de audio',
+    'settings.sound.music': 'Música',
+    'settings.sound.musicDesc': 'Música de fondo',
+    'settings.sound.sfx': 'Efectos de Sonido',
+    'settings.sound.sfxDesc': 'Sonidos de interfaz',
+    'settings.sound.musicTiming': 'Momento de Inicio del Audio',
+    'settings.sound.timingSequential': 'Después del efecto de entrada',
+    'settings.sound.timingInstant': 'Al instante',
+    'settings.sound.testMusic': 'Probar Música',
+    'settings.sound.testSfx': 'Probar SFX',
+    'settings.sound.sfx.hover': 'Cursor',
+    'settings.sound.sfx.select': 'Seleccionar',
+    'settings.sound.sfx.exit': 'Salir',
+    'settings.sound.sfx.zoom': 'Zoom',
+    'settings.sound.sfx.stats': 'Estadísticas',
+    'settings.sound.sfx.pan': 'Deslizar',
+    'settings.sound.sfx.equip': 'Equipar',
+    'common.close': 'Cerrar',
 
-    
+    'settings.mapImages.title': 'Imágenes de Mapas',
+    'settings.mapImages.real': 'Imágenes Reales',
+    'settings.mapImages.realDesc': 'Muestra las imágenes originales de los mapas principales (ej. Tranzit para Diner).',
+    'settings.mapImages.bonus': 'Imágenes Bonus',
+    'settings.mapImages.bonusDesc': 'Muestra imágenes específicas para cada mapa bonus.',
+
+
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -193,25 +288,29 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
+    'modal.mobOfTheDeadDescription': 'Estadísticas de Alcatraz',
+    'modal.buriedDescription': 'Estadísticas del Lejano Oeste',
+    'modal.originsDescription': 'Estadísticas de la Gran Guerra',
+    'modal.cheatsDescription': 'Detección de Trampas',
 
-    
+
     'footer.text': '© Littlegods Project - Todos los derechos reservados',
 
-    
+
     'general.loading': 'Cargando datos...',
   },
 
   en: {
-    
+
     'nav.home': 'Home',
     'nav.players': 'Statistics',
     'nav.settings': 'Settings',
     'nav.statistics': 'Statistics',
 
-    
+
     'sidebar.players': 'Players',
 
-    
+
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Track and analyze your zombie match performance in Black Ops 2 Plutonium',
@@ -226,9 +325,10 @@ export const translations = {
     'home.feature.rankings': 'Global Rankings',
     'home.feature.rankings.desc': 'Compare your performance with others and climb the leaderboards.',
 
-    
+
     'stats.mapPerformance': 'Map Performance',
     'stats.overallStats': 'Overall Stats',
+    'stats.viewDetailedStats': 'View detailed stats',
     'stats.general': 'General',
     'stats.bankAccount': 'Bank Account',
     'stats.currentBalance': 'Current Balance',
@@ -239,10 +339,14 @@ export const translations = {
     'stats.revives': 'Revives',
     'stats.downs': 'Downs',
     'stats.score': 'Score',
+    'stats.timePlayed': 'Time Played',
     'stats.bank': 'Bank',
     'stats.round': 'Round',
     'stats.zombies': 'Zombies',
     'stats.bankTransactions': 'Bank Transactions',
+    'stats.combat': 'Combat',
+    'stats.magicBox': 'Magic Box',
+    'stats.powerups': 'Powerups',
     'common.time': 'Time',
     'common.type': 'Type',
     'common.amount': 'Amount',
@@ -261,8 +365,13 @@ export const translations = {
     'stats.perks': 'Perks',
     'stats.use': 'use',
     'stats.uses': 'uses',
+    'stats.topWeapons': 'Top 3 Weapons',
+    'modal.weaponsDescription': 'Detailed breakdown of weapon performance',
+    'stats.topMaps': 'Top 3 Maps',
+    'stats.killsLabel': 'Kills',
+    'stats.matchesLabel': 'Matches',
 
-    
+
     'stats.noStatsTitle': 'No Statistics Available',
     'stats.noStatsSubtitle': 'You don\'t have any game statistics recorded yet. Start playing to see your progress!',
     'stats.playGamesTitle': 'Play Games',
@@ -274,16 +383,16 @@ export const translations = {
     'stats.refreshData': 'Refresh Data',
     'stats.launchGame': 'Launch Game',
 
-    
+
     'stats.survivalMode': 'Survival',
     'stats.classicMode': 'Classic',
 
-    
+
     'stats.selectPlayerTitle': 'Select a Player',
     'stats.selectPlayerSubtitle': 'To view statistics, you must first select a player from the sidebar.',
     'stats.selectPlayerInstructions': 'Click on any player in the list to view their detailed statistics.',
 
-    
+
     'modal.selectMetric': 'Select a Metric to Analyze',
     'modal.generalDescription': 'General view of all statistics',
     'modal.analysisOf': 'Analysis of',
@@ -304,7 +413,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Chart dots show the type of each transaction',
     'modal.bankActivity': 'Bank activity',
 
-    
+
     'profile.playerDescription': 'Black Ops 2 Plutonium Player',
     'profile.viewForumProfile': 'View profile on Plutonium Forum',
     'profile.opensInNewTab': 'Will open in a new tab',
@@ -322,7 +431,7 @@ export const translations = {
     'modal.worstPerformance': 'Worst performance marked',
     'modal.selectedMetric': 'Selected metric',
 
-    
+
     'modal.matchNumber': 'Match',
     'modal.balanceEvolution': 'Bank Balance Evolution',
     'modal.transaction': 'Transaction',
@@ -334,8 +443,67 @@ export const translations = {
     'modal.withdrawals': 'Withdrawals',
     'modal.balance': 'Balance',
     'modal.perMatch': 'per match',
+    'modal.combatDescription': 'Combat details and accuracy',
+    'modal.survivalDescription': 'Survival statistics',
+    'modal.magicBoxDescription': 'Magic Box usage',
+    'modal.powerupsDescription': 'Powerups collected',
+    'modal.perksDescription': 'Perks purchased',
+    'modal.historyOf': '{{metric}} History',
+    'stats.nukes': 'Nukes',
+    'stats.instaKill': 'Insta Kill',
+    'stats.maxAmmo': 'Max Ammo',
+    'stats.doublePoints': 'Double Points',
+    'stats.carpenter': 'Carpenter',
+    'stats.fireSale': 'Fire Sale',
+    'stats.boxUses': 'Box Uses',
+    'stats.papUses': 'PAP Uses',
+    'stats.boxTaken': 'Box Taken',
+    'stats.papTaken': 'PAP Taken',
+    'stats.accuracy': 'Accuracy',
+    'stats.gibs': 'Gibs',
+    'stats.melee': 'Melee',
+    'stats.grenades': 'Grenades',
+    'stats.miles': 'Miles',
+    'stats.doors': 'Doors',
+    'stats.drops': 'Drops',
+    'stats.failedRevives': 'Revives (F)',
+    'stats.total': 'Total',
+    'stats.tomahawkAcquired': 'Tomahawk Acquired',
+    'stats.fanTraps': 'Fan Traps Used',
+    'stats.acidTraps': 'Acid Traps Used',
+    'stats.sniperTowers': 'Sniper Towers Used',
+    'stats.eeGood': 'EE Good Ending',
+    'stats.eeBad': 'EE Bad Ending',
+    'stats.spoon': 'Spoon Acquired',
+    'stats.brutus': 'Brutus Killed',
+    'stats.lsat': 'LSAT Purchased',
+    'stats.fountain': 'Fountain Used',
+    'stats.ghosts': 'Ghosts Killed',
+    'stats.ghostDrained': 'Drained by Ghost',
+    'stats.ghostPerk': 'Free Ghost Perk',
+    'stats.slothBooze': 'Booze to Arthur',
+    'stats.slothBarricades': 'Barricades Broken',
+    'stats.slothCandy': 'Candy to Arthur',
+    'stats.wallbuysPlaced': 'Wallbuys Placed',
+    'stats.mechz': 'Mechz Killed',
+    'stats.robotStomped': 'Stomped by Robot',
+    'stats.robotAccessed': 'Robot Accessed',
+    'stats.generatorsCap': 'Generators Captured',
+    'stats.generatorsDef': 'Generators Defended',
+    'stats.generatorsLost': 'Generators Lost',
+    'stats.digs': 'Digs',
+    'stats.goldenShovel': 'Golden Shovel',
+    'stats.goldenHelmet': 'Golden Helmet',
+    'stats.perkSlots': 'Perk Slots',
+    'stats.cheatFlags': 'Cheat Flags',
+    'stats.persJugg': 'Persistent Jugg',
+    'stats.persRevive': 'Quick Revive Pers',
+    'stats.persHeadshots': 'Multi Headshots',
+    'stats.persInsta': 'Insta-Kill Pers',
+    'stats.persCarpenter': 'Carpenter Pers',
+    'stats.persCashBack': 'Cash Back',
 
-    
+
     'metric.kills.desc': 'Kills per match',
     'metric.downs.desc': 'Downs per match',
     'metric.revives.desc': 'Revives per match',
@@ -343,7 +511,7 @@ export const translations = {
     'metric.score.desc': 'Score per match',
     'metric.bank.desc': 'Bank balance',
 
-    
+
     'matches.title': 'Recent Matches',
     'matches.registered': 'registered matches',
     'matches.loading': 'Loading matches...',
@@ -354,7 +522,7 @@ export const translations = {
     'matches.last30Days': 'Last 30 Days',
     'matches.total': 'Total',
 
-    
+
     'player.select': 'Select Player',
     'player.search': 'Search by name or GUID...',
     'player.guid': 'GUID',
@@ -362,7 +530,7 @@ export const translations = {
     'player.plural': 'players',
     'player.filtered': 'filtered',
 
-    
+
     'settings.title': 'Settings',
     'settings.subtitle': 'Customize the application interface. Choose between light and dark theme for a visual experience tailored to your preferences.',
     'settings.theme.title': 'Application Theme',
@@ -380,8 +548,34 @@ export const translations = {
     'settings.sound.disabled': 'Disabled',
     'settings.sound.enabledDesc': 'Play sounds when interacting with the interface',
     'settings.sound.disabledDesc': 'Disable all UI sound effects',
+    'settings.sound.configure': 'Configure Audio',
+    'settings.sound.configureDesc': 'Customize music and sound effects',
+    'settings.sound.modalSubtitle': 'Customize your audio experience',
+    'settings.sound.music': 'Music',
+    'settings.sound.musicDesc': 'Background music',
+    'settings.sound.sfx': 'Sound Effects',
+    'settings.sound.sfxDesc': 'Interface sounds',
+    'settings.sound.musicTiming': 'Audio Start Timing',
+    'settings.sound.timingSequential': 'After entry effect',
+    'settings.sound.timingInstant': 'Instantaneously',
+    'settings.sound.testMusic': 'Test Music',
+    'settings.sound.testSfx': 'Test SFX',
+    'settings.sound.sfx.hover': 'Hover',
+    'settings.sound.sfx.select': 'Select',
+    'settings.sound.sfx.exit': 'Exit',
+    'settings.sound.sfx.zoom': 'Zoom',
+    'settings.sound.sfx.stats': 'Statistics',
+    'settings.sound.sfx.pan': 'Pan',
+    'settings.sound.sfx.equip': 'Equip',
+    'common.close': 'Close',
 
-    
+    'settings.mapImages.title': 'Map Images',
+    'settings.mapImages.real': 'Real Images',
+    'settings.mapImages.realDesc': 'Shows original images from parent maps (e.g. Tranzit for Diner).',
+    'settings.mapImages.bonus': 'Bonus Images',
+    'settings.mapImages.bonusDesc': 'Shows specific images for each bonus map.',
+
+
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -395,25 +589,29 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
+    'modal.mobOfTheDeadDescription': 'Alcatraz Statistics',
+    'modal.buriedDescription': 'Wild West Statistics',
+    'modal.originsDescription': 'Great War Statistics',
+    'modal.cheatsDescription': 'Cheat Detection',
 
-    
+
     'footer.text': '© Littlegods Project - All rights reserved',
 
-    
+
     'general.loading': 'Loading data...',
   },
 
   pt: {
-    
+
     'nav.home': 'Início',
     'nav.players': 'Estatísticas',
     'nav.settings': 'Configurações',
     'nav.statistics': 'Estatísticas',
 
-    
+
     'sidebar.players': 'Jogadores',
 
-    
+
     'home.title': 'Player',
     'home.subtitle': 'Stats',
     'home.description': 'Rastreie e analise o desempenho de suas partidas de zumbis no Black Ops 2 Plutonium',
@@ -428,9 +626,10 @@ export const translations = {
     'home.feature.rankings': 'Rankings Globales',
     'home.feature.rankings.desc': 'Compara tu rendimiento con otros y sube en las tablas de clasificación.',
 
-    
+
     'stats.mapPerformance': 'Desempenho por Mapa',
     'stats.overallStats': 'Estatísticas Gerais',
+    'stats.viewDetailedStats': 'Ver estatísticas detalhadas',
     'stats.general': 'Geral',
     'stats.bankAccount': 'Conta Bancária',
     'stats.currentBalance': 'Saldo Atual',
@@ -441,10 +640,14 @@ export const translations = {
     'stats.revives': 'Revividas',
     'stats.downs': 'Quedas',
     'stats.score': 'Pontuação',
+    'stats.timePlayed': 'Tempo Jogado',
     'stats.bank': 'Banco',
     'stats.round': 'Rodada',
     'stats.zombies': 'Zumbis',
     'stats.bankTransactions': 'Transações Bancárias',
+    'stats.combat': 'Combate',
+    'stats.magicBox': 'Caixa Mágica',
+    'stats.powerups': 'Powerups',
     'common.time': 'Hora',
     'common.type': 'Tipo',
     'common.amount': 'Quantidade',
@@ -463,8 +666,13 @@ export const translations = {
     'stats.perks': 'Perks',
     'stats.use': 'uso',
     'stats.uses': 'usos',
+    'stats.topWeapons': 'Top 3 Armas',
+    'modal.weaponsDescription': 'Análise detalhada do desempenho da arma',
+    'stats.topMaps': 'Top 3 Mapas',
+    'stats.killsLabel': 'Abates',
+    'stats.matchesLabel': 'Partidas',
 
-    
+
     'stats.noStatsTitle': 'Nenhuma Estatística Disponível',
     'stats.noStatsSubtitle': 'Você ainda não tem estatísticas de jogo registradas. Comece a jogar para ver seu progresso!',
     'stats.playGamesTitle': 'Jogue Partidas',
@@ -476,16 +684,16 @@ export const translations = {
     'stats.refreshData': 'Atualizar Dados',
     'stats.launchGame': 'Iniciar Jogo',
 
-    
+
     'stats.survivalMode': 'Sobrevivência',
     'stats.classicMode': 'Classic',
 
-    
+
     'stats.selectPlayerTitle': 'Selecione um Jogador',
     'stats.selectPlayerSubtitle': 'Para ver as estatísticas, você deve primeiro selecionar um jogador na barra lateral.',
     'stats.selectPlayerInstructions': 'Clique em qualquer jogador da lista para ver suas estatísticas detalhadas.',
 
-    
+
     'modal.selectMetric': 'Selecione uma Métrica para Analisar',
     'modal.generalDescription': 'Visão geral de todas as estatísticas',
     'modal.analysisOf': 'Análise de',
@@ -506,7 +714,7 @@ export const translations = {
     'modal.dotsShowTransactionType': 'Os pontos do gráfico mostram o tipo de cada transação',
     'modal.bankActivity': 'Atividade bancária',
 
-    
+
     'profile.playerDescription': 'Jogador do Black Ops 2 Plutonium',
     'profile.viewForumProfile': 'Ver perfil no Fórum Plutonium',
     'profile.opensInNewTab': 'Será aberto em uma nova aba',
@@ -524,7 +732,7 @@ export const translations = {
     'modal.worstPerformance': 'Pior desempenho marcado',
     'modal.selectedMetric': 'Métrica selecionada',
 
-    
+
     'modal.matchNumber': 'Partida',
     'modal.balanceEvolution': 'Evolução do Saldo Bancário',
     'modal.transaction': 'Transação',
@@ -536,8 +744,67 @@ export const translations = {
     'modal.withdrawals': 'Saques',
     'modal.balance': 'Saldo',
     'modal.perMatch': 'por partida',
+    'modal.combatDescription': 'Detalhes de combate e precisão',
+    'modal.survivalDescription': 'Estatísticas de sobrevivência',
+    'modal.magicBoxDescription': 'Uso da caixa mágica',
+    'modal.powerupsDescription': 'Powerups coletados',
+    'modal.perksDescription': 'Perks comprados',
+    'modal.historyOf': 'Histórico de {{metric}}',
+    'stats.nukes': 'Nukes',
+    'stats.instaKill': 'Morte Instantânea',
+    'stats.maxAmmo': 'Munição Máx',
+    'stats.doublePoints': 'Pontos Dobrados',
+    'stats.carpenter': 'Carpinteiro',
+    'stats.fireSale': 'Liquidação',
+    'stats.boxUses': 'Usos Caixa',
+    'stats.papUses': 'Usos PAP',
+    'stats.boxTaken': 'Armas Caixa',
+    'stats.papTaken': 'Armas PAP',
+    'stats.accuracy': 'Precisão',
+    'stats.gibs': 'Gibs',
+    'stats.melee': 'Melee',
+    'stats.grenades': 'Granadas',
+    'stats.miles': 'Milhas',
+    'stats.doors': 'Portas',
+    'stats.drops': 'Drops',
+    'stats.failedRevives': 'Reviver (F)',
+    'stats.total': 'Total',
+    'stats.tomahawkAcquired': 'Tomahawk Obtido',
+    'stats.fanTraps': 'Armadilhas Ventilador',
+    'stats.acidTraps': 'Armadilhas Ácido',
+    'stats.sniperTowers': 'Torres Sniper',
+    'stats.eeGood': 'EE Final Bom',
+    'stats.eeBad': 'EE Final Ruim',
+    'stats.spoon': 'Colher Obtida',
+    'stats.brutus': 'Brutus Mortos',
+    'stats.lsat': 'LSAT Comprada',
+    'stats.fountain': 'Fonte Usada',
+    'stats.ghosts': 'Fantasmas Mortos',
+    'stats.ghostDrained': 'Drenado por Fantasma',
+    'stats.ghostPerk': 'Perk Fantasma',
+    'stats.slothBooze': 'Bebida para Arthur',
+    'stats.slothBarricades': 'Barricadas Quebradas',
+    'stats.slothCandy': 'Doce para Arthur',
+    'stats.wallbuysPlaced': 'Armas Parede',
+    'stats.mechz': 'Mechz Mortos',
+    'stats.robotStomped': 'Esmagado por Robô',
+    'stats.robotAccessed': 'Entrou no Robô',
+    'stats.generatorsCap': 'Geradores Capturados',
+    'stats.generatorsDef': 'Geradores Defendidos',
+    'stats.generatorsLost': 'Geradores Perdidos',
+    'stats.digs': 'Escavações',
+    'stats.goldenShovel': 'Pá Dourada',
+    'stats.goldenHelmet': 'Capacete Dourado',
+    'stats.perkSlots': 'Slots Extra',
+    'stats.cheatFlags': 'Flags Cheat',
+    'stats.persJugg': 'Jugg Persistente',
+    'stats.persRevive': 'Revive Rápido',
+    'stats.persHeadshots': 'Headshots Multi',
+    'stats.persInsta': 'Insta-Kill Pers',
+    'stats.persCarpenter': 'Carpinteiro Pers',
+    'stats.persCashBack': 'Cash Back',
 
-    
+
     'metric.kills.desc': 'Mortes por partida',
     'metric.downs.desc': 'Quedas por partida',
     'metric.revives.desc': 'Reanimações por partida',
@@ -545,7 +812,7 @@ export const translations = {
     'metric.score.desc': 'Pontuação por partida',
     'metric.bank.desc': 'Saldo bancário',
 
-    
+
     'matches.title': 'Partidas Recentes',
     'matches.registered': 'partidas registradas',
     'matches.loading': 'Carregando partidas...',
@@ -556,7 +823,7 @@ export const translations = {
     'matches.last30Days': 'Últimos 30 dias',
     'matches.total': 'Total',
 
-    
+
     'player.select': 'Selecionar Jogador',
     'player.search': 'Buscar por nome ou GUID...',
     'player.guid': 'GUID',
@@ -564,7 +831,7 @@ export const translations = {
     'player.plural': 'jogadores',
     'player.filtered': 'filtrados',
 
-    
+
     'settings.title': 'Configurações',
     'settings.subtitle': 'Personalize a interface do aplicativo. Escolha entre o tema claro e escuro para uma experiência visual adaptada às suas preferências.',
     'settings.theme.title': 'Tema do Aplicativo',
@@ -582,8 +849,34 @@ export const translations = {
     'settings.sound.disabled': 'Desativado',
     'settings.sound.enabledDesc': 'Reproduzir sons ao interagir com a interface',
     'settings.sound.disabledDesc': 'Desativar todos os efeitos sonoros da interface',
+    'settings.sound.configure': 'Configurar Áudio',
+    'settings.sound.configureDesc': 'Personalize música e efeitos sonoros',
+    'settings.sound.modalSubtitle': 'Personalize sua experiência de áudio',
+    'settings.sound.music': 'Música',
+    'settings.sound.musicDesc': 'Música de fundo',
+    'settings.sound.sfx': 'Efeitos Sonoros',
+    'settings.sound.sfxDesc': 'Sons da interface',
+    'settings.sound.musicTiming': 'Momento de Início do Áudio',
+    'settings.sound.timingSequential': 'Após o efeito de entrada',
+    'settings.sound.timingInstant': 'Instantaneamente',
+    'settings.sound.testMusic': 'Testar Música',
+    'settings.sound.testSfx': 'Testar SFX',
+    'settings.sound.sfx.hover': 'Cursor',
+    'settings.sound.sfx.select': 'Selecionar',
+    'settings.sound.sfx.exit': 'Sair',
+    'settings.sound.sfx.zoom': 'Zoom',
+    'settings.sound.sfx.stats': 'Estatísticas',
+    'settings.sound.sfx.pan': 'Deslizar',
+    'settings.sound.sfx.equip': 'Equipar',
+    'common.close': 'Fechar',
 
-    
+    'settings.mapImages.title': 'Imagens dos Mapas',
+    'settings.mapImages.real': 'Imagens Reais',
+    'settings.mapImages.realDesc': 'Mostra as imagens originais dos mapas principais (ex. Tranzit para Diner).',
+    'settings.mapImages.bonus': 'Imagens Bônus',
+    'settings.mapImages.bonusDesc': 'Mostra imagens específicas para cada mapa bônus.',
+
+
     'map.transit': 'TranZit',
     'map.town': 'Town',
     'map.prison': 'Prison',
@@ -597,11 +890,15 @@ export const translations = {
     'map.dieRise': 'Die Rise',
     'map.mobOfTheDead': 'Mob of the Dead',
     'map.origins': 'Origins',
+    'modal.mobOfTheDeadDescription': 'Estatísticas de Alcatraz',
+    'modal.buriedDescription': 'Estatísticas do Velho Oeste',
+    'modal.originsDescription': 'Estatísticas da Grande Guerra',
+    'modal.cheatsDescription': 'Detecção de Trapaças',
 
-    
+
     'footer.text': '© Projeto Littlegods - Todos os direitos reservados',
 
-    
+
     'general.loading': 'Carregando dados...',
   },
 };

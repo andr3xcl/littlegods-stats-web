@@ -6,13 +6,13 @@ export type Language = 'es' | 'en' | 'pt';
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, params?: Record<string, string | number>) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  
+
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window !== 'undefined') {
       const savedLanguage = localStorage.getItem('language') as Language | null;
@@ -21,7 +21,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return 'es';
   });
 
-  
+
   useEffect(() => {
     localStorage.setItem('language', language);
     console.log('🌍 Idioma aplicado:', language);
@@ -31,9 +31,15 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setLanguageState(newLanguage);
   };
 
-  
-  const t = (key: TranslationKey): string => {
-    return translations[language][key] || key;
+
+  const t = (key: TranslationKey, params?: Record<string, string | number>): string => {
+    let text = translations[language][key] || key;
+    if (params) {
+      Object.entries(params).forEach(([param, value]) => {
+        text = text.replace(`{{${param}}}`, String(value));
+      });
+    }
+    return text;
   };
 
   return (

@@ -1,16 +1,20 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSound } from '../contexts/SoundContext';
-import { Sun, Moon, Check, Globe, Settings as SettingsIcon, Volume2, VolumeX } from 'lucide-react';
+import { useSettings } from '../contexts/SettingsContext';
+import { Sun, Moon, Check, Globe, Settings as SettingsIcon, Volume2, VolumeX, Image as ImageIcon } from 'lucide-react';
 import { useGSAP } from '../utils/gsap';
+import SoundSettingsModal from '../components/features/settings/SoundSettingsModal';
 
 const Settings: React.FC = () => {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const { soundEnabled, setSoundEnabled } = useSound();
+  const { mapImagePreference, setMapImagePreference } = useSettings();
+  const [showSoundModal, setShowSoundModal] = useState(false);
 
-  
+
   const gsap = useGSAP();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +56,7 @@ const Settings: React.FC = () => {
     <div className="min-h-screen pt-20 pb-12 px-4 sm:px-6 lg:px-8">
       <div ref={containerRef} className="max-w-4xl mx-auto">
 
-        {}
+        { }
         <div className="text-center mb-12">
           <div className="inline-flex p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-4 shadow-lg">
             <SettingsIcon className="w-8 h-8 text-slate-900 dark:text-white" />
@@ -65,7 +69,7 @@ const Settings: React.FC = () => {
           </p>
         </div>
 
-        {}
+        { }
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-indigo-500 rounded-full"></span>
@@ -116,7 +120,7 @@ const Settings: React.FC = () => {
           </div>
         </div>
 
-        {}
+        { }
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-purple-500 rounded-full"></span>
@@ -161,73 +165,111 @@ const Settings: React.FC = () => {
           </div>
         </div>
 
-        {}
+        { }
         <div>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
             <span className="w-8 h-1 bg-orange-500 rounded-full"></span>
             {t('settings.sound.title')}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              {
-                id: true,
-                name: t('settings.sound.enabled'),
-                description: t('settings.sound.enabledDesc'),
-                icon: Volume2,
-                gradient: 'from-emerald-600 to-green-700',
-                accent: 'from-green-400 to-emerald-500',
-              },
-              {
-                id: false,
-                name: t('settings.sound.disabled'),
-                description: t('settings.sound.disabledDesc'),
-                icon: VolumeX,
-                gradient: 'from-slate-600 to-slate-700',
-                accent: 'from-slate-400 to-slate-500',
-              },
-            ].map((option) => {
-              const Icon = option.icon;
-              const isActive = soundEnabled === option.id;
-
-              return (
-                <button
-                  key={option.id.toString()}
-                  onClick={() => setSoundEnabled(option.id)}
-                  className={`
-                    relative group text-left overflow-hidden
-                    bg-gradient-to-br ${option.gradient}
-                    border-2 transition-all duration-300
-                    ${isActive
-                      ? 'border-orange-500 shadow-2xl shadow-orange-500/20 scale-[1.02]'
-                      : 'border-slate-200 dark:border-slate-700/50 hover:border-orange-500/50 hover:shadow-xl'
-                    }
-                    rounded-3xl p-8
-                  `}
-                >
-                  {isActive && (
-                    <div className="absolute top-4 right-4 w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
-                      <Check className="w-5 h-5 text-white" />
-                    </div>
-                  )}
-
-                  <div className="mb-6">
-                    <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${option.accent} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <Icon className="w-8 h-8 text-white" />
-                    </div>
-                  </div>
-
+          <button
+            onClick={() => setShowSoundModal(true)}
+            className="
+              w-full relative group text-left overflow-hidden
+              bg-gradient-to-br from-orange-600 to-orange-700
+              border-2 border-orange-500/50 hover:border-orange-400
+              transition-all duration-300
+              hover:shadow-2xl hover:shadow-orange-500/30 hover:scale-[1.02]
+              rounded-3xl p-8
+            "
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-orange-400 to-orange-500 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Volume2 className="w-8 h-8 text-white" />
+                </div>
+                <div>
                   <h3 className="text-2xl font-black mb-2 text-white">
-                    {option.name}
+                    {t('settings.sound.configure') || 'Configurar Audio'}
                   </h3>
-                  <p className="text-sm leading-relaxed text-slate-200">
-                    {option.description}
+                  <p className="text-sm leading-relaxed text-orange-100">
+                    {t('settings.sound.configureDesc') || 'Personaliza música y efectos de sonido'}
                   </p>
-                </button>
-              );
-            })}
+                </div>
+              </div>
+              <div className="text-white/50 group-hover:text-white/80 transition-colors">
+                <SettingsIcon className="w-6 h-6" />
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+            <span className="w-8 h-1 bg-green-500 rounded-full"></span>
+            {t('settings.mapImages.title') || 'Imágenes de Mapas'}
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <button
+              onClick={() => setMapImagePreference('real')}
+              className={`
+                        relative group text-left overflow-hidden
+                        bg-white dark:bg-slate-800
+                        border-2 transition-all duration-300
+                        ${mapImagePreference === 'real'
+                  ? 'border-green-500 shadow-2xl shadow-green-500/20 scale-[1.02]'
+                  : 'border-slate-200 dark:border-slate-700/50 hover:border-green-500/50 hover:shadow-xl'
+                }
+                        rounded-3xl p-6
+                    `}
+            >
+              {mapImagePreference === 'real' && (
+                <div className="absolute top-4 right-4 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+              )}
+              <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">
+                {t('settings.mapImages.real') || 'Imágenes Reales'}
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {t('settings.mapImages.realDesc') || 'Muestra las imágenes originales de los mapas principales (ej. Tranzit para Diner).'}
+              </p>
+            </button>
+
+            <button
+              onClick={() => setMapImagePreference('bonus')}
+              className={`
+                        relative group text-left overflow-hidden
+                        bg-white dark:bg-slate-800
+                        border-2 transition-all duration-300
+                        ${mapImagePreference === 'bonus'
+                  ? 'border-green-500 shadow-2xl shadow-green-500/20 scale-[1.02]'
+                  : 'border-slate-200 dark:border-slate-700/50 hover:border-green-500/50 hover:shadow-xl'
+                }
+                        rounded-3xl p-6
+                    `}
+            >
+              {mapImagePreference === 'bonus' && (
+                <div className="absolute top-4 right-4 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in duration-300">
+                  <Check className="w-4 h-4 text-white" />
+                </div>
+              )}
+              <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">
+                {t('settings.mapImages.bonus') || 'Imágenes Bonus'}
+              </h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {t('settings.mapImages.bonusDesc') || 'Muestra imágenes específicas para cada mapa bonus.'}
+              </p>
+            </button>
           </div>
         </div>
+
+        <SoundSettingsModal
+          isOpen={showSoundModal}
+          onClose={() => setShowSoundModal(false)}
+        />
 
         <div className="mt-16 text-center">
           <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">

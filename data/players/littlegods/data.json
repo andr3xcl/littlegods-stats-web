@@ -1,0 +1,207 @@
+{
+  "username": "Littlegods",
+  "guid": "6076229",
+  "stats": {
+    "kills": 45,
+    "downs": 11,
+    "revives": 0,
+    "headshots": 9,
+    "totalTimePlayed": 2565
+  },
+  "maps": {
+    "rooftop bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 500,
+      "totalTimePlayed": 6,
+      "gamesPlayed": 1
+    },
+    "tomb": {
+      "topRound": 3,
+      "totalKills": 14,
+      "totalHeadshots": 9,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 99320,
+      "totalTimePlayed": 219,
+      "gamesPlayed": 3
+    },
+    "trenches bonus": {
+      "topRound": 4,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 1500,
+      "totalTimePlayed": 360,
+      "gamesPlayed": 3
+    },
+    "farm bonus": {
+      "topRound": 4,
+      "totalKills": 2,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 96000,
+      "totalTimePlayed": 475,
+      "gamesPlayed": 3
+    },
+    "town bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 500,
+      "totalTimePlayed": 37,
+      "gamesPlayed": 1
+    },
+    "busdepot bonus": {
+      "topRound": 3,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 194000,
+      "totalTimePlayed": 184,
+      "gamesPlayed": 2
+    },
+    "house bonus": {
+      "topRound": 1,
+      "totalKills": 1,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 99680,
+      "totalTimePlayed": 54,
+      "gamesPlayed": 2
+    },
+    "diner bonus": {
+      "topRound": 1,
+      "totalKills": 1,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 99380,
+      "totalTimePlayed": 51,
+      "gamesPlayed": 1
+    },
+    "crazyplace bonus": {
+      "topRound": 2,
+      "totalKills": 26,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 3,
+      "totalScore": 506640,
+      "totalTimePlayed": 243,
+      "gamesPlayed": 11
+    },
+    "maze bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 500,
+      "totalTimePlayed": 25,
+      "gamesPlayed": 1
+    },
+    "cellblock bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 97000,
+      "totalTimePlayed": 50,
+      "gamesPlayed": 1
+    },
+    "docks bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 98000,
+      "totalTimePlayed": 14,
+      "gamesPlayed": 1
+    },
+    "showers": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 500,
+      "totalTimePlayed": 10,
+      "gamesPlayed": 1
+    },
+    "showers bonus": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 500,
+      "totalTimePlayed": 4,
+      "gamesPlayed": 1
+    },
+    "town": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 99250,
+      "totalTimePlayed": 22,
+      "gamesPlayed": 1
+    },
+    "power bonus": {
+      "topRound": 3,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 0,
+      "totalScore": 500,
+      "totalTimePlayed": 174,
+      "gamesPlayed": 1
+    },
+    "cornfield bonus": {
+      "topRound": 3,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 1500,
+      "totalTimePlayed": 455,
+      "gamesPlayed": 3
+    },
+    "tranzit": {
+      "topRound": 1,
+      "totalKills": 0,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 500,
+      "totalTimePlayed": 10,
+      "gamesPlayed": 1
+    },
+    "nuketown bonus": {
+      "topRound": 1,
+      "totalKills": 1,
+      "totalHeadshots": 0,
+      "totalRevives": 0,
+      "totalDowns": 1,
+      "totalScore": 99380,
+      "totalTimePlayed": 172,
+      "gamesPlayed": 3
+    }
+  },
+  "economy": {
+    "balance": 0,
+    "transactions": []
+  }
+}

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { X, ExternalLink } from 'lucide-react';
+import { X, ExternalLink, Trophy } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useGSAP } from '../../../utils/gsap';
 import { useUISounds } from '../../../hooks/useUISounds';
+import { loadRecentMatches } from '../../../constants';
+import { MatchData } from '../../../types';
+import { WEAPON_IMAGES, getWeaponBaseName } from '../../../constants/gameData';
 
 interface ProfileModalProps {
   isOpen: boolean;

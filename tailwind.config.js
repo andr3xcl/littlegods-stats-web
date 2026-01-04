@@ -10,14 +10,14 @@ export default {
       "./utils*.{js,ts,jsx,tsx}",
       "./locales*.{js,ts,jsx,tsx}",
     ],
-    
+
     transform: {
       js: (content) => content.replace(/tailwindcss/g, ''),
     },
-    
+
     options: {
       safelist: [
-        
+
         'dark',
         'group-hover',
         'hover',
@@ -28,18 +28,18 @@ export default {
       ],
     },
   },
-  darkMode: 'class', 
+  darkMode: 'class',
   theme: {
     extend: {
-      
+
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
-      
+
       backdropBlur: {
         'xs': '2px',
       },
-      
+
       colors: {
         'brand-purple': {
           50: '#faf5ff',
@@ -57,9 +57,9 @@ export default {
     },
   },
   plugins: [],
-  
+
   corePlugins: {
-    
+
     fontVariantNumeric: false,
     touchAction: false,
     ringOffsetWidth: false,
@@ -72,7 +72,7 @@ export default {
     textOpacity: false,
     backgroundOpacity: false,
   },
-  
+
   experimental: {
     optimizeUniversalDefaults: true,
   },

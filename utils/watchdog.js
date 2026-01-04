@@ -1,7 +1,35 @@
 #!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
-const PLUTONIUM_BASE_DIR = path.join(process.env.LOCALAPPDATA || path.join(process.env.USERPROFILE, 'AppData', 'Local'), 'Plutonium', 'storage', 't6', 'raw', 'scriptdata');
+import os from 'os';
+
+let baseDir;
+
+if (process.platform === 'win32') {
+  baseDir = process.env.LOCALAPPDATA ||
+    path.join(process.env.USERPROFILE, 'AppData', 'Local');
+} else {
+  
+  baseDir = path.join(
+    os.homedir(),
+    'Games',
+    'dosdevices',
+    'c:',
+    'users',
+    'andresito',
+    'AppData',
+    'Local'
+  );
+}
+
+const PLUTONIUM_BASE_DIR = path.join(
+  baseDir,
+  'Plutonium',
+  'storage',
+  't6',
+  'raw',
+  'scriptdata'
+);
 const BANK_DIR = path.join(PLUTONIUM_BASE_DIR, 'bank');
 const RECENT_DIR = path.join(PLUTONIUM_BASE_DIR, 'recent');
 const BANK_TRANSACTIONS_DIR = path.join(PLUTONIUM_BASE_DIR, 'bank_transactions');
@@ -112,7 +140,7 @@ function _getWeaponDisplayName(weaponName) {
     /_steadyaim_zm/gi,
     /_dualclip_zm/gi,
     /_zm/gi,
-    /upgraded\d*$/gi  
+    /upgraded\d*$/gi
   ];
   for (const suffix of upgradeSuffixes) {
     cleanName = cleanName.replace(suffix, '');
@@ -160,7 +188,7 @@ function _getPlayerDir(username) {
 function _loadPlayersData() {
   const playersData = {};
 
-  
+
   if (fs.existsSync(PLAYERS_DIR)) {
     try {
       const playerDirs = fs.readdirSync(PLAYERS_DIR, { withFileTypes: true })
@@ -185,7 +213,7 @@ function _loadPlayersData() {
     }
   }
 
-  
+
   if (Object.keys(playersData).length === 0 && fs.existsSync(DATA_FILE)) {
     try {
       const legacyData = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
@@ -200,18 +228,18 @@ function _loadPlayersData() {
 
 function _savePlayersData(data) {
   try {
-    
-    
 
-    
+
+
+
     const playersIndex = Object.values(data).map(p => ({
       guid: p.guid,
       username: p.username,
-      lastSeen: new Date().toISOString() 
+      lastSeen: new Date().toISOString()
     }));
     fs.writeFileSync(PLAYERS_INDEX_FILE, JSON.stringify(playersIndex, null, 2));
 
-    
+
     for (const guid in data) {
       const player = data[guid];
       if (!player.username) continue;
@@ -230,153 +258,246 @@ function _savePlayersData(data) {
 function _parseStatsFromFileContent(content) {
   const stats = {
     playerName: 'Unknown',
+    guid: '',
+    map: '',
     round: 1,
+    duration: '00:00:00',
     kills: 0,
     headshots: 0,
     revives: 0,
     downs: 0,
     score: 0,
-    duration: '00:00:00',
+
+    
+    general: {},
+    combat: {},
+    survival: {},
+    magicBox: {},
+    powerups: {},
+    perkCounts: {},
+    equipment: {},
+    mapSpecific: {},
+    persistentUpgrades: {},
+    mobOfTheDead: {},
+    buried: {},
+    origins: {},
+    cheats: {},
+    other: {},
+
     weapons: {},
     perks: {},
     bestWeapon: null,
     transactions: []
   };
+
   const lines = content.split('\n');
-  let inTransactionsSection = false;
+  let currentSection = null;
+  let currentWeapon = null;
+
+  const sectionMap = {
+    '[GENERAL]': 'general',
+    '[COMBAT]': 'combat',
+    '[SURVIVAL & ECONOMY]': 'survival',
+    '[MAGIC BOX & PAP]': 'magicBox',
+    '[POWERUPS]': 'powerups',
+    '[PERKS DRANK COUNTERS]': 'perkCounts',
+    '[EQUIPMENT]': 'equipment',
+    '[MAP SPECIFIC]': 'mapSpecific',
+    '[PERSISTENT UPGRADES]': 'persistentUpgrades',
+    '[OTHER]': 'other',
+    '[WEAPON USAGE LIST]': 'weapons',
+    'ARMAS USADAS EN LA PARTIDA:': 'weapons',
+    '[BANK TRANSACTIONS]': 'transactions',
+    '[MOB OF THE DEAD STATS]': 'mobOfTheDead',
+    '[BURIED STATS]': 'buried',
+    '[ORIGINS STATS]': 'origins',
+    '[CHEAT FLAGS DETECTED]': 'cheats'
+  };
+
+  
+  const toCamelCase = (str) => {
+    return str
+      .replace(/['"]/g, '')
+      .replace(/[^\w\s]/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .map((word, index) => {
+        if (index === 0) return word.toLowerCase();
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join('');
+  };
 
   for (const line of lines) {
     const trimmed = line.trim();
+    if (!trimmed) continue;
 
-    
-    if (trimmed.includes('Nombre:') || trimmed.includes('Jugador:')) {
-      stats.playerName = trimmed.split(':')[1]?.trim() || stats.playerName;
-    }
-    if (trimmed.includes('Ronda:') || trimmed.includes('Round:') || trimmed.includes('Ronda Alcanzada:')) {
-      stats.round = parseInt(trimmed.split(':')[1]?.trim()) || stats.round;
-    }
-    if (trimmed.includes('Duracion:') || trimmed.includes('Duration:')) {
-      stats.duration = trimmed.split(':')[1]?.trim() + ':' + trimmed.split(':')[2]?.trim() + ':' + trimmed.split(':')[3]?.trim();
-      
-      const parts = trimmed.split(':');
-      if (parts.length >= 4) { 
-        stats.duration = `${parts[1].trim()}:${parts[2].trim()}:${parts[3].trim()}`;
-      } else if (trimmed.includes('Duracion: ')) {
-        stats.duration = trimmed.replace('Duracion: ', '').trim();
-      }
-    }
-    if (trimmed.includes('Kills:') || trimmed.includes('Asesinatos:')) {
-      stats.kills = parseInt(trimmed.split(':')[1]?.trim()) || stats.kills;
-    }
-    if (trimmed.includes('Headshots:')) {
-      stats.headshots = parseInt(trimmed.split(':')[1]?.trim()) || stats.headshots;
-    }
-    if (trimmed.includes('Revives:') || trimmed.includes('Reanimaciones:')) {
-      stats.revives = parseInt(trimmed.split(':')[1]?.trim()) || stats.revives;
-    }
-    if (trimmed.includes('Downs:') || trimmed.includes('Caídas:')) {
-      stats.downs = parseInt(trimmed.split(':')[1]?.trim()) || stats.downs;
-    }
-    if (trimmed.includes('Score:') || trimmed.includes('Puntuación:') || trimmed.includes('Score Total:')) {
-      stats.score = parseInt(trimmed.split(':')[1]?.trim()) || stats.score;
-    }
-
-    
-    if (trimmed.includes('ARMAS USADAS EN LA PARTIDA:')) {
-      const weaponsSectionIndex = lines.indexOf(line);
-      if (weaponsSectionIndex !== -1) {
-        for (let i = weaponsSectionIndex + 1; i < lines.length; i++) {
-          const weaponLine = lines[i].trim();
-          if (weaponLine === '' || weaponLine.includes('PERKS') || weaponLine.includes('TRANSACCIONES') || weaponLine.includes('Fecha/Hora:')) break;
-          const weaponMatch = weaponLine.match(/^(.+?):\s*(\d+)\s*kills$/);
-          if (weaponMatch) {
-            const weaponName = weaponMatch[1].trim();
-            const killCount = parseInt(weaponMatch[2]);
-            if (killCount > 0) {
-              stats.weapons[weaponName] = {
-                kills: killCount,
-                displayName: _getWeaponDisplayName(weaponName)
-              };
-            }
-          }
-        }
-      }
-    }
-
-    
-    if (trimmed.includes('PERKS USADOS EN LA PARTIDA:')) {
-      const perksSectionIndex = lines.indexOf(line);
-      if (perksSectionIndex !== -1) {
-        for (let i = perksSectionIndex + 1; i < lines.length; i++) {
-          const perkLine = lines[i].trim();
-          if (perkLine === '' || perkLine.includes('TRANSACCIONES') || perkLine.includes('Fecha/Hora:')) break;
-          const perkMatch = perkLine.match(/^(.+?):\s*(\d+)\s*usos?$/);
-          if (perkMatch) {
-            const perkName = perkMatch[1].trim();
-            const useCount = parseInt(perkMatch[2]);
-            if (useCount > 0) {
-              stats.perks[perkName] = {
-                uses: useCount,
-                displayName: _getPerkDisplayName(perkName)
-              };
-            }
-          }
-        }
-      }
-    }
-
-    
-    if (trimmed.includes('TRANSACCIONES BANCARIAS:')) {
-      inTransactionsSection = true;
-      continue;
-    }
-    if (inTransactionsSection) {
-      if (trimmed.startsWith('--------------------------------') || trimmed.includes('Fecha/Hora:')) {
-        if (trimmed.includes('Fecha/Hora:')) inTransactionsSection = false; 
-        
-        if (stats.transactions.length > 0 && trimmed.startsWith('--------------------------------')) {
-          inTransactionsSection = false;
-        }
+    // Detect Section Headers
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      if (sectionMap[trimmed]) {
+        currentSection = sectionMap[trimmed];
+        currentWeapon = null;
         continue;
       }
+    } else if (sectionMap[trimmed]) {
+      // Handle headers without brackets (e.g., "ARMAS USADAS EN LA PARTIDA:")
+      currentSection = sectionMap[trimmed];
+      currentWeapon = null;
+      continue;
+    }
 
-      
-      
-      const txnMatch = trimmed.match(/^\[([\d:]+)\] (DEPOSIT|WITHDRAW): (\d+) - Balance: (\d+)$/);
-      if (txnMatch) {
+    // Top Level Metadata
+    if (!currentSection) {
+      if (trimmed.startsWith('Jugador:')) stats.playerName = trimmed.split(':')[1].trim();
+      else if (trimmed.startsWith('GUID:')) stats.guid = trimmed.split(':')[1].trim();
+      else if (trimmed.startsWith('Mapa:')) stats.map = trimmed.split(':')[1].trim();
+      else if (trimmed.startsWith('Ronda Alcanzada:')) stats.round = parseInt(trimmed.split(':')[1].trim()) || 1;
+      else if (trimmed.startsWith('Duracion:')) {
+        stats.duration = trimmed.replace('Duracion:', '').trim();
+        // Parse duration to seconds
+        const parts = stats.duration.split(':');
+        if (parts.length === 3) {
+          const hours = parseInt(parts[0], 10);
+          const minutes = parseInt(parts[1], 10);
+          const seconds = parseInt(parts[2], 10);
+          if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds)) {
+            stats.general.timePlayed = (hours * 3600) + (minutes * 60) + seconds;
+          }
+        }
+      }
+      else if (trimmed.startsWith('Score Total:')) stats.score = parseInt(trimmed.split(':')[1].trim()) || stats.score;
+      continue;
+    }
+
+    // Handle Sections
+    if (currentSection === 'transactions') {
+      const txMatch = trimmed.match(/^\[([\d:]+)\]\s+(DEPOSIT|WITHDRAW):\s+(\d+)\s+-\s+Balance:\s+(\d+)/i);
+      if (txMatch) {
         stats.transactions.push({
-          time: txnMatch[1],
-          type: txnMatch[2].toLowerCase(), 
-          amount: parseInt(txnMatch[3]),
-          balanceAfter: parseInt(txnMatch[4])
+          time: txMatch[1],
+          type: txMatch[2].toLowerCase(),
+          amount: parseInt(txMatch[3]),
+          balanceAfter: parseInt(txMatch[4])
         });
+      }
+    } else if (currentSection === 'weapons') {
+      // Detect new format: weapon_name|kills|headshots|killTimes
+      const newFormatMatch = trimmed.match(/^([^|]+)\|(\d+)\|(\d+)\|(.*)$/);
+
+      if (newFormatMatch) {
+        // NEW FORMAT: weapon_name|kills|headshots|killTimes
+        const [, name, kills, headshots, killTimesStr] = newFormatMatch;
+        const weaponData = {
+          name: name.trim(),
+          displayName: _getWeaponDisplayName(name.trim()),
+          kills: parseInt(kills),
+          headshots: parseInt(headshots),
+          killTimes: []
+        };
+
+        // Parse killTimes: "00:01:23,1,1;00:01:45,0,1;..."
+        if (killTimesStr && killTimesStr.trim()) {
+          const killTimesArray = killTimesStr.split(';').filter(kt => kt.trim());
+          for (const kt of killTimesArray) {
+            const parts = kt.split(',');
+            if (parts.length >= 3) {
+              weaponData.killTimes.push({
+                time: parts[0].trim(),
+                isHeadshot: parts[1].trim() === '1',
+                round: parseInt(parts[2].trim() || '1', 10)
+              });
+            }
+          }
+        }
+
+        stats.weapons[name.trim()] = weaponData;
+        currentWeapon = weaponData;
+
+      } else {
+        // OLD FORMAT: Backward compatibility
+        const weaponHeaderMatch = trimmed.match(/^(.+?):\s*(\d+)\s*kills?$/i);
+        if (weaponHeaderMatch) {
+          const name = weaponHeaderMatch[1].trim();
+          const kills = parseInt(weaponHeaderMatch[2]);
+          currentWeapon = {
+            name: name,
+            displayName: _getWeaponDisplayName(name),
+            kills: kills,
+            headshots: 0,
+            killTimes: []
+          };
+          stats.weapons[name] = currentWeapon;
+        } else if (currentWeapon && trimmed.startsWith('kill')) {
+          // kill 1: 00:03:22 | HS: 1 | R: 1
+          const kMatch = trimmed.match(/^kill\s+\d+:\s*(\d{2}:\d{2}:\d{2})\s*(?:\|\s*HS:\s*(\d+))?\s*(?:\|\s*R:\s*(\d+))?/);
+          if (kMatch) {
+            const isHeadshot = kMatch[2] === '1';
+            if (isHeadshot) currentWeapon.headshots++;
+            currentWeapon.killTimes.push({
+              time: kMatch[1].trim(),
+              isHeadshot: isHeadshot,
+              round: parseInt(kMatch[3] || '1', 10)
+            });
+          }
+        }
+      }
+    } else {
+      const parts = trimmed.split(':');
+      if (parts.length >= 2) {
+        const key = parts[0].trim();
+        const valStr = parts.slice(1).join(':').trim();
+
+        const valNum = Number(valStr);
+        const value = (valStr === '' || isNaN(valNum)) ? valStr : valNum;
+
+        if (stats[currentSection]) {
+          const camelKey = toCamelCase(key);
+          stats[currentSection][camelKey] = value;
+
+          // Legacy Compatibility Mapping
+          if (currentSection === 'general') {
+            if (camelKey === 'kills') stats.kills = value;
+            if (camelKey === 'deaths') stats.general.deaths = value;
+            if (camelKey === 'downs') stats.downs = value;
+            if (camelKey === 'revives') stats.revives = value;
+            if (camelKey === 'scoreTotal') stats.score = value;
+          }
+          if (currentSection === 'combat') {
+            if (camelKey === 'headshots') stats.headshots = value;
+          }
+          if (currentSection === 'perkCounts') {
+            if (typeof value === 'number' && value > 0) {
+              stats.perks[key] = {
+                uses: value,
+                displayName: _getPerkDisplayName(key)
+              };
+            }
+          }
+        }
       }
     }
   }
 
-  if (Object.keys(stats.weapons).length > 0) {
-    let maxKills = 0;
-    let bestWeaponKey = null;
-    for (const [weaponKey, weaponData] of Object.entries(stats.weapons)) {
-      if (weaponData.kills > maxKills) {
-        maxKills = weaponData.kills;
-        bestWeaponKey = weaponKey;
-      }
-    }
-    if (bestWeaponKey) {
+  // Calculate Best Weapon
+  let maxKills = 0;
+  for (const wKey in stats.weapons) {
+    const w = stats.weapons[wKey];
+    if (w.kills > maxKills) {
+      maxKills = w.kills;
       stats.bestWeapon = {
-        name: bestWeaponKey,
-        displayName: stats.weapons[bestWeaponKey].displayName,
-        kills: maxKills
+        name: w.name,
+        displayName: w.displayName,
+        kills: w.kills
       };
     }
   }
+
   return stats;
 }
 
 function getGamesPlayedCount(guid, map) {
   try {
-    
+
     const indexFile = path.join(RECENT_DIR, guid, map, `${map}_index.txt`);
     if (fs.existsSync(indexFile)) {
       const content = fs.readFileSync(indexFile, 'utf-8').trim();
@@ -396,10 +517,12 @@ function recalculateMapStats(guid, map) {
     totalHeadshots: 0,
     totalRevives: 0,
     totalDowns: 0,
-    totalScore: 0
+    totalDowns: 0,
+    totalScore: 0,
+    totalTimePlayed: 0
   };
   try {
-    
+
     const mapDir = path.join(RECENT_DIR, guid, map);
     if (!fs.existsSync(mapDir)) {
       return stats;
@@ -417,6 +540,7 @@ function recalculateMapStats(guid, map) {
         stats.totalRevives += parsedStats.revives;
         stats.totalDowns += parsedStats.downs;
         stats.totalScore += parsedStats.score;
+        stats.totalTimePlayed += parsedStats.general && parsedStats.general.timePlayed ? parsedStats.general.timePlayed : 0;
         if (parsedStats.round > stats.topRound) {
           stats.topRound = parsedStats.round;
         }
@@ -435,14 +559,18 @@ function recalculatePlayerTotalStats(maps) {
     kills: 0,
     downs: 0,
     revives: 0,
-    headshots: 0
+    revives: 0,
+    headshots: 0,
+    totalTimePlayed: 0
   };
   for (const mapName in maps) {
     const mapStats = maps[mapName];
     totalStats.kills += mapStats.totalKills || 0;
     totalStats.downs += mapStats.totalDowns || 0;
     totalStats.revives += mapStats.totalRevives || 0;
+    totalStats.revives += mapStats.totalRevives || 0;
     totalStats.headshots += mapStats.totalHeadshots || 0;
+    totalStats.totalTimePlayed += mapStats.totalTimePlayed || 0;
   }
   return totalStats;
 }
@@ -466,9 +594,12 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
     playersData[guid] = {
       username: playerName,
       guid: guid,
-      stats: { kills: 0, downs: 0, revives: 0, headshots: 0 },
+      username: playerName,
+      guid: guid,
+      stats: { kills: 0, downs: 0, revives: 0, headshots: 0, totalTimePlayed: 0 },
       maps: {},
-      economy: { balance: 0, transactions: [] } 
+      economy: { balance: 0, transactions: [] }
+
     };
   }
   if (playerName && playerName !== 'Unknown' && playerName !== playersData[guid].username) {
@@ -476,7 +607,7 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
   }
   const gamesPlayed = getGamesPlayedCount(guid, map);
   if (gamesPlayed === 0) {
-    return; 
+    return;
   }
   const recalculatedStats = recalculateMapStats(guid, map);
   playersData[guid].maps[map] = {
@@ -486,7 +617,7 @@ function processPlayerStats(guid, playerName, map, round, kills, headshots, revi
   const mapStats = playersData[guid].maps[map];
   playersData[guid].stats = recalculatePlayerTotalStats(playersData[guid].maps);
 
-  
+
   try {
     const bankFile = path.join(BANK_DIR, `${guid}.txt`);
     if (fs.existsSync(bankFile)) {
@@ -520,7 +651,7 @@ function processRecentMatchesFromDir() {
     for (const guid of guidDirs) {
       const guidPath = path.join(RECENT_DIR, guid);
 
-      
+
       const mapDirs = fs.readdirSync(guidPath, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
@@ -529,7 +660,7 @@ function processRecentMatchesFromDir() {
         const mapPath = path.join(guidPath, map);
         const files = fs.readdirSync(mapPath)
           .filter(file => file.endsWith('.txt'))
-          .sort(); 
+          .sort();
 
         for (const file of files) {
           try {
@@ -537,12 +668,12 @@ function processRecentMatchesFromDir() {
             const fileName = path.basename(file, '.txt');
             const parts = fileName.split('_recent_');
             if (parts.length !== 2) {
-              if (!fileName.endsWith('_index.txt')) { 
+              if (!fileName.endsWith('_index.txt')) {
                 continue;
               }
               continue;
             }
-            
+
             const fileMap = parts[0];
 
             const matchNumber = parseInt(parts[1]);
@@ -576,7 +707,7 @@ function processRecentMatchesFromDir() {
     }
     recentMatches.sort((a, b) => b.timestamp - a.timestamp);
 
-    
+
     const matchesByPlayer = {};
     for (const match of recentMatches) {
       if (!match.playerName) continue;
@@ -590,7 +721,7 @@ function processRecentMatchesFromDir() {
       const playerDir = _getPlayerDir(playerName);
       _ensureDirExists(playerDir);
       const playerMatchesFile = path.join(playerDir, 'matches.json');
-      
+
       const playerMatches = matchesByPlayer[playerName].slice(0, 50);
       fs.writeFileSync(playerMatchesFile, JSON.stringify(playerMatches, null, 2));
     }
@@ -604,8 +735,8 @@ function main() {
   const dirsToCreate = [
     PLUTONIUM_BASE_DIR,
     RECENT_DIR,
-    DATA_DIR, 
-    PLAYERS_DIR 
+    DATA_DIR,
+    PLAYERS_DIR
   ];
   dirsToCreate.forEach(_ensureDirExists);
 

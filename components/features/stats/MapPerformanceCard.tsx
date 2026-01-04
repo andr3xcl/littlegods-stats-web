@@ -1,10 +1,13 @@
 import React, { memo, useState } from 'react';
-import { Target, Crosshair, Heart, Trophy, ChevronDown, Play } from 'lucide-react';
+import { Target, Crosshair, Heart, Trophy, ChevronDown, Play, Clock, Timer } from 'lucide-react';
 import { UserDownIcon } from '../../common/icons';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import LazyImage from '../../common/LazyImage';
 import { MAP_BANNERS, MAP_NAME_TO_CODE } from '../../../constants';
+import { getMapImage } from '../../../constants/gameData';
+import { useSettings } from '../../../contexts/SettingsContext';
 import type { MapStats } from '../../../types';
+import { formatSecondsToDuration } from '../../../utils/formatTime';
 
 import { useUISounds } from '../../../hooks/useUISounds';
 
@@ -17,11 +20,11 @@ interface MapPerformanceCardProps {
 
 const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, mapName, stats, onOpenModal }) => {
     const { t } = useLanguage();
+    const { mapImagePreference } = useSettings();
     const [isHovered, setIsHovered] = useState(false);
     const { playHover, playSelect } = useUISounds();
 
-    const mapCode = MAP_NAME_TO_CODE[mapId] || mapId;
-    const mapBanner = MAP_BANNERS[mapCode] || 'https://picsum.photos/seed/map/400/200';
+    const mapBanner = getMapImage(mapId, mapImagePreference);
 
     return (
         <div
@@ -36,7 +39,7 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                 onOpenModal();
             }}
         >
-            {}
+            { }
             <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-110">
                 <LazyImage
                     src={mapBanner}
@@ -47,28 +50,35 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-blue-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay"></div>
             </div>
 
-            {}
+            { }
             <div className="relative h-full p-6 z-10">
 
-                {}
-                <div className="flex justify-between items-start">
-                    <div>
-                        <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight drop-shadow-lg mb-1">
-                            {mapName}
-                        </h3>
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold text-slate-200">
-                            <Trophy className="w-3 h-3 text-yellow-400" />
-                            <span>{t('stats.round')} {stats.topRound}</span>
+
+
+                { }
+                <div className="flex flex-col">
+                    <h3 className="text-xl font-black text-white tracking-tight drop-shadow-lg mb-2">
+                        {mapName}
+                    </h3>
+                    <div className="flex items-center gap-2">
+                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-0.5 rounded-full font-black text-[10px] shadow-lg border border-orange-400/20">
+                            {t('stats.round')} {stats.topRound}
                         </div>
+                        {stats.totalTimePlayed !== undefined && stats.totalTimePlayed > 0 && (
+                            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-blue-500/20 backdrop-blur-md border border-blue-500/20 text-[10px] font-bold text-blue-200">
+                                <Timer className="w-3 h-3 text-blue-400" />
+                                <span>
+                                    {formatSecondsToDuration(stats.totalTimePlayed)}
+                                </span>
+                            </div>
+                        )}
                     </div>
-
-
                 </div>
 
-                {}
+                { }
                 <div className={`absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-12 transform transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[20%] opacity-0 pointer-events-none'}`}>
                     <div className="space-y-3">
-                        {}
+                        { }
                         <div className="grid grid-cols-2 gap-3">
                             <div className="flex flex-col items-center justify-center text-center">
                                 <div className="flex items-center gap-2 mb-1">
@@ -87,7 +97,7 @@ const MapPerformanceCard: React.FC<MapPerformanceCardProps> = memo(({ mapId, map
                             </div>
                         </div>
 
-                        {}
+                        { }
                         <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
                             <div className="flex flex-col items-center justify-center text-center">
                                 <div className="flex items-center gap-2 mb-1">

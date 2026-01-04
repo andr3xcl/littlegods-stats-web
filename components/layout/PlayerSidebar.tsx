@@ -10,12 +10,12 @@ interface PlayerSidebarProps {
 }
 
 const PlayerItem = React.memo(({ player, isSelected, onSelect, t }: { player: PlayerProfile, isSelected: boolean, onSelect: (p: PlayerProfile) => void, t: any }) => {
-  const { playZoomIn } = useUISounds();
+  const { playSelect } = useUISounds();
 
   return (
     <button
       onClick={() => {
-        playZoomIn();
+        playSelect();
         onSelect(player);
       }}
       className={`
@@ -26,7 +26,7 @@ const PlayerItem = React.memo(({ player, isSelected, onSelect, t }: { player: Pl
         }
             `}
     >
-      {}
+      { }
       {isSelected && (
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-50"></div>
       )}
@@ -58,7 +58,7 @@ const PlayerItem = React.memo(({ player, isSelected, onSelect, t }: { player: Pl
         )}
       </div>
 
-      {}
+      { }
       <div className={`absolute inset-0 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${isSelected ? 'bg-gradient-to-r from-indigo-500/5 to-purple-500/5' : 'bg-slate-200/20 dark:bg-slate-700/20'
         }`}></div>
     </button>
@@ -82,13 +82,13 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
 
   return (
     <div className="h-full">
-      {}
+      { }
       <div className="relative bg-gradient-to-br from-white/90 to-slate-100/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-md border-2 border-slate-200/50 dark:border-slate-700/50 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col h-[calc(100vh-6rem)] sm:h-[calc(100vh-8rem)] sticky top-20">
 
-        {}
+        { }
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5 opacity-50"></div>
 
-        {}
+        { }
         <div className="relative p-4 border-b border-slate-300/50 dark:border-slate-700/50 shrink-0">
           <div className="flex items-center gap-2 mb-4">
             <div className="relative">
@@ -119,7 +119,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
           </div>
         </div>
 
-        {}
+        { }
         <div className="relative flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 scrollbar-track-transparent">
           <div className="space-y-2">
             {filteredPlayers.map((player) => (
@@ -134,7 +134,7 @@ const PlayerSidebar: React.FC<PlayerSidebarProps> = ({ players, selectedPlayer, 
           </div>
         </div>
 
-        {}
+        { }
         <div className="relative p-3 border-t border-slate-300/50 dark:border-slate-700/50 shrink-0 bg-white/30 dark:bg-slate-900/30">
           <div className="flex items-center justify-center gap-2">
             <p className="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-bold">

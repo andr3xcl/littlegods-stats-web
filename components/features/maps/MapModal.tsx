@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { MAP_BANNERS, MAP_NAME_TO_CODE, loadRecentMatches } from '../../../constants';
-import { Target, Skull, Heart, Award, Activity, Calendar, X, BarChart3, Zap, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock } from 'lucide-react';
+import { Target, Skull, Heart, Award, Activity, Calendar, X, BarChart3, Zap, ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Clock, Sword, Shield, Package, Beer, Flame, Crosshair } from 'lucide-react';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { useGSAP } from '../../../utils/gsap';
+import { useSound } from '../../../contexts/SoundContext';
 import { useUISounds } from '../../../hooks/useUISounds';
+import { useGSAP } from '../../../utils/gsap';
+import { WEAPON_IMAGES, getWeaponBaseName, getMapImage } from '../../../constants/gameData';
+import { useSettings } from '../../../contexts/SettingsContext';
 
 interface MapModalProps {
   isOpen: boolean;
@@ -27,6 +30,16 @@ interface MatchData {
   score: number;
   timestamp: number;
   fileName: string;
+  general?: {
+    kills: number;
+    deaths: number;
+    downs: number;
+    revives: number;
+    suicides: number;
+    scoreTotal: number;
+    timePlayed: number;
+    weightedRounds: number;
+  };
   transactions?: {
     time: string;
     type: 'deposit' | 'withdraw';
@@ -34,6 +47,61 @@ interface MatchData {
     balanceAfter: number;
   }[];
   duration?: string;
+  weapons?: Record<string, {
+    kills: number;
+    headshots: number;
+    displayName: string;
+    killTimes?: string[] | { time: string; isHeadshot: boolean; round: number }[];
+  }>;
+  combat?: {
+    headshots: number;
+    gibs: number;
+    meleeKills: number;
+    grenadeKills: number;
+    totalShots: number;
+    hits: number;
+  };
+  survival?: {
+    distanceTraveled: number;
+    doorsPurchased: number;
+    wins: number;
+    losses: number;
+    powerOn: number;
+    drops: number;
+  };
+  magicBox?: {
+    boxUsed: number;
+    papUsed: number;
+    boxWeaponsTaken: number;
+    papWeaponsTaken: number;
+  };
+  powerups?: {
+    nukes: number;
+    instaKills: number;
+    maxAmmo: number;
+    doublePoints: number;
+    carpenters: number;
+    fireSales: number;
+  };
+  perkCounts?: {
+    juggernog: number;
+    quickRevive: number;
+    doubleTap: number;
+    speedCola: number;
+    staminUp: number;
+    phdFlopper: number;
+    deadshot: number;
+    muleKick: number;
+    tombstoneWhosWho: number;
+    electricCherry: number;
+    vultureAid: number;
+    totalPerks: number;
+  };
+  persistentUpgrades?: Record<string, number>;
+  mobOfTheDead?: Record<string, number>;
+  buried?: Record<string, number>;
+  origins?: Record<string, number>;
+  cheats?: Record<string, number>;
 }
 
 interface BankTransaction {
@@ -47,7 +115,7 @@ interface BankTransaction {
   timestamp: number;
 }
 
-type MetricType = 'general' | 'kills' | 'downs' | 'score' | 'revives' | 'headshots' | 'bank';
+type MetricType = 'general' | 'kills' | 'downs' | 'score' | 'revives' | 'headshots' | 'bank' | 'weapons' | 'combat' | 'survival' | 'magicBox' | 'powerups' | 'perks' | 'persistentUpgrades' | 'mobOfTheDead' | 'buried' | 'origins' | 'cheats';
 
 interface MetricConfig {
   key: MetricType;
@@ -64,15 +132,15 @@ const downsampleData = (data: any[], maxPoints: number = 300) => {
   const step = Math.floor(data.length / maxPoints);
   const sampled = [];
 
-  
+
   sampled.push(data[0]);
 
-  
+
   for (let i = step; i < data.length - step; i += step) {
     sampled.push(data[i]);
   }
 
-  
+
   if (sampled[sampled.length - 1] !== data[data.length - 1]) {
     sampled.push(data[data.length - 1]);
   }
@@ -86,79 +154,244 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
   const [bankTransactions, setBankTransactions] = useState<BankTransaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('general');
+  const [selectedSubMetric, setSelectedSubMetric] = useState<string | null>(null);
   const [tablePage, setTablePage] = useState(0);
   const { t } = useLanguage();
   const { theme } = useTheme();
-  const { playExit } = useUISounds();
+  const { mapImagePreference } = useSettings();
+  const { playExit, playPan, playHover, playSelect, playEquip } = useUISounds();
 
-  
+
   const gsap = useGSAP();
   const modalRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const ITEMS_PER_PAGE = 25;
+  const ITEMS_PER_PAGE = 5;
 
   const METRICS_CONFIG: MetricConfig[] = useMemo(() => [
     {
       key: 'general',
       label: t('stats.general'),
-      color: '#6366f1', 
+      color: '#6366f1',
       icon: <BarChart3 className="w-5 h-5" />,
       description: t('modal.generalDescription')
     },
     {
-      key: 'kills',
-      label: t('stats.kills'),
-      color: '#ef4444', 
-      icon: <Target className="w-5 h-5" />,
-      description: t('metric.kills.desc')
-    },
-    {
-      key: 'downs',
-      label: t('stats.downs'),
-      color: '#f97316', 
-      icon: <Award className="w-5 h-5" />,
-      description: t('metric.downs.desc')
-    },
-    {
-      key: 'revives',
-      label: t('stats.revives'),
-      color: '#10b981', 
-      icon: <Heart className="w-5 h-5" />,
-      description: t('metric.revives.desc')
-    },
-    {
-      key: 'headshots',
-      label: t('stats.headshots'),
-      color: '#8b5cf6', 
-      icon: <Skull className="w-5 h-5" />,
-      description: t('metric.headshots.desc')
-    },
-    {
-      key: 'score',
-      label: t('stats.score'),
-      color: '#eab308', 
-      icon: <Activity className="w-5 h-5" />,
-      description: t('metric.score.desc')
-    },
-    {
       key: 'bank',
       label: t('stats.bank'),
-      color: '#f59e0b', 
+      color: '#f59e0b',
       icon: <Zap className="w-5 h-5" />,
       description: t('metric.bank.desc')
+    },
+    {
+      key: 'weapons',
+      label: t('stats.weapons') || "Armas",
+      color: '#f43f5e',
+      icon: <Sword className="w-5 h-5" />,
+      description: t('modal.weaponsDescription') || "Análisis de armas"
+    },
+    {
+      key: 'combat',
+      label: t('stats.combat'),
+      color: '#ef4444',
+      icon: <Crosshair className="w-5 h-5" />,
+      description: t('modal.combatDescription')
+    },
+    {
+      key: 'survival',
+      label: t('stats.survivalMode'),
+      color: '#10b981',
+      icon: <Shield className="w-5 h-5" />,
+      description: t('modal.survivalDescription')
+    },
+    {
+      key: 'magicBox',
+      label: t('stats.magicBox'),
+      color: '#3b82f6',
+      icon: <Package className="w-5 h-5" />,
+      description: t('modal.magicBoxDescription')
+    },
+    {
+      key: 'powerups',
+      label: t('stats.powerups'),
+      color: '#eab308',
+      icon: <Flame className="w-5 h-5" />,
+      description: t('modal.powerupsDescription')
+    },
+    {
+      key: 'perks',
+      label: t('stats.perks'),
+      color: '#8b5cf6',
+      icon: <Beer className="w-5 h-5" />,
+      description: t('modal.perksDescription')
+    },
+    {
+      key: 'persistentUpgrades',
+      label: 'Pers. Upgrades',
+      color: '#06b6d4', 
+      icon: <Activity className="w-5 h-5" />,
+      description: 'Persistent Upgrades' 
+    },
+    {
+      key: 'mobOfTheDead',
+      label: t('map.mobOfTheDead'),
+      color: '#ea580c', 
+      icon: <Skull className="w-5 h-5" />,
+      description: t('modal.mobOfTheDeadDescription')
+    },
+    {
+      key: 'buried',
+      label: t('map.buried'),
+      color: '#b45309', 
+      icon: <Crosshair className="w-5 h-5" />,
+      description: t('modal.buriedDescription')
+    },
+    {
+      key: 'origins',
+      label: t('map.origins'),
+      color: '#2563eb', 
+      icon: <Shield className="w-5 h-5" />,
+      description: t('modal.originsDescription')
+    },
+    {
+      key: 'cheats',
+      label: 'Cheats',
+      color: '#dc2626', 
+      icon: <Activity className="w-5 h-5" />,
+      description: t('modal.cheatsDescription')
     }
   ], [t]);
 
+  const visibleMetrics = useMemo(() => {
+    return METRICS_CONFIG.filter(metric => {
+      if (metric.key === 'mobOfTheDead') return selectedMap === 'prison';
+      if (metric.key === 'buried') return selectedMap === 'processing'; 
+      if (metric.key === 'origins') return selectedMap === 'tomb';
+      return true;
+    });
+  }, [METRICS_CONFIG, selectedMap]);
+
+  const SUB_METRICS: Record<string, { key: string; label: string }[]> = useMemo(() => ({
+    general: [
+      { key: 'scoreTotal', label: t('stats.score') },
+      { key: 'kills', label: t('stats.kills') },
+      { key: 'totalPerks', label: t('stats.perks') },
+      { key: 'totalPowerups', label: t('stats.powerups') }
+    ],
+    combat: [
+      { key: 'kills', label: t('stats.kills') },
+      { key: 'deaths', label: 'Deaths' },
+      { key: 'downs', label: t('stats.downs') },
+      { key: 'revives', label: t('stats.revives') },
+      { key: 'suicides', label: 'Suicides' },
+      { key: 'scoreTotal', label: t('stats.score') },
+      { key: 'timePlayed', label: t('stats.timePlayed') }, 
+      { key: 'headshots', label: t('stats.headshots') },
+      { key: 'gibs', label: t('stats.gibs') },
+      { key: 'meleeKills', label: t('stats.melee') },
+      { key: 'grenadeKills', label: t('stats.grenades') },
+      { key: 'accuracy', label: t('stats.accuracy') }
+    ],
+    survival: [
+      { key: 'distanceTraveled', label: t('stats.miles') },
+      { key: 'doorsPurchased', label: t('stats.doors') },
+      { key: 'drops', label: t('stats.drops') },
+      { key: 'failedRevives', label: t('stats.failedRevives') }
+    ],
+    magicBox: [
+      { key: 'boxUsed', label: t('stats.boxUses') },
+      { key: 'papUsed', label: t('stats.papUses') },
+      { key: 'boxWeaponsTaken', label: t('stats.boxTaken') },
+      { key: 'papWeaponsTaken', label: t('stats.papTaken') }
+    ],
+    powerups: [
+      { key: 'nukes', label: t('stats.nukes') },
+      { key: 'instaKills', label: t('stats.instaKill') },
+      { key: 'maxAmmo', label: t('stats.maxAmmo') },
+      { key: 'doublePoints', label: t('stats.doublePoints') },
+      { key: 'carpenters', label: t('stats.carpenter') },
+      { key: 'fireSales', label: t('stats.fireSale') }
+    ],
+    perks: [
+      { key: 'totalPerks', label: t('stats.total') },
+      { key: 'juggernog', label: 'Juggernog' },
+      { key: 'quickRevive', label: 'Quick Revive' },
+      { key: 'speedCola', label: 'Speed Cola' },
+      { key: 'doubleTap', label: 'Double Tap' },
+      { key: 'staminUp', label: 'Stamin-Up' },
+      { key: 'phdFlopper', label: 'PHD Flopper' },
+      { key: 'deadshot', label: 'Deadshot' },
+      { key: 'muleKick', label: 'Mule Kick' },
+      { key: 'tombstoneWhosWho', label: 'Tombstone' },
+      { key: 'vultureAid', label: 'Vulture Aid' }
+    ],
+    persistentUpgrades: [
+      { key: 'juggernogPersistent', label: t('stats.persJugg') },
+      { key: 'reviveNoPerk', label: t('stats.persRevive') },
+      { key: 'multikillHeadshots', label: t('stats.persHeadshots') },
+      { key: 'instaKill', label: t('stats.persInsta') },
+      { key: 'carpenterPersistent', label: t('stats.persCarpenter') },
+      { key: 'cashBackBought', label: t('stats.persCashBack') }
+    ],
+    mobOfTheDead: [
+      { key: 'tomahawkAcquired', label: t('stats.tomahawkAcquired') },
+      { key: 'fanTrapsUsed', label: t('stats.fanTraps') },
+      { key: 'acidTrapsUsed', label: t('stats.acidTraps') },
+      { key: 'sniperTowersUsed', label: t('stats.sniperTowers') },
+      { key: 'eeGoodEnding', label: t('stats.eeGood') },
+      { key: 'eeBadEnding', label: t('stats.eeBad') },
+      { key: 'spoonAcquired', label: t('stats.spoon') },
+      { key: 'brutusKilled', label: t('stats.brutus') }
+    ],
+    buried: [
+      { key: 'lsatPurchased', label: t('stats.lsat') },
+      { key: 'fountainUsed', label: t('stats.fountain') },
+      { key: 'ghostsKilled', label: t('stats.ghosts') },
+      { key: 'drainedByGhost', label: t('stats.ghostDrained') },
+      { key: 'freeGhostPerk', label: t('stats.ghostPerk') },
+      { key: 'boozeToArthur', label: t('stats.slothBooze') },
+      { key: 'barricadesBroken', label: t('stats.slothBarricades') },
+      { key: 'candyToArthur', label: t('stats.slothCandy') },
+      { key: 'wallbuysPlaced', label: t('stats.wallbuysPlaced') }
+    ],
+    origins: [
+      { key: 'mechzKilled', label: t('stats.mechz') },
+      { key: 'robotStomped', label: t('stats.robotStomped') },
+      { key: 'robotAccessed', label: t('stats.robotAccessed') },
+      { key: 'generatorsCaptured', label: t('stats.generatorsCap') },
+      { key: 'generatorsDefended', label: t('stats.generatorsDef') },
+      { key: 'generatorsLost', label: t('stats.generatorsLost') },
+      { key: 'digs', label: t('stats.digs') },
+      { key: 'goldenShovel', label: t('stats.goldenShovel') },
+      { key: 'goldenHelmet', label: t('stats.goldenHelmet') },
+      { key: 'perkSlotsExtended', label: t('stats.perkSlots') }
+    ],
+    cheats: [
+      { key: 'cheatFlags', label: t('stats.cheatFlags') }
+    ]
+  }), [t]);
+
   const handleMetricChange = useCallback((metric: MetricType) => {
+    playEquip();
     setSelectedMetric(metric);
-    setTablePage(0); 
-  }, []);
+    
+    if (SUB_METRICS[metric]) {
+      
+      setSelectedSubMetric(SUB_METRICS[metric][0].key);
+    } else {
+      setSelectedSubMetric(null);
+    }
+    setTablePage(0);
+  }, [playEquip, SUB_METRICS]);
 
   useEffect(() => {
     if (isOpen && selectedMap) {
-      loadMatchHistory();
       
+      setSelectedMetric('general');
+      setTablePage(0);
+
+      loadMatchHistory();
+
       if (modalRef.current) {
         gsap.animateModalIn(modalRef.current);
       }
@@ -182,15 +415,15 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
 
       const matches = (await loadRecentMatches(identifier)) as unknown as MatchData[];
 
-      
+
       const mapEntries = matches.filter(match => match.map === selectedMap);
 
-      
-      
+
+
       const realMatches = mapEntries.filter(m => m.round !== undefined && m.kills !== undefined);
       setMatchHistory(realMatches);
 
-      
+
       const transactions: BankTransaction[] = [];
       mapEntries.forEach(match => {
         if (match.transactions) {
@@ -208,7 +441,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           });
         }
       });
-      
+
       transactions.sort((a, b) => a.timestamp - b.timestamp);
       setBankTransactions(transactions);
 
@@ -219,7 +452,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     }
   }, [selectedMap, playerData]);
 
-  
+
 
   const mapStats = useMemo(() => {
     return playerData?.maps?.[selectedMap] || {
@@ -234,9 +467,43 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     };
   }, [playerData, selectedMap]);
 
+  const weaponStats = useMemo(() => {
+    const stats: Record<string, { kills: number; headshots: number; displayName: string; killTimes?: string[] | { time: string; isHeadshot: boolean; round: number }[] }> = {};
+
+    matchHistory.forEach(match => {
+      if (!match.weapons) return;
+      Object.values(match.weapons).forEach(weapon => {
+        if (!stats[weapon.displayName]) {
+          stats[weapon.displayName] = { kills: 0, headshots: 0, displayName: weapon.displayName, killTimes: [] };
+        }
+        
+        
+        const computedHeadshots = weapon.headshots !== undefined
+          ? weapon.headshots
+          : (Array.isArray(weapon.killTimes)
+            ? weapon.killTimes.filter((k: any) => typeof k === 'object' && k.isHeadshot).length
+            : 0);
+
+        stats[weapon.displayName].kills += weapon.kills;
+        stats[weapon.displayName].headshots += computedHeadshots;
+      });
+    });
+
+    return Object.values(stats).sort((a, b) => b.kills - a.kills);
+  }, [matchHistory]);
+
+  
+  const [selectedWeaponName, setSelectedWeaponName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (weaponStats.length > 0 && !selectedWeaponName) {
+      setSelectedWeaponName(weaponStats[0].displayName);
+    }
+  }, [weaponStats, selectedWeaponName]);
+
   const chartData = useMemo(() => {
     if (selectedMetric === 'bank') {
-      const rawData = bankTransactions; 
+      const rawData = bankTransactions;
 
       return downsampleData(rawData.map((transaction, index) => {
         const date = new Date(transaction.timestamp);
@@ -251,6 +518,152 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           timestamp: transaction.timestamp,
           dotColor: (transaction.type === 'deposit' || transaction.type === 'deposit_from_player') ? '#10b981' :
             (transaction.type === 'withdraw' || transaction.type === 'pay_to_player') ? '#ef4444' : '#6b7280'
+        };
+      }));
+    } else if (selectedMetric === 'weapons') {
+      
+      const targetWeapon = selectedWeaponName || weaponStats[0]?.displayName;
+
+      const rawData = matchHistory
+        .slice()
+        .reverse();
+
+      return downsampleData(rawData.map((match, index) => {
+        let kills = 0;
+        if (match.weapons) {
+          
+          const w = Object.values(match.weapons).find(w => w.displayName === targetWeapon);
+          if (w) kills = w.kills;
+        }
+        return {
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          weapons: kills,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'general') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric === 'totalPowerups') {
+          value = (match.powerups?.nukes || 0) + (match.powerups?.instaKills || 0) + (match.powerups?.maxAmmo || 0) + (match.powerups?.doublePoints || 0) + (match.powerups?.carpenters || 0) + (match.powerups?.fireSales || 0);
+        } else if (selectedSubMetric === 'totalPerks') {
+          value = match.perkCounts?.totalPerks || 0;
+        } else if (selectedSubMetric === 'scoreTotal') {
+          value = match.general?.scoreTotal ?? match.score;
+        } else if (selectedSubMetric === 'kills') {
+          value = match.general?.kills ?? match.kills;
+        }
+
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'combat') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric === 'accuracy') {
+          value = match.combat && match.combat.totalShots > 0
+            ? Math.round((match.combat.hits / match.combat.totalShots) * 100)
+            : 0;
+        } else if (selectedSubMetric === 'kills') value = match.general?.kills ?? match.kills;
+        else if (selectedSubMetric === 'deaths') value = match.general?.deaths || 0;
+        else if (selectedSubMetric === 'downs') value = match.general?.downs ?? match.downs;
+        else if (selectedSubMetric === 'revives') value = match.general?.revives ?? match.revives;
+        else if (selectedSubMetric === 'suicides') value = match.general?.suicides || 0;
+        else if (selectedSubMetric === 'scoreTotal') value = match.general?.scoreTotal ?? match.score;
+        else if (selectedSubMetric === 'timePlayed') value = match.general?.timePlayed || 0;
+        else if (selectedSubMetric && match.combat) {
+          
+          value = match.combat[selectedSubMetric] || 0;
+        }
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'survival') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric === 'distanceTraveled') {
+          value = Math.round((match.survival?.distanceTraveled || 0) / 1609.34 * 100) / 100; 
+        } else if (selectedSubMetric && match.survival) {
+          
+          value = match.survival[selectedSubMetric] || 0;
+        }
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'magicBox') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric && match.magicBox) {
+          
+          value = match.magicBox[selectedSubMetric] || 0;
+        }
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'powerups') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric && match.powerups) {
+          
+          value = match.powerups[selectedSubMetric] || 0;
+        }
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (selectedMetric === 'perks') {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        if (selectedSubMetric && match.perkCounts) {
+          
+          value = match.perkCounts[selectedSubMetric] || 0;
+        }
+        return {
+          ...match,
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
+        };
+      }));
+    } else if (['mobOfTheDead', 'buried', 'origins', 'cheats', 'persistentUpgrades'].includes(selectedMetric)) {
+      const rawData = matchHistory.slice().reverse();
+      return downsampleData(rawData.map((match, index) => {
+        let value = 0;
+        
+        if (selectedSubMetric && match[selectedMetric]) {
+          
+          value = match[selectedMetric][selectedSubMetric] || 0;
+        }
+        return {
+          ...match, 
+          game: `${t('modal.matchNumber')} ${index + 1}`,
+          [selectedMetric]: value,
+          date: new Date(match.timestamp).toLocaleDateString()
         };
       }));
     } else {
@@ -269,7 +682,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
         date: new Date(match.timestamp).toLocaleDateString()
       })));
     }
-  }, [matchHistory, bankTransactions, selectedMetric, t]);
+  }, [matchHistory, bankTransactions, selectedMetric, t, weaponStats, selectedWeaponName, selectedSubMetric]);
 
   const currentMetricConfig = useMemo(() =>
     METRICS_CONFIG.find(m => m.key === selectedMetric)!,
@@ -343,21 +756,29 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
     return value === statsComparison[metric].best ? ' 🏆' : '';
   }, [statsComparison]);
 
-  
+
   const paginatedTableData = useMemo(() => {
-    const data = selectedMetric === 'bank' ? bankTransactions : matchHistory;
+    let data;
+    if (selectedMetric === 'bank') {
+      data = bankTransactions;
+    } else if (selectedMetric === 'weapons') {
+      data = weaponStats;
+    } else {
+      data = matchHistory;
+    }
     const startIndex = tablePage * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
+    
     return data.slice(startIndex, endIndex);
-  }, [selectedMetric, bankTransactions, matchHistory, tablePage]);
+  }, [selectedMetric, bankTransactions, matchHistory, tablePage, weaponStats]);
 
-  const totalPages = Math.ceil((selectedMetric === 'bank' ? bankTransactions.length : matchHistory.length) / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil((selectedMetric === 'bank' ? bankTransactions.length : selectedMetric === 'weapons' ? weaponStats.length : matchHistory.length) / ITEMS_PER_PAGE);
 
   if (!isOpen || !selectedMap) return null;
 
-  const mapCode = MAP_NAME_TO_CODE[selectedMap] || selectedMap;
-  const mapBanner = MAP_BANNERS[mapCode] || null;
-  const safeMapBanner = mapBanner && mapBanner.trim() !== '' ? mapBanner : null;
+  if (!isOpen || !selectedMap) return null;
+
+  const safeMapBanner = getMapImage(selectedMap, mapImagePreference);
 
   return (
     <div
@@ -386,10 +807,10 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               </div>
             )}
 
-            {}
+            { }
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
 
-            {}
+            { }
             <button
               onClick={handleClose}
               className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md border border-white/10 transition-all duration-300 hover:scale-110 group"
@@ -397,7 +818,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
               <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
             </button>
 
-            {}
+            { }
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
               <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
@@ -432,7 +853,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
           </div>
         </div>
 
-        {}
+        { }
         <div ref={contentRef} className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 bg-slate-50 dark:bg-slate-900/50">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
@@ -452,10 +873,10 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
             </div>
           ) : (
             <>
-              {}
+              { }
               <div className="bg-white dark:bg-slate-800 rounded-2xl p-2 shadow-sm border border-slate-200 dark:border-slate-700/50">
                 <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 no-scrollbar">
-                  {METRICS_CONFIG.map((metric) => (
+                  {visibleMetrics.map((metric) => (
                     <button
                       key={metric.key}
                       onClick={() => handleMetricChange(metric.key)}
@@ -476,10 +897,10 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               </div>
 
-              {}
-              {selectedMetric !== 'general' && statsComparison && (
+              { }
+              {selectedMetric !== 'general' && statsComparison && statsComparison[selectedMetric] && (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {}
+                  { }
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-24 h-24 bg-[${currentMetricConfig.color}]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110`}></div>
                     <div className="relative z-10">
@@ -499,7 +920,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </div>
                   </div>
 
-                  {}
+                  { }
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                     <div className="relative z-10">
@@ -519,7 +940,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                     </div>
                   </div>
 
-                  {}
+                  { }
                   <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
                     <div className={`absolute top-0 right-0 w-24 h-24 ${statsComparison[selectedMetric].trend === 'up' ? 'bg-green-500/10' : 'bg-red-500/10'} rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110`}></div>
                     <div className="relative z-10">
@@ -538,14 +959,57 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {}
+              { }
               {selectedMetric !== 'general' && chartData.length > 0 && (
                 <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700/50 shadow-sm">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                      <Activity className={`w-5 h-5 text-[${currentMetricConfig.color}]`} />
-                      {selectedMetric === 'bank' ? t('modal.balanceEvolution') : `${currentMetricConfig.label} History`}
-                    </h3>
+                  <div className="flex flex-col gap-4 mb-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Activity className={`w-5 h-5 text-[${currentMetricConfig.color}]`} />
+                        {selectedMetric === 'bank'
+                          ? t('modal.balanceEvolution')
+                          : selectedMetric === 'weapons'
+                            ? (
+                              <div className="flex items-center gap-2">
+                                <span>Historial:</span>
+                                {selectedWeaponName && (
+                                  <div className="w-10 h-6 relative shrink-0 bg-slate-200 dark:bg-slate-700 rounded overflow-hidden">
+                                    <img
+                                      src={WEAPON_IMAGES[getWeaponBaseName(selectedWeaponName)] || './data/images/Nuketown_menu_selection_BO2.jpg'}
+                                      alt={selectedWeaponName}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                )}
+                                <span>{selectedWeaponName || 'Top Weapon'}</span>
+                              </div>
+                            )
+                            : t('modal.historyOf', { metric: currentMetricConfig.label })}
+                      </h3>
+                    </div>
+
+                    {}
+                    {}
+                    {SUB_METRICS[selectedMetric] && (
+                      <div className="flex flex-wrap gap-2">
+                        {}
+                        {SUB_METRICS[selectedMetric].map((sub) => (
+                          <button
+                            key={sub.key}
+                            onClick={() => {
+                              setSelectedSubMetric(sub.key);
+                              playPan();
+                            }}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${selectedSubMetric === sub.key
+                              ? `bg-[${currentMetricConfig.color}] text-white shadow-md`
+                              : 'bg-slate-100 dark:bg-slate-700/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                              }`}
+                          >
+                            {sub.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="h-[300px] w-full">
@@ -599,15 +1063,15 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                 </div>
               )}
 
-              {}
+              { }
               <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-200 dark:border-slate-700/50 flex items-center justify-between">
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-slate-400" />
-                    {selectedMetric === 'bank' ? t('modal.transactionHistory') : t('modal.matchHistory')}
+                    {selectedMetric === 'bank' ? t('modal.transactionHistory') : selectedMetric === 'weapons' ? "Ranking de Armas" : t('modal.matchHistory')}
                   </h3>
                   <div className="text-sm text-slate-500 dark:text-slate-400">
-                    {selectedMetric === 'bank' ? bankTransactions.length : matchHistory.length} registros
+                    {selectedMetric === 'bank' ? bankTransactions.length : selectedMetric === 'weapons' ? weaponStats.length : matchHistory.length} registros
                   </div>
                 </div>
 
@@ -623,15 +1087,98 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                             <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-right">Balance</th>
                             <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Descripción</th>
                           </>
+                        ) : selectedMetric === 'weapons' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">#</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Arma</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-right">Kills</th>
+                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-right">Headshots</th>
+                          </>
                         ) : selectedMetric === 'general' ? (
                           <>
                             <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
                             <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Ronda</th>
                             <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">Kills</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Deaths</th>
                             <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">Downs</th>
-                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-center">Headshots</th>
                             <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Revives</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-700 tracking-wider text-center">Suic</th>
                             <th className="p-4 text-xs font-bold uppercase text-yellow-500 tracking-wider text-center">Score</th>
+                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-center">{t('stats.perks')} 🥤</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">{t('stats.powerups')} 🔥</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Time</th>
+                          </>
+                        ) : selectedMetric === 'combat' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Ronda</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">Kills</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Deaths</th>
+                            <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">Downs</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Revives</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-700 tracking-wider text-center">Suic</th>
+                            <th className="p-4 text-xs font-bold uppercase text-yellow-500 tracking-wider text-center">Score</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">HS</th>
+                            <th className="p-4 text-xs font-bold uppercase text-yellow-500 tracking-wider text-center">Gibs</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Melee</th>
+                            <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">Nade</th>
+                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-center">Acc</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Time</th>
+                          </>
+                        ) : selectedMetric === 'survival' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Ronda</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Miles</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Doors</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Drops</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">Revives (F)</th>
+                          </>
+                        ) : selectedMetric === 'magicBox' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Ronda</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Box Uses</th>
+                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-center">PAP Uses</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Taken (Box)</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Taken (PAP)</th>
+                          </>
+                        ) : selectedMetric === 'powerups' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-yellow-500 tracking-wider text-center">Nuke</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Insta</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Max Ammo</th>
+                            <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">x2</th>
+                            <th className="p-4 text-xs font-bold uppercase text-yellow-300 tracking-wider text-center">Carp</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">Sale</th>
+                          </>
+                        ) : selectedMetric === 'perks' ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">{t('stats.total')} 🥤</th>
+                            <th className="p-4 text-xs font-bold uppercase text-red-500 tracking-wider text-center">Jugg</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Quick</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Speed</th>
+                            <th className="p-4 text-xs font-bold uppercase text-yellow-500 tracking-wider text-center">Double</th>
+                            <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">Stamin</th>
+                            <th className="p-4 text-xs font-bold uppercase text-purple-500 tracking-wider text-center">PHD</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Deadshot</th>
+                            <th className="p-4 text-xs font-bold uppercase text-green-500 tracking-wider text-center">Mule</th>
+                            <th className="p-4 text-xs font-bold uppercase text-blue-500 tracking-wider text-center">Cherry</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Tomb/Who</th>
+                            <th className="p-4 text-xs font-bold uppercase text-orange-500 tracking-wider text-center">Vulture</th>
+                          </>
+                        ) : ['mobOfTheDead', 'buried', 'origins', 'cheats', 'persistentUpgrades'].includes(selectedMetric) ? (
+                          <>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Partida</th>
+                            <th className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">Ronda</th>
+                            {}
+                            {SUB_METRICS[selectedMetric]?.map((sub: any) => (
+                              <th key={sub.key} className="p-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-center">
+                                {sub.label}
+                              </th>
+                            ))}
                           </>
                         ) : (
                           <>
@@ -644,13 +1191,17 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                         )}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-slate-700/50">
+                    <tbody key={selectedMetric} className="divide-y divide-slate-200 dark:divide-slate-700/50">
                       {paginatedTableData.map((item: any, index: number) => {
                         const globalIndex = tablePage * ITEMS_PER_PAGE + index;
 
                         if (selectedMetric === 'bank') {
                           return (
-                            <tr key={`bank-${item.id || globalIndex}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <tr
+                              key={`bank-${item.id || globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
                               <td className="p-4 text-sm font-medium text-slate-900 dark:text-white">#{globalIndex + 1}</td>
                               <td className="p-4 text-center">
                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.type === 'deposit' || item.type === 'deposit_from_player'
@@ -674,36 +1225,220 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                               </td>
                             </tr>
                           );
+                        } else if (selectedMetric === 'weapons') {
+                          const weapon = item as { kills: number, headshots: number, displayName: string };
+                          const isSelected = selectedWeaponName === weapon.displayName;
+                          return (
+                            <tr
+                              key={`weapon-${weapon.displayName}`}
+                              onClick={() => {
+                                setSelectedWeaponName(weapon.displayName);
+                                playSelect();
+                              }}
+                              onMouseEnter={() => playHover()}
+                              className={`transition-colors cursor-pointer ${isSelected
+                                ? 'bg-indigo-50 dark:bg-indigo-900/20 border-l-4 border-indigo-500'
+                                : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                                }`}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">#{globalIndex + 1}</td>
+                              <td className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-8 relative shrink-0 bg-slate-200 dark:bg-slate-700 rounded overflow-hidden">
+                                    <img
+                                      src={WEAPON_IMAGES[getWeaponBaseName(weapon.displayName)] || './data/images/Nuketown_menu_selection_BO2.jpg'}
+                                      alt={weapon.displayName}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                  <span className={`font-bold ${isSelected ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                                    {weapon.displayName}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-4 text-right font-bold text-red-500">{weapon.kills.toLocaleString()}</td>
+                              <td className="p-4 text-right font-bold text-purple-500">{weapon.headshots.toLocaleString()}</td>
+                            </tr>
+                          )
                         } else if (selectedMetric === 'general') {
                           return (
-                            <tr key={`match-${item.fileName}-${globalIndex}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
                               <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
-                                {t('modal.matchNumber')} {globalIndex + 1}
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
                               </td>
                               <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
-                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.kills, 'kills')}`}>
-                                {item.kills}
+                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.general?.kills ?? item.kills, 'kills')}`}>
+                                {item.general?.kills ?? item.kills}
                               </td>
-                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.downs, 'downs')}`}>
-                                {item.downs}
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">
+                                {item.general?.deaths || 0}
                               </td>
-                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.headshots, 'headshots')}`}>
-                                {item.headshots}
+                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.general?.downs ?? item.downs, 'downs')}`}>
+                                {item.general?.downs ?? item.downs}
                               </td>
-                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.revives, 'revives')}`}>
-                                {item.revives}
+                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.general?.revives ?? item.revives, 'revives')}`}>
+                                {item.general?.revives ?? item.revives}
                               </td>
-                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.score, 'score')}`}>
-                                {item.score?.toLocaleString()}
+                              <td className="p-4 text-center font-bold text-red-700">
+                                {item.general?.suicides || 0}
                               </td>
+                              <td className={`p-4 text-center font-bold ${getComparisonClass(item.general?.scoreTotal ?? item.score, 'score')}`}>
+                                {(item.general?.scoreTotal ?? item.score)?.toLocaleString()}
+                              </td>
+                              <td className="p-4 text-center font-bold text-purple-500">
+                                {item.perkCounts?.totalPerks || 0}
+                              </td>
+                              <td className="p-4 text-center font-bold text-green-500">
+                                {(item.powerups?.nukes || 0) + (item.powerups?.instaKills || 0) + (item.powerups?.maxAmmo || 0) + (item.powerups?.doublePoints || 0) + (item.powerups?.carpenters || 0) + (item.powerups?.fireSales || 0)}
+                              </td>
+                              <td className="p-4 text-center font-mono text-slate-500 dark:text-slate-400">
+                                {item.general?.timePlayed ? new Date(item.general.timePlayed * 1000).toISOString().substr(11, 8) : item.duration || '-'}
+                              </td>
+                            </tr>
+                          );
+                        } else if (selectedMetric === 'combat') {
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
+                              {}
+                              <td className="p-4 text-center font-bold text-red-500">{item.general?.kills ?? item.kills}</td>
+                              <td className="p-4 text-center font-bold text-slate-500">{item.general?.deaths || 0}</td>
+                              <td className="p-4 text-center font-bold text-orange-500">{item.general?.downs ?? item.downs}</td>
+                              <td className="p-4 text-center font-bold text-green-500">{item.general?.revives ?? item.revives}</td>
+                              <td className="p-4 text-center font-bold text-red-700">{item.general?.suicides || 0}</td>
+                              <td className="p-4 text-center font-bold text-yellow-500">{(item.general?.scoreTotal ?? item.score)?.toLocaleString()}</td>
+
+                              {}
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.combat?.headshots || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.combat?.gibs || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.combat?.meleeKills || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.combat?.grenadeKills || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">
+                                {item.combat?.totalShots > 0
+                                  ? `${Math.round((item.combat.hits / item.combat.totalShots) * 100)}%`
+                                  : '0%'}
+                              </td>
+                              <td className="p-4 text-center font-mono text-xs">{item.general?.timePlayed ? new Date(item.general.timePlayed * 1000).toISOString().substr(11, 8) : item.duration || '-'}</td>
+                            </tr>
+                          );
+                        } else if (['mobOfTheDead', 'buried', 'origins', 'cheats', 'persistentUpgrades'].includes(selectedMetric)) {
+                          
+                          const currentSubMetrics = SUB_METRICS[selectedMetric] || [];
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
+                              {currentSubMetrics.map((sub: any) => (
+                                <td key={sub.key} className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">
+                                  {}
+                                  {(item[selectedMetric]?.[sub.key] || 0).toLocaleString()}
+                                </td>
+                              ))}
+                            </tr>
+                          );
+                        } else if (selectedMetric === 'survival') {
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{Math.round((item.survival?.distanceTraveled || 0) / 1609.34 * 100) / 100}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.survival?.doorsPurchased || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.survival?.drops || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.survival?.failedRevives || 0}</td>
+                            </tr>
+                          );
+                        } else if (selectedMetric === 'magicBox') {
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.magicBox?.boxUsed || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.magicBox?.papUsed || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.magicBox?.boxWeaponsTaken || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.magicBox?.papWeaponsTaken || 0}</td>
+                            </tr>
+                          );
+                        } else if (selectedMetric === 'powerups') {
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.nukes || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.instaKills || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.maxAmmo || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.doublePoints || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.carpenters || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.powerups?.fireSales || 0}</td>
+                            </tr>
+                          );
+                        } else if (selectedMetric === 'perks') {
+                          return (
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
+                              <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
+                              </td>
+                              <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.perkCounts?.totalPerks || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.juggernog || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.quickRevive || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.speedCola || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.doubleTap || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.staminUp || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.phdFlopper || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.deadshot || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.muleKick || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.electricCherry || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.tombstoneWhosWho || 0}</td>
+                              <td className="p-4 text-center font-bold text-slate-700 dark:text-slate-300">{item.perkCounts?.vultureAid || 0}</td>
                             </tr>
                           );
                         } else {
                           const value = item[selectedMetric];
                           return (
-                            <tr key={`match-${item.fileName}-${globalIndex}`} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <tr
+                              key={`match-${item.fileName}-${globalIndex}`}
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-default"
+                              onMouseEnter={() => playHover()}
+                            >
                               <td className="p-4 text-sm font-bold text-slate-900 dark:text-white">
-                                {t('modal.matchNumber')} {globalIndex + 1}
+                                {t('modal.matchNumber')} {matchHistory.length - globalIndex}
                               </td>
                               <td className="p-4 text-center font-mono text-blue-500 font-bold">{item.round}</td>
                               <td className={`p-4 text-center font-bold text-[${currentMetricConfig.color}] ${getComparisonClass(value, selectedMetric)}`}>
@@ -717,7 +1452,7 @@ const MapModal: React.FC<MapModalProps> = React.memo(({ isOpen, onClose, selecte
                   </table>
                 </div>
 
-                {}
+                { }
                 {totalPages > 1 && (
                   <div className="p-4 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between bg-slate-50 dark:bg-slate-900/50">
                     <button

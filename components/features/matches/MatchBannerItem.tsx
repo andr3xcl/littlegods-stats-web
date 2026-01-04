@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Map as MapIcon, Target, Skull, Heart, Play } from 'lucide-react';
+import { Map as MapIcon, Target, Skull, Heart, Play, Timer } from 'lucide-react';
 import { UserDownIcon } from '../../common/icons';
-import { MAP_NAMES, MAP_IMAGES } from '../../../constants/gameData';
+import { MAP_NAMES, MAP_IMAGES, getMapImage } from '../../../constants/gameData';
 import type { MatchData } from '../../../types';
 import { useLanguage } from '../../../contexts/LanguageContext';
+import { useSettings } from '../../../contexts/SettingsContext';
 import { useUISounds } from '../../../hooks/useUISounds';
 
 interface MatchBannerItemProps {
@@ -13,6 +14,7 @@ interface MatchBannerItemProps {
 
 const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => {
     const { t } = useLanguage();
+    const { mapImagePreference } = useSettings();
     const [isHovered, setIsHovered] = useState(false);
     const { playHover, playSelect } = useUISounds();
 
@@ -29,12 +31,12 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
             }}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <div className="relative bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-orange-500/20 hover:border-orange-500/50 transition-all duration-300 aspect-[3/4]">
+            <div className="relative bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-orange-500/20 hover:border-orange-500/50 transition-all duration-300 aspect-[16/11]">
 
                 {}
                 <div className="absolute inset-0">
                     <img
-                        src={MAP_IMAGES[match.map] || './data/images/Nuketown_menu_selection_BO2.jpg'}
+                        src={getMapImage(match.map, mapImagePreference)}
                         alt={MAP_NAMES[match.map]}
                         className="w-full h-full object-cover object-center transition-transform duration-700"
                     />
@@ -42,10 +44,10 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
                     <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 to-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mix-blend-overlay" />
                 </div>
 
-                {}
+                { }
                 <div className="relative h-full p-5 z-10">
 
-                    {}
+                    { }
                     <div className="flex justify-between items-start">
                         <div className="flex flex-col gap-2 items-start">
                             <div className="flex items-center gap-2">
@@ -55,12 +57,23 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
                                 </div>
                                 {match.duration && (
                                     <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-0.5 rounded-full border border-blue-500/30">
-                                        <Play className="w-3 h-3 text-blue-400" />
-                                        <span className="text-[10px] text-blue-400 font-bold uppercase">{match.duration}</span>
+                                        <Timer className="w-3 h-3 text-blue-400" />
+                                        <span className="text-[10px] text-blue-400 font-bold uppercase">
+                                            {(() => {
+                                                const parts = match.duration.split(':').map(Number);
+                                                if (parts.length === 3) {
+                                                    const [h, m, s] = parts;
+                                                    if (h > 0) return `${h}h ${m}m`;
+                                                    if (m > 0) return `${m}m ${s}s`;
+                                                    return `${s}s`;
+                                                }
+                                                return match.duration;
+                                            })()}
+                                        </span>
                                     </div>
                                 )}
                             </div>
-                            <h4 className="text-2xl font-black text-white drop-shadow-lg truncate max-w-[200px]">
+                            <h4 className="text-xl font-black text-white drop-shadow-lg truncate max-w-[200px]">
                                 {MAP_NAMES[match.map]}
                             </h4>
                             <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-2 py-0.5 rounded-full font-black text-[10px] shadow-lg border border-orange-400/20">
@@ -69,7 +82,7 @@ const MatchBannerItem: React.FC<MatchBannerItemProps> = ({ match, onClick }) => 
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className={`absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/95 via-black/80 to-transparent pt-12 transform transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-[20%] opacity-0 pointer-events-none'}`}>
                         <div className="space-y-3">
                             <div className="grid grid-cols-2 gap-2">

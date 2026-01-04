@@ -8,7 +8,27 @@ export const MAP_NAMES: Record<string, string> = {
     'buried': 'Buried',
     'processing': 'Buried',
     'rooftop': 'Die Rise',
-    'busdepot': 'Bus Depot'
+    'busdepot': 'Bus Depot',
+    
+    
+    
+    'diner bonus': 'Diner Bonus',
+    'power bonus': 'Power Bonus',
+    'cornfield bonus': 'Cornfield Bonus',
+    'tunnel bonus': 'Tunnel Bonus',
+    'house bonus': 'House Bonus',
+    'town bonus': 'Town Bonus',
+    'farm bonus': 'Farm Bonus',
+    'busdepot bonus': 'Bus Depot Bonus',
+    'nuketown bonus': 'Nuketown Bonus',
+    'docks bonus': 'Docks Bonus',
+    'showers bonus': 'Showers Bonus',
+    'cellblock bonus': 'Cellblock Bonus',
+    'rooftop bonus': 'Rooftop Bonus',
+    'building1top bonus': 'Building Bonus',
+    'maze bonus': 'Maze Bonus',
+    'trenches bonus': 'Trenches Bonus',
+    'crazyplace bonus': 'CrazyPlace Bonus'
 };
 
 export const MAP_IMAGES: Record<string, string> = {
@@ -20,8 +40,71 @@ export const MAP_IMAGES: Record<string, string> = {
     'tomb': './data/images/load_maps/zm_tomb.jpg',
     'rooftop': './data/images/load_maps/zm_highrise.jpg',
     'processing': './data/images/load_maps/zm_buried.jpg',
-    'busdepot': './data/images/load_maps/zm_busdepot.jpg'
+    'busdepot': './data/images/load_maps/zm_busdepot.jpg',
+    
+    
+    'diner bonus': './data/images/load_maps/zm_diner.jpg',
+    'power bonus': './data/images/load_maps/zm_power.jpg',
+    'cornfield bonus': './data/images/load_maps/zm_cornfield.jpg',
+    'tunnel bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'house bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'town bonus': './data/images/load_maps/zm_town_b.jpg',
+    'farm bonus': './data/images/load_maps/zm_farm_b.jpg',
+    'busdepot bonus': './data/images/load_maps/zm_busdepot_b.jpg',
+    'nuketown bonus': './data/images/load_maps/zm_nuke.jpg',
+    'showers bonus': './data/images/load_maps/zm_showers.jpg',
+    'docks bonus': './data/images/load_maps/zm_docks.jpg',
+    'cellblock bonus': './data/images/load_maps/zm_cellblock.jpg',
+    'rooftop bonus': './data/images/load_maps/zm_rooftop_mob.jpg',
+    'building1top bonus': './data/images/load_maps/zm_highrise.jpg',
+    'maze bonus': './data/images/load_maps/zm_maze.jpg',
+    'trenches bonus': './data/images/load_maps/zm_trenches.jpg',
+    'crazyplace bonus': './data/images/load_maps/zm_crazyplace.jpg'
 };
+
+export const REAL_MAP_IMAGES: Record<string, string> = {
+    'nuked': './data/images/load_maps/zm_nuked.jpg',
+    'tranzit': './data/images/load_maps/zm_tranzit.jpg',
+    'farm': './data/images/load_maps/zm_farm.jpg',
+    'town': './data/images/load_maps/zm_town.jpg',
+    'prison': './data/images/load_maps/zm_prison.jpg',
+    'tomb': './data/images/load_maps/zm_tomb.jpg',
+    'rooftop': './data/images/load_maps/zm_highrise.jpg',
+    'processing': './data/images/load_maps/zm_buried.jpg',
+    'busdepot': './data/images/load_maps/zm_busdepot.jpg',
+
+    
+    'diner bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'power bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'cornfield bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'tunnel bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'house bonus': './data/images/load_maps/zm_tranzit.jpg',
+    'town bonus': './data/images/load_maps/zm_town.jpg',
+    'farm bonus': './data/images/load_maps/zm_farm.jpg',
+    'busdepot bonus': './data/images/load_maps/zm_busdepot.jpg',
+    'nuketown bonus': './data/images/load_maps/zm_nuked.jpg',
+    'showers bonus': './data/images/load_maps/zm_prison.jpg',
+    'docks bonus': './data/images/load_maps/zm_prison.jpg',
+    'cellblock bonus': './data/images/load_maps/zm_prison.jpg',
+    'rooftop bonus': './data/images/load_maps/zm_highrise.jpg',
+    'building1top bonus': './data/images/load_maps/zm_highrise.jpg',
+    'maze bonus': './data/images/load_maps/zm_buried.jpg',
+    'trenches bonus': './data/images/load_maps/zm_tomb.jpg',
+    'crazyplace bonus': './data/images/load_maps/zm_tomb.jpg'
+};
+
+export function getMapImage(mapId: string, preference: 'real' | 'bonus' = 'real'): string {
+    const cleanId = mapId.toLowerCase();
+
+    
+    if (preference === 'real') {
+        const realImage = REAL_MAP_IMAGES[cleanId];
+        if (realImage) return realImage;
+    }
+
+    
+    return MAP_IMAGES[cleanId] || MAP_IMAGES['tranzit']; 
+}
 
 export const WEAPON_IMAGES: Record<string, string> = {
     'M1911': './data/images/weapons/M1911_menu_icon_BOII.jpg',
@@ -109,7 +192,13 @@ export const PERK_IMAGES: Record<string, string> = {
     'Who\'s Who': './data/images/perks_machine/Tombstone_Machine_BOII.jpg',
     'Tombstone': './data/images/perks_machine/Tombstone_Machine_BOII.jpg',
     'Vulture Aid Elixir': './data/images/perks_machine/Vulture_Aid_Elixir_Machine.jpg',
-    'Widow\'s Wine': './data/images/perks_machine/Widow%27s_Wine_model_BO3.jpg'
+    'Widow\'s Wine': './data/images/perks_machine/Widow%27s_Wine_model_BO3.jpg',
+    
+    'PHD Flopper': './data/images/perks_machine/PhD_Flopper_Machine_Render.jpg',
+    'Deadshot': './data/images/perks_machine/Deadshot_Daiquiri_Machine_Render.jpg',
+    'Mule': './data/images/perks_machine/Mule_Kick_Machine_Render.jpg',
+    'Cherry': './data/images/perks_machine/Electric_Cherry_machine_BOII.jpg',
+    'Vulture': './data/images/perks_machine/Vulture_Aid_Elixir_Machine.jpg'
 };
 
 export function getWeaponBaseName(weaponName: string): string {

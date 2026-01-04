@@ -1,8 +1,25 @@
-import React from 'react';
-import { Target, Skull, Heart, Award } from 'lucide-react';
+import React, { useState } from 'react';
+import { Target, Skull, Heart, Award, Shield, Box, Zap, Map as MapIcon, Grip, Sword, Activity } from 'lucide-react';
 import type { MatchData } from '../../../types';
 import WeaponDisplay from './WeaponDisplay';
 import PerkDisplay from './PerkDisplay';
+
+
+interface ExtendedMatchData extends MatchData {
+    general?: Record<string, number>;
+    combat?: Record<string, number>;
+    survival?: Record<string, number>;
+    magicBox?: Record<string, number>;
+    powerups?: Record<string, number>;
+    equipment?: Record<string, number>;
+    mapSpecific?: Record<string, number>;
+    persistentUpgrades?: Record<string, number>;
+    other?: Record<string, number>;
+    mobOfTheDead?: Record<string, number>;
+    buried?: Record<string, number>;
+    origins?: Record<string, number>;
+    cheats?: Record<string, number>;
+}
 
 interface MatchDetailsProps {
     match: MatchData;
@@ -10,7 +27,53 @@ interface MatchDetailsProps {
     t: (key: string) => string;
 }
 
-const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onViewWeapons, t }) => {
+const StatGrid: React.FC<{ title: string, icon: React.ReactNode, data: Record<string, number>, color: string, t: (key: string) => string }> = ({ title, icon, data, color, t }) => {
+    if (!data || Object.keys(data).length === 0) return null;
+
+    
+    const entries = Object.entries(data).filter(([_, val]) => val !== 0);
+    if (entries.length === 0) return null;
+
+    const getLabel = (key: string) => {
+        const translationKey = `stats.${key}`;
+        const translated = t(translationKey);
+        
+        
+        
+        if (translated !== translationKey && translated) return translated;
+
+        
+        return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, (str) => str.toUpperCase());
+    };
+
+    return (
+        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm relative overflow-hidden group">
+            <div className={`absolute top-0 right-0 w-16 h-16 ${color} opacity-10 rounded-bl-full -mr-2 -mt-2 transition-transform group-hover:scale-110`}></div>
+            <div className="flex items-center gap-2 mb-4 relative z-10">
+                <span className={`${color.replace('bg-', 'text-')}`}>{icon}</span>
+                <h4 className="font-bold text-slate-700 dark:text-slate-200">{title}</h4>
+            </div>
+            <div className="grid grid-cols-2 gap-3 relative z-10">
+                {entries.map(([key, value]) => (
+                    <div key={key} className="flex flex-col">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 capitalize truncate" title={getLabel(key)}>
+                            {getLabel(key)}
+                        </span>
+                        <span className="text-lg font-mono font-bold text-slate-800 dark:text-slate-200">
+                            {typeof value === 'number' ? value.toLocaleString(undefined, { maximumFractionDigits: 1 }) : value}
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const MatchDetails: React.FC<MatchDetailsProps> = ({ match: rawMatch, onViewWeapons, t }) => {
+    const match = rawMatch as ExtendedMatchData;
+
     return (
         <div className="space-y-6 animate-in slide-in-from-top-2 duration-300">
             {}
@@ -42,8 +105,24 @@ const MatchDetails: React.FC<MatchDetailsProps> = ({ match, onViewWeapons, t }) 
                 <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 text-center hover:bg-blue-500/15 transition-colors group sm:col-span-3 lg:col-span-1">
                     <Award className="w-5 h-5 text-blue-400 mx-auto mb-2 group-hover:scale-110 transition-transform" />
                     <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{t('stats.score')}</p>
-                    <p className="text-xl font-black text-blue-600 dark:text-blue-400">{match.score.toLocaleString()}</p>
+                    <p className="text-xl font-black text-blue-600 dark:text-blue-400">{match.score?.toLocaleString()}</p>
                 </div>
+            </div>
+
+            {}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {match.combat && <StatGrid title={t('stats.combat')} icon={<Sword className="w-5 h-5" />} data={match.combat} color="bg-red-500" t={t} />}
+                {match.survival && <StatGrid title={t('stats.survivalMode')} icon={<Shield className="w-5 h-5" />} data={match.survival} color="bg-emerald-500" t={t} />}
+                {match.magicBox && <StatGrid title={t('stats.magicBox')} icon={<Box className="w-5 h-5" />} data={match.magicBox} color="bg-purple-500" t={t} />}
+                {match.powerups && <StatGrid title={t('stats.powerups')} icon={<Zap className="w-5 h-5" />} data={match.powerups} color="bg-yellow-500" t={t} />}
+                {match.mapSpecific && <StatGrid title="Map Specific" icon={<MapIcon className="w-5 h-5" />} data={match.mapSpecific} color="bg-indigo-500" t={t} />}
+                {match.equipment && <StatGrid title="Equipment" icon={<Grip className="w-5 h-5" />} data={match.equipment} color="bg-stone-500" t={t} />}
+                {match.persistentUpgrades && <StatGrid title="Persistent Upgrades" icon={<Activity className="w-5 h-5" />} data={match.persistentUpgrades} color="bg-cyan-500" t={t} />}
+
+                {match.mobOfTheDead && <StatGrid title={t('map.mobOfTheDead')} icon={<MapIcon className="w-5 h-5" />} data={match.mobOfTheDead} color="bg-orange-600" t={t} />}
+                {match.buried && <StatGrid title={t('map.buried')} icon={<MapIcon className="w-5 h-5" />} data={match.buried} color="bg-amber-700" t={t} />}
+                {match.origins && <StatGrid title={t('map.origins')} icon={<MapIcon className="w-5 h-5" />} data={match.origins} color="bg-blue-600" t={t} />}
+                {match.cheats && <StatGrid title="Anti-Cheat Detection" icon={<Shield className="w-5 h-5" />} data={match.cheats} color="bg-red-600" t={t} />}
             </div>
 
             {}

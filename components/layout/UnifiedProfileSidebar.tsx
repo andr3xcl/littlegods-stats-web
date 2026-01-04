@@ -1,13 +1,17 @@
 import React, { memo, useEffect, useState } from 'react';
-import { Award, Target, Heart, Skull, Wallet, DollarSign, ArrowUpRight, ArrowDownRight, TrendingUp, Clock, Map as MapIcon } from 'lucide-react';
+import { Award, Target, Heart, Skull, Wallet, DollarSign, ArrowUpRight, ArrowDownRight, TrendingUp, Clock, Map as MapIcon, Trophy, Timer } from 'lucide-react';
 import { UserDownIcon } from '../common/icons';
 import { useLanguage } from '../../contexts/LanguageContext';
 import LazyImage from '../common/LazyImage';
 import type { PlayerProfile, MatchData } from '../../types';
 import { loadRecentMatches } from '../../constants';
-import { MAP_NAMES } from '../../constants/gameData';
+import { MAP_NAMES, WEAPON_IMAGES, getWeaponBaseName, MAP_IMAGES, getMapImage } from '../../constants/gameData';
+import { useSettings } from '../../contexts/SettingsContext';
+import { formatSecondsToDuration } from '../../utils/formatTime';
 
 import { useUISounds } from '../../hooks/useUISounds';
+import StatsListModal from '../common/StatsListModal';
+import OverallStatsModal from '../features/stats/OverallStatsModal';
 
 interface UnifiedProfileSidebarProps {
     player: PlayerProfile;
@@ -23,18 +27,38 @@ interface DisplayTransaction {
     timestamp: number;
 }
 
+interface WeaponStat {
+    name: string;
+    displayName: string;
+    kills: number;
+    headshots: number;
+}
+
+interface MapStat {
+    map: string;
+    count: number;
+}
+
 const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ player, onProfileClick }) => {
     const { t } = useLanguage();
+    const { mapImagePreference } = useSettings();
     const [recentTransactions, setRecentTransactions] = useState<DisplayTransaction[]>([]);
+    const [topWeapons, setTopWeapons] = useState<WeaponStat[]>([]);
+    const [topMaps, setTopMaps] = useState<MapStat[]>([]);
+    
+    const [allLoadedMatches, setAllLoadedMatches] = useState<MatchData[]>([]);
+    const [activeModal, setActiveModal] = useState<'none' | 'weapons' | 'maps' | 'overall'>('none');
     const { playHover, playSelect } = useUISounds();
 
     useEffect(() => {
-        const fetchTransactions = async () => {
+        const fetchStats = async () => {
             if (!player?.username) return;
             try {
                 const matches = (await loadRecentMatches(player.username)) as unknown as MatchData[];
-                const allTransactions: DisplayTransaction[] = [];
+                setAllLoadedMatches(matches); 
 
+                
+                const allTransactions: DisplayTransaction[] = [];
                 matches.forEach(match => {
                     if (match.transactions && match.transactions.length > 0) {
                         match.transactions.forEach((tx, idx) => {
@@ -42,23 +66,59 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
                                 id: `${match.fileName}-${idx}`,
                                 map: match.map,
                                 time: tx.time,
-                                type: tx.type,
+                                type: tx.type as any,
                                 amount: tx.amount,
-                                timestamp: match.timestamp 
+                                timestamp: match.timestamp
                             });
                         });
                     }
                 });
-
-                
                 allTransactions.sort((a, b) => b.timestamp - a.timestamp);
                 setRecentTransactions(allTransactions.slice(0, 5));
+
+                
+                const weaponStats: Record<string, WeaponStat> = {};
+                matches.forEach(match => {
+                    if (match.weapons) {
+                        (Object.values(match.weapons) as any[]).forEach(w => {
+                            const displayName = w.displayName || w.name;
+                            if (!weaponStats[displayName]) {
+                                weaponStats[displayName] = {
+                                    name: w.name,
+                                    displayName: displayName,
+                                    kills: 0,
+                                    headshots: 0
+                                };
+                            }
+                            weaponStats[displayName].kills += w.kills;
+                            weaponStats[displayName].headshots += (w.headshots || 0);
+                        });
+                    }
+                });
+                const sortedWeapons = Object.values(weaponStats)
+                    .sort((a, b) => b.kills - a.kills)
+                    .slice(0, 3);
+                setTopWeapons(sortedWeapons);
+
+                
+                const mapStats: Record<string, number> = {};
+                matches.forEach(match => {
+                    if (match.map) {
+                        mapStats[match.map] = (mapStats[match.map] || 0) + 1;
+                    }
+                });
+                const sortedMaps = Object.entries(mapStats)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3)
+                    .map(([map, count]) => ({ map, count }));
+                setTopMaps(sortedMaps);
+
             } catch (error) {
-                console.error("Error loading transactions for sidebar:", error);
+                console.error("Error loading stats for sidebar:", error);
             }
         };
 
-        fetchTransactions();
+        fetchStats();
     }, [player?.username]);
 
     return (
@@ -101,62 +161,128 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                 {}
                 <div className="p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <TrendingUp className="w-5 h-5 text-orange-500" />
-                        <h3 className="text-sm font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">{t('stats.overallStats')}</h3>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
+                    <div
+                        className="relative overflow-hidden rounded-2xl group cursor-pointer transition-transform duration-300 hover:scale-[1.02] bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 shadow-xl"
+                        onClick={() => {
+                            playSelect();
+                            setActiveModal('overall');
+                        }}
+                    >
                         {}
-                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-red-500/30 transition-colors group/stat">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Target className="w-4 h-4 text-red-500" />
-                                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{t('stats.kills')}</span>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 dark:bg-indigo-400/10 rounded-full blur-3xl transform translate-x-10 -translate-y-10 group-hover:bg-indigo-500/10 dark:group-hover:bg-indigo-400/20 transition-colors duration-500"></div>
+                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-pink-500/5 dark:bg-pink-400/10 rounded-full blur-2xl transform -translate-x-5 translate-y-5 group-hover:bg-pink-500/10 dark:group-hover:bg-pink-400/20 transition-colors duration-500"></div>
+
+                        {}
+                        <div className="relative p-5 flex items-center justify-between z-10">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-2 bg-indigo-500/10 dark:bg-indigo-400/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                                        <TrendingUp className="w-5 h-5 text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-300 transition-colors" />
+                                    </div>
+                                    <h3 className="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                        {t('stats.overallStats')}
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium max-w-[150px] pl-1">
+                                    {t('stats.viewDetailedStats')}
+                                </p>
                             </div>
-                            <span className="text-xl font-black text-slate-800 dark:text-slate-200 group-hover/stat:text-red-500 transition-colors">
-                                {player.stats.kills.toLocaleString()}
-                            </span>
+                            <div className="flex flex-col items-end">
+                                <div className="p-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 mb-2 transition-colors">
+                                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                </div>
+                            </div>
                         </div>
 
                         {}
-                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-orange-500/30 transition-colors group/stat">
-                            <div className="flex items-center gap-2 mb-1">
-                                <UserDownIcon className="w-4 h-4 text-orange-500" />
-                                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{t('stats.downs')}</span>
+                        <div className="relative bg-slate-50/50 dark:bg-slate-700/30 backdrop-blur-sm p-3 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/50">
+                            <div className="flex items-center gap-2">
+                                <Timer className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{t('stats.timePlayed')}</span>
                             </div>
-                            <span className="text-xl font-black text-slate-800 dark:text-slate-200 group-hover/stat:text-orange-500 transition-colors">
-                                {player.stats.downs.toLocaleString()}
-                            </span>
-                        </div>
-
-                        {}
-                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-green-500/30 transition-colors group/stat">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Heart className="w-4 h-4 text-green-500" />
-                                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{t('stats.revives')}</span>
-                            </div>
-                            <span className="text-xl font-black text-slate-800 dark:text-slate-200 group-hover/stat:text-green-500 transition-colors">
-                                {player.stats.revives.toLocaleString()}
-                            </span>
-                        </div>
-
-                        {}
-                        <div className="bg-slate-50/50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-700/50 hover:border-blue-500/30 transition-colors group/stat">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Skull className="w-4 h-4 text-blue-500" />
-                                <span className="text-xs font-bold text-slate-500 dark:text-slate-400">{t('stats.headshots')}</span>
-                            </div>
-                            <span className="text-xl font-black text-slate-800 dark:text-slate-200 group-hover/stat:text-blue-500 transition-colors">
-                                {player.stats.headshots.toLocaleString()}
+                            <span className="text-sm font-black text-slate-700 dark:text-slate-200">
+                                {player.stats.totalTimePlayed ? formatSecondsToDuration(player.stats.totalTimePlayed) : '0m'}
                             </span>
                         </div>
                     </div>
                 </div>
 
                 {}
+                <div className="p-6 pt-0 grid grid-cols-2 gap-3">
+                    {topWeapons.length > 0 && (
+                        <button
+                            onClick={() => {
+                                playSelect();
+                                setActiveModal('weapons');
+                            }}
+                            className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:bg-white dark:hover:bg-slate-800 hover:scale-[1.02] transition-all group"
+                        >
+                            <Trophy className="w-6 h-6 text-yellow-500 mb-2 group-hover:scale-110 transition-transform" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                {t('stats.topWeapons')}
+                            </span>
+                        </button>
+                    )}
+
+                    {topMaps.length > 0 && (
+                        <button
+                            onClick={() => {
+                                playSelect();
+                                setActiveModal('maps');
+                            }}
+                            className="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 hover:bg-white dark:hover:bg-slate-800 hover:scale-[1.02] transition-all group"
+                        >
+                            <MapIcon className="w-6 h-6 text-blue-500 mb-2 group-hover:scale-110 transition-transform" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                {t('stats.topMaps')}
+                            </span>
+                        </button>
+                    )}
+                </div>
+
+                { }
+                <StatsListModal
+                    isOpen={activeModal === 'weapons'}
+                    onClose={() => setActiveModal('none')}
+                    title={t('stats.topWeapons')}
+                    icon={<Trophy className="w-6 h-6 text-yellow-500" />}
+                    items={topWeapons.map((w, i) => ({
+                        id: w.name,
+                        rank: i + 1,
+                        label: w.displayName,
+                        subLabel: t('stats.killsLabel'),
+                        count: w.kills,
+                        image: WEAPON_IMAGES[getWeaponBaseName(w.displayName)] || './data/images/Nuketown_menu_selection_BO2.jpg'
+                    }))}
+                />
+
+                <StatsListModal
+                    isOpen={activeModal === 'maps'}
+                    onClose={() => setActiveModal('none')}
+                    title={t('stats.topMaps')}
+                    icon={<MapIcon className="w-6 h-6 text-blue-500" />}
+                    items={topMaps.map((m, i) => ({
+                        id: m.map,
+                        rank: i + 1,
+                        label: MAP_NAMES[m.map] || m.map,
+                        subLabel: t('stats.matchesLabel'),
+                        count: m.count,
+                        image: getMapImage(m.map, mapImagePreference)
+                    }))}
+                />
+
+                <OverallStatsModal
+                    isOpen={activeModal === 'overall'}
+                    onClose={() => setActiveModal('none')}
+                    matches={allLoadedMatches}
+                    t={t}
+                />
+
+
+                { }
                 <div className="h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mx-6"></div>
 
-                {}
+                { }
                 <div className="p-6 bg-slate-50/30 dark:bg-slate-800/30">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
@@ -166,7 +292,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                     </div>
 
-                    {}
+                    { }
                     <div className="relative overflow-hidden bg-white dark:bg-gradient-to-br dark:from-slate-900 dark:to-slate-800 rounded-2xl p-5 mb-4 shadow-lg group/card border border-slate-200 dark:border-slate-700">
                         <div className="absolute top-0 right-0 p-3 opacity-10">
                             <DollarSign className="w-24 h-24 text-slate-900 dark:text-white transform rotate-12 translate-x-4 -translate-y-4" />
@@ -178,7 +304,7 @@ const UnifiedProfileSidebar: React.FC<UnifiedProfileSidebarProps> = memo(({ play
 
                     </div>
 
-                    {}
+                    { }
                     <div className="space-y-3">
                         <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">{t('stats.recentActivity')}</h4>
                         {recentTransactions.length > 0 ? (

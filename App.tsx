@@ -4,6 +4,7 @@ import type { PlayerProfile, RecentMatch, EconomyData } from './types';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { SoundProvider } from './contexts/SoundContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import Header from './components/layout/Header';
 
 const Home = React.lazy(() => import('./pages/Home'));
@@ -28,20 +29,20 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        
+
         const index = await loadPlayersIndex();
 
-        
+
         const playerPromises = index.map(entry => loadPlayerData(entry.username));
         const players = (await Promise.all(playerPromises)).filter((p): p is PlayerProfile => p !== null);
 
         if (players.length > 0) {
           setPlayersData(players);
-          
+
           if (!selectedPlayer || !players.find(p => p.guid === selectedPlayer.guid)) {
             setSelectedPlayer(players[0]);
           }
-          setRecentMatches([]); 
+          setRecentMatches([]);
           setEconomyData({ balance: 0, transactions: [] });
         } else {
           console.warn('Players index is empty.');
@@ -138,7 +139,9 @@ const App: React.FC = () => {
     <ThemeProvider>
       <LanguageProvider>
         <SoundProvider>
-          <AppContent />
+          <SettingsProvider>
+            <AppContent />
+          </SettingsProvider>
         </SoundProvider>
       </LanguageProvider>
     </ThemeProvider>

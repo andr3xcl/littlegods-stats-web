@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { WEAPON_IMAGES, getWeaponBaseName } from '../../../constants/gameData';
 import type { WeaponData } from '../../../types';
+import WeaponDetailsModal from './WeaponDetailsModal';
 
 interface WeaponDisplayProps {
     bestWeapon?: {
         name: string;
         displayName: string;
         kills: number;
+        headshots: number;
+        killTimes?: string[];
     };
     weapons: Record<string, WeaponData>;
     onViewAll: (e: React.MouseEvent) => void;
@@ -14,6 +17,8 @@ interface WeaponDisplayProps {
 }
 
 const WeaponDisplay: React.FC<WeaponDisplayProps & { showAll?: boolean }> = ({ bestWeapon, weapons, onViewAll, t, showAll }) => {
+    const [selectedWeapon, setSelectedWeapon] = useState<WeaponData | null>(null);
+
     if (!bestWeapon) return null;
 
     if (showAll) {
@@ -23,7 +28,11 @@ const WeaponDisplay: React.FC<WeaponDisplayProps & { showAll?: boolean }> = ({ b
                     <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">{t('stats.weapons')}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {Object.values(weapons).sort((a, b) => b.kills - a.kills).map((weapon) => (
-                            <div key={weapon.name} className="flex items-center gap-3 bg-white/50 dark:bg-black/20 p-2 rounded-lg">
+                            <div
+                                key={weapon.name}
+                                onClick={() => setSelectedWeapon(weapon)}
+                                className="flex items-center gap-3 bg-white/50 dark:bg-black/20 p-2 rounded-lg cursor-pointer hover:bg-white/80 dark:hover:bg-black/40 transition-colors"
+                            >
                                 <div className="relative w-10 h-10 flex-shrink-0">
                                     <img
                                         src={WEAPON_IMAGES[getWeaponBaseName(weapon.displayName)] || './data/images/Nuketown_menu_selection_BO2.jpg'}
@@ -46,6 +55,14 @@ const WeaponDisplay: React.FC<WeaponDisplayProps & { showAll?: boolean }> = ({ b
                         ))}
                     </div>
                 </div>
+
+                {selectedWeapon && (
+                    <WeaponDetailsModal
+                        weapon={selectedWeapon}
+                        onClose={() => setSelectedWeapon(null)}
+                        t={t}
+                    />
+                )}
             </div>
         );
     }

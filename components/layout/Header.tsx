@@ -3,6 +3,8 @@ import { Menu, X } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useGSAP } from '../../utils/gsap';
 
+
+
 type NavView = 'Home' | 'Estadisticas' | 'Settings';
 type PlayerSubView = 'Estadísticas';
 
@@ -18,7 +20,8 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
   const [scrolled, setScrolled] = useState(false);
   const { t } = useLanguage();
 
-  
+
+
   const gsap = useGSAP();
   const headerRef = useRef<HTMLElement>(null);
 
@@ -49,7 +52,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
     setIsMobileMenuOpen(prev => !prev);
   }, []);
 
-  
+
   const handleButtonHover = useCallback((element: HTMLElement, isHover: boolean) => {
     gsap.animateButtonHover(element, isHover);
   }, [gsap]);
@@ -68,7 +71,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-12 sm:h-14">
-          {}
+          { }
           <div className="flex items-center group cursor-pointer" onClick={() => handleNavigate('Home')}>
             <h1 className="text-lg sm:text-xl md:text-2xl font-black uppercase tracking-wider">
               <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent group-hover:from-indigo-400 group-hover:to-purple-400 transition-all duration-300">Littlegods</span>
@@ -76,7 +79,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
             </h1>
           </div>
 
-          {}
+          { }
           <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             {navItems.map((item) => {
               const isActive = item.name === activeView;
@@ -101,7 +104,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
             })}
           </div>
 
-          {}
+          { }
           <button
             onClick={toggleMobileMenu}
             onMouseEnter={(e) => handleMenuButtonHover(e.currentTarget, true)}
@@ -116,7 +119,7 @@ const Header: React.FC<HeaderProps> = React.memo(({ activeView, onNavigate, acti
           </button>
         </div>
 
-        {}
+        { }
         <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'max-h-64 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-2 shadow-xl border border-slate-200 dark:border-slate-700 space-y-1">
             {navItems.map((item) => {

@@ -1,79 +1,3 @@
-export interface PlayerStats {
-    kills: number;
-    downs: number;
-    revives: number;
-    headshots: number;
-}
-
-export interface MapStats {
-    topRound: number;
-    totalKills: number;
-    totalHeadshots: number;
-    totalRevives: number;
-    totalDowns: number;
-    totalScore: number;
-    gamesPlayed: number;
-}
-
-export interface PlayerProfile {
-    username: string;
-    guid?: string;
-    avatarUrl?: string;
-    level: number;
-    stats: PlayerStats;
-    maps: { [key: string]: MapStats };
-}
-
-export interface WeaponData {
-    name: string;
-    displayName: string;
-    kills: number;
-    headshots: number;
-}
-
-export interface RecentMatch {
-    id: string;
-    map: string;
-    mode: string;
-    result: 'VICTORY' | 'DEFEAT';
-    name: string;
-    displayName: string;
-    kills: number;
-    deaths?: number;
-    playerName?: string;
-    guid?: string;
-    round?: number;
-    headshots?: number;
-    revives?: number;
-    timestamp?: number;
-    fileName?: string;
-}
-
-export interface PerkData {
-    name: string;
-    displayName: string;
-    uses: number;
-}
-
-export interface EconomyTransaction {
-    id: string;
-    type: string;
-    amount: number;
-    balanceBefore: number;
-    balanceAfter: number;
-    description: string;
-    date: string;
-    timestamp: number;
-    number: number;
-}
-
-export interface MatchTransaction {
-    time: string;
-    type: 'deposit' | 'withdraw';
-    amount: number;
-    balanceAfter: number;
-}
-
 export interface MatchData {
     playerName: string;
     guid: string;
@@ -86,18 +10,80 @@ export interface MatchData {
     score: number;
     timestamp: number;
     fileName: string;
-    weapons: Record<string, WeaponData>;
-    perks: Record<string, PerkData>;
-    bestWeapon: {
+    duration?: string;
+    bestWeapon?: {
         name: string;
         displayName: string;
         kills: number;
     } | null;
-    duration?: string;
-    transactions?: MatchTransaction[];
+    weapons?: Record<string, {
+        kills: number;
+        headshots: number;
+        displayName: string;
+        killTimes?: { time: string; isHeadshot: boolean; round: number }[] | string[];
+    }>;
+    perks?: Record<string, {
+        uses: number;
+        displayName: string;
+    }>;
+    transactions?: {
+        time: string;
+        type: 'deposit' | 'withdraw';
+        amount: number;
+        balanceAfter: number;
+    }[];
+
+    
+    general?: Record<string, number>;
+    combat?: Record<string, number>;
+    survival?: Record<string, number>;
+    magicBox?: Record<string, number>;
+    powerups?: Record<string, number>;
+    equipment?: Record<string, number>;
+    mapSpecific?: Record<string, number>;
+    persistentUpgrades?: Record<string, number>;
+    other?: Record<string, number>;
+    mobOfTheDead?: Record<string, number>;
+    buried?: Record<string, number>;
+    origins?: Record<string, number>;
+    cheats?: Record<string, number>;
 }
+
+export type RecentMatch = MatchData;
 
 export interface EconomyData {
     balance: number;
-    transactions: EconomyTransaction[];
+    transactions: {
+        time: string;
+        type: 'deposit' | 'withdraw';
+        amount: number;
+        balanceAfter: number;
+    }[];
+}
+
+export interface MapStats {
+    topRound: number;
+    totalKills: number;
+    totalHeadshots: number;
+    totalRevives: number;
+    totalDowns: number;
+    totalScore: number;
+    totalTimePlayed: number;
+    gamesPlayed: number;
+    lastPlayed?: string;
+}
+
+export interface PlayerProfile {
+    username: string;
+    guid: string;
+    avatarUrl?: string; 
+    stats: {
+        kills: number;
+        downs: number;
+        revives: number;
+        headshots: number;
+        totalTimePlayed: number;
+    };
+    maps: Record<string, MapStats>;
+    economy: EconomyData;
 }
